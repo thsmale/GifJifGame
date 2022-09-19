@@ -55,20 +55,29 @@ import FirebaseFirestore
 
 let db = Firestore.firestore()
 
-struct Game {
+struct Game: Codable {
     var name: String
-    var players: [String]
+    var player_usernames: [String] //All the usernames
+    var host: String
+    var category: String
 }
 
-func create_game(group name: String) -> Bool {
-    var group_name = name
-    if(group_name == "") {
-        //Generate random group name if one is not supplied
-        group_name = "Squeeky quack"
+func create_game(game: Game) -> Bool {
+    var game_json: Data
+    do {
+        game_json = try JSONEncoder().encode(game)
+    } catch {
+        print("Unable to convert game to json")
+        return false
+    }
+    let game_str = String(data: game_json, encoding: .utf8) ?? ""
+    if(game_str == "") {
+        print("Failed to convert type Data to string")
+        return false
     }
     var ret: Bool = true
     var ref: DocumentReference? = nil
-    ref = db.collection("games").addDocument(data: ["group_name": group_name]) { err in
+    ref = db.collection("games").addDocument(data: ["game": game_str]) { err in
         if let err = err {
             print("Error adding document: \(err)")
             ret = false
@@ -79,14 +88,63 @@ func create_game(group name: String) -> Bool {
     return ret
 }
 
-//Return username of user
-struct User: Identifiable {
-    var username: String = ""
+struct Category: Identifiable, Hashable {
+    var value: String = ""
     let id = UUID()
 }
 
-func get_user() -> User {
-    var user: User = User()
-    user.username = "tommy"
-    return user
+func read_categories() -> [Category] {
+    let filepath = Bundle.main.resourcePath! + "/categories.txt"
+    let file_handler = FileHandle(forReadingAtPath: filepath) ?? nil
+    if(file_handler == nil) {
+        print("Unable to create FileHandle for categories.txt")
+        return [Category(value: "Failed to load categories")]
+    }
+    var categories: [Category] = []
+    do {
+        let data: Data = try file_handler!.readToEnd() ?? Data()
+        if(data.isEmpty == true) {
+            print("categories.txt readToEnd() failed")
+            return [Category(value: "Failed to load categories")]
+        }
+        let category_values = String(decoding: data, as: UTF8.self)
+            .split(separator: "\n")
+        for category_value in category_values {
+            var category: Category = Category()
+            category.value = String(category_value)
+            categories.append(category)
+        }
+    } catch {
+        print("Unable to read categories.txt")
+        return [Category(value: "Failed to load categories")]
+    }
+    return categories
 }
+
+    /*
+     Reading a file from document directory
+    print("\nReading categories.txt")
+    var file: URL
+    do {
+        file = try FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("categories.txt", conformingTo: .text)
+    } catch {
+        print("Unable to find categories.txt")
+        return false
+    }
+    print(file)
+    var file_handle: FileHandle
+    do {
+        file_handle = try FileHandle(forReadingFrom: file)
+    } catch let error as NSError {
+        print("Unable to create FileHandle for categories.txt")
+        print("Error: \(error)")
+        return false;
+    }
+    do {
+        let data: Data? = try file_handle.readToEnd()
+        print(data ?? "failed to read")
+    } catch {
+        print("Unable to read categories.txt")
+        return false;
+    }
+     */
