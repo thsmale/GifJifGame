@@ -121,30 +121,4 @@ func read_categories() -> [Category] {
     return categories
 }
 
-    /*
-     Reading a file from document directory
-    print("\nReading categories.txt")
-    var file: URL
-    do {
-        file = try FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("categories.txt", conformingTo: .text)
-    } catch {
-        print("Unable to find categories.txt")
-        return false
-    }
-    print(file)
-    var file_handle: FileHandle
-    do {
-        file_handle = try FileHandle(forReadingFrom: file)
-    } catch let error as NSError {
-        print("Unable to create FileHandle for categories.txt")
-        print("Error: \(error)")
-        return false;
-    }
-    do {
-        let data: Data? = try file_handle.readToEnd()
-        print(data ?? "failed to read")
-    } catch {
-        print("Unable to read categories.txt")
-        return false;
-    }
-     */
+

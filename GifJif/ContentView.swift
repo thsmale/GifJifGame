@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/*
 
 struct ContentView: View {
     @State private var group_name: String = ""
@@ -94,3 +95,4 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+*/
