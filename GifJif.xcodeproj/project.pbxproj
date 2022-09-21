@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C9381A5428DAD55700058060 /* CreateGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5328DAD55700058060 /* CreateGame.swift */; };
 		C94A744A28D7B79E001CC202 /* categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94A744928D7B79E001CC202 /* categories.txt */; };
 		C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744B28D83E58001CC202 /* CreateAccount.swift */; };
 		C94A744E28D8438B001CC202 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744D28D8438B001CC202 /* User.swift */; };
 		C973AD0228D59B5A006D7A45 /* GifJifApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973AD0128D59B5A006D7A45 /* GifJifApp.swift */; };
-		C973AD0428D59B5A006D7A45 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973AD0328D59B5A006D7A45 /* ContentView.swift */; };
 		C973AD0628D59B5D006D7A45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973AD0528D59B5D006D7A45 /* Assets.xcassets */; };
 		C973AD0928D59B5D006D7A45 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973AD0828D59B5D006D7A45 /* Preview Assets.xcassets */; };
 		C973AD1328D59B5D006D7A45 /* GifJifTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973AD1228D59B5D006D7A45 /* GifJifTests.swift */; };
@@ -45,12 +45,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C9381A5328DAD55700058060 /* CreateGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateGame.swift; sourceTree = "<group>"; };
 		C94A744928D7B79E001CC202 /* categories.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = categories.txt; sourceTree = "<group>"; };
 		C94A744B28D83E58001CC202 /* CreateAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccount.swift; sourceTree = "<group>"; };
 		C94A744D28D8438B001CC202 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		C973ACFE28D59B5A006D7A45 /* GifJif.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GifJif.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C973AD0128D59B5A006D7A45 /* GifJifApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifJifApp.swift; sourceTree = "<group>"; };
-		C973AD0328D59B5A006D7A45 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C973AD0528D59B5D006D7A45 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C973AD0828D59B5D006D7A45 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C973AD0E28D59B5D006D7A45 /* GifJifTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GifJifTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,7 +115,7 @@
 				C94A744928D7B79E001CC202 /* categories.txt */,
 				C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */,
 				C973AD0128D59B5A006D7A45 /* GifJifApp.swift */,
-				C973AD0328D59B5A006D7A45 /* ContentView.swift */,
+				C9381A5328DAD55700058060 /* CreateGame.swift */,
 				C94A744B28D83E58001CC202 /* CreateAccount.swift */,
 				C973AD3528D66828006D7A45 /* model.swift */,
 				C94A744D28D8438B001CC202 /* User.swift */,
@@ -292,11 +292,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C973AD0428D59B5A006D7A45 /* ContentView.swift in Sources */,
 				C973AD3628D66828006D7A45 /* model.swift in Sources */,
 				C973AD0228D59B5A006D7A45 /* GifJifApp.swift in Sources */,
 				C94A744E28D8438B001CC202 /* User.swift in Sources */,
 				C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */,
+				C9381A5428DAD55700058060 /* CreateGame.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

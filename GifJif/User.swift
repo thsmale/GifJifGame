@@ -8,6 +8,8 @@
 import Foundation
 import FirebaseFirestore
 
+let device_owner = get_self()
+
 //Return username of user
 //To handle ID: Do not let user create game unless they have an account
 struct User: Identifiable, Codable {
@@ -21,26 +23,86 @@ struct User: Identifiable, Codable {
     //var games: [Game] = []
 }
 
-//TODO: handle error if optional not found
+//Original purpose for making struct out of CreateAccount form data and the docid generated after saving user data to the database
 extension User {
-    init?(doc_id: String, data: Dictionary<String, String>) {
-        self.id = UUID()
-        self.doc_id = doc_id
-        if let username = data["username"] {
-            self.username = username
-        } else {
+    init?(doc_id: String, data: Dictionary<String, Any>) {
+        guard let username = data["username"] as? String else {
             print("User init cannot find username in dict")
             return nil
         }
-        if let password = data["password"] {
-            self.password = password
-        } else {
+        guard let password = data["password"] as? String else {
             print("User init cannot find password in dict")
             return nil
         }
-        first_name = data["first_name"] ?? ""
-        last_name = data["last_name"] ?? ""
-        email = data["email"] ?? ""
+        if let first_name = data["first_name"] as? String {
+            self.first_name = first_name
+        } else {
+            self.first_name = ""
+        }
+        if let last_name = data["last_name"] as? String{
+            self.last_name = last_name
+        } else {
+            self.last_name = ""
+        }
+        if let email = data["email"] as? String {
+            self.email = email
+        } else {
+            self.email = ""
+        }
+        
+        self.id = UUID()
+        self.doc_id = doc_id
+        self.username = username
+        self.password = password
+
+    }
+}
+
+//Used for initializing device owner
+extension User {
+    init?(json: [String: Any]) {
+        //Verify all of the types
+        guard let doc_id = json["doc_id"] as? String,
+              let username = json["username"] as? String,
+              let password = json["password"] as? String,
+              let first_name = json["first_name"] as? String,
+              let last_name = json["last_name"] as? String,
+              let email = json["email"] as? String
+        else {
+            return nil
+        }
+        
+        self.id = UUID()
+        self.doc_id = doc_id
+        self.username = username
+        self.password = password
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+    }
+}
+
+//Used for initializing player retrieved from database
+//TODO: See if there are any optional parameters, delete this duplicated code
+extension User {
+    init?(doc_id: String, json: [String: Any]) {
+        //Verify all of the types
+        guard let username = json["username"] as? String,
+              let password = json["password"] as? String,
+              let first_name = json["first_name"] as? String,
+              let last_name = json["last_name"] as? String,
+              let email = json["email"] as? String
+        else {
+            return nil
+        }
+        
+        self.id = UUID()
+        self.doc_id = doc_id
+        self.username = username
+        self.password = password
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
     }
 }
 
@@ -116,14 +178,16 @@ func save_user_locally(data: Dictionary<String, String>) -> Bool {
     return true
 }
 
-func read_user_file() -> Bool {
+//This is the owner of the device
+//This retrives their account settings
+func get_self() -> User? {
     //Get filepath
     var file: URL
     do {
         file = try FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("user.json", conformingTo: .json)
     } catch {
         print("Unable to create path in documents for user.json \(error)")
-        return false
+        return nil
     }
     
     //Create a file descriptor
@@ -132,7 +196,7 @@ func read_user_file() -> Bool {
         file_handle = try FileHandle(forReadingFrom: file)
     } catch let error as NSError {
         print("Unable to create FileHandle for \(file.absoluteString) \(error)")
-        return false;
+        return nil;
     }
     
     //Read in bytes from file
@@ -141,12 +205,12 @@ func read_user_file() -> Bool {
         data = try file_handle.readToEnd()
     } catch {
         print("Unable to read categories.txt \(error)")
-        return false;
+        return nil;
     }
     
     if(data == nil) {
         print("\(file) Filehandler returned nil")
-        return false
+        return nil
     }
     
     var json_data: Any
@@ -154,12 +218,50 @@ func read_user_file() -> Bool {
         json_data = try JSONSerialization.jsonObject(with: data!)
     } catch {
         print("Unable to parse JSON \(file.absoluteString) \(error)")
-        return false
+        return nil
+    }
+
+    if (json_data as? [String: Any] == nil) {
+        print("Data read from file not acceptable")
+        return nil
     }
     
-    print("User read from file!")
-    print(json_data)
-    print(type(of: json_data))
+    return User(json: json_data as! [String: Any])
+}
 
-    return true
+//Check the database for a username
+func get_user(username: String) async -> User? {
+    var user: User? = nil
+    do {
+        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).getDocuments()
+        if (querySnapshot.documents.isEmpty) {
+            return nil
+        }
+        let doc = querySnapshot.documents[0]
+        print("Read user w/ id \(doc.documentID) and data \(doc.data())")
+        user = User(doc_id: doc.documentID, data: doc.data())
+        print("player: \(String(describing: user))")
+    } catch {
+        print("get_user() \(error)")
+    }
+        /*
+        .getDocuments() { (querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents \(err)")
+                user = nil
+            } else {
+                if (querySnapshot!.documents.isEmpty) {
+                    user = nil
+                } else {
+                    let doc = querySnapshot!.documents[0]
+                    print("Read user w/ id \(doc.documentID) and data \(doc.data())")
+                    user = User(doc_id: doc.documentID, data: doc.data())
+                    print("player: \(String(describing: user))")
+                }
+                
+            }
+        }
+         */
+    print("user: \(String(describing: user))")
+    return user
 }

@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  CreateGame.swift
 //  GifJif (change name so emphasis isn't only on gifs)
 //
 //  Created by Tommy Smale on 9/16/22.
@@ -7,16 +7,17 @@
 
 import SwiftUI
 
-/*
-
-struct ContentView: View {
+//For now force to read device_owner but in the future do not allow user to open this view if they do not have an account
+//Or allow user to create game w/out account but change structure to handle that
+struct CreateGame: View {
     @State private var group_name: String = ""
     @State private var username: String = ""
-    @State private var players: [User] = [get_user()]
+    @State private var players: [User] = [device_owner!]
     @State private var category: String = ""
-    @State private var host_id: UUID = get_user().id
+    @State private var host_id = device_owner!.id
     @State private var category_id: UUID = UUID()
     @State private var ret: Bool = true
+    @State private var invalid_username = false
 
     private var categories: [Category] = read_categories()
 
@@ -27,9 +28,24 @@ struct ContentView: View {
                     TextField("Group name", text: $group_name)
                 }
                 
+                //TODO: search by first_name, last_name, and email
                 Section(header: Text("Add players")) {
-                    TextField("Search players", text: $username)
-                    //Find player in database then append to players array
+                    TextField("Enter username", text: $username, onEditingChanged: { _ in invalid_username = false
+                    })
+                        .onSubmit {
+                            Task {
+                                if let user: User = await get_user(username: username) {
+                                    players.append(user)
+                                    invalid_username = false
+                                } else {
+                                    invalid_username = true
+                                }
+                            }
+                        }
+                    if(invalid_username) {
+                        Text("User does not exist")
+                            .foregroundColor(.red)
+                    }
                     List(players) {
                         Text($0.username)
                     }
@@ -90,9 +106,9 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct CreateGame_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        CreateGame()
     }
 }
-*/
+

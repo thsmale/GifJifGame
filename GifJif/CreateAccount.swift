@@ -88,7 +88,7 @@ struct CreateAccount: View {
                             "email": email
                         ]
                     if(add_user(user_data: &dict)) {
-                        read_user_file()
+                        //read_user_file()
                     }else {
                         show_error = true
                     }
