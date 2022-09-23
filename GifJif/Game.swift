@@ -8,7 +8,8 @@
 /*
  Game
  Topics: Choose from a genre. Pick a topic or have one generated from you
- Content: People can send gif, text, stickers, drawing...
+ Setting: Describe's what the host is looking for, funny, serious, mean..
+ Content: People can send gif, text, stickers, drawing, picture...
  Time: People have 60 seconds for a response, but can respond whenever is convenient
  Objective: Submit content that aligns with the topic
  Once everyone has responded, the host chooses their favorite response (annonymous)

@@ -10,6 +10,7 @@
 		C9381A5428DAD55700058060 /* CreateGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5328DAD55700058060 /* CreateGame.swift */; };
 		C9381A5628DC2F7400058060 /* PlayGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5528DC2F7400058060 /* PlayGame.swift */; };
 		C9381A5828DC2FD000058060 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5728DC2FD000058060 /* Game.swift */; };
+		C9381A5C28DD7E9300058060 /* GifSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5B28DD7E9300058060 /* GifSearch.swift */; };
 		C94A744A28D7B79E001CC202 /* categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94A744928D7B79E001CC202 /* categories.txt */; };
 		C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744B28D83E58001CC202 /* CreateAccount.swift */; };
 		C94A744E28D8438B001CC202 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744D28D8438B001CC202 /* User.swift */; };
@@ -47,6 +48,7 @@
 		C9381A5328DAD55700058060 /* CreateGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateGame.swift; sourceTree = "<group>"; };
 		C9381A5528DC2F7400058060 /* PlayGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayGame.swift; sourceTree = "<group>"; };
 		C9381A5728DC2FD000058060 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		C9381A5B28DD7E9300058060 /* GifSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifSearch.swift; sourceTree = "<group>"; };
 		C94A744928D7B79E001CC202 /* categories.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = categories.txt; sourceTree = "<group>"; };
 		C94A744B28D83E58001CC202 /* CreateAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccount.swift; sourceTree = "<group>"; };
 		C94A744D28D8438B001CC202 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				C94A744B28D83E58001CC202 /* CreateAccount.swift */,
 				C9381A5728DC2FD000058060 /* Game.swift */,
 				C973AD0128D59B5A006D7A45 /* GifJifApp.swift */,
+				C9381A5B28DD7E9300058060 /* GifSearch.swift */,
 				C9381A5528DC2F7400058060 /* PlayGame.swift */,
 				C94A744D28D8438B001CC202 /* User.swift */,
 				C973AD0528D59B5D006D7A45 /* Assets.xcassets */,
@@ -298,6 +301,7 @@
 				C973AD0228D59B5A006D7A45 /* GifJifApp.swift in Sources */,
 				C94A744E28D8438B001CC202 /* User.swift in Sources */,
 				C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */,
+				C9381A5C28DD7E9300058060 /* GifSearch.swift in Sources */,
 				C9381A5428DAD55700058060 /* CreateGame.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
