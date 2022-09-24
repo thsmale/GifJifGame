@@ -11,6 +11,9 @@
 		C9381A5628DC2F7400058060 /* PlayGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5528DC2F7400058060 /* PlayGame.swift */; };
 		C9381A5828DC2FD000058060 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5728DC2FD000058060 /* Game.swift */; };
 		C9381A5C28DD7E9300058060 /* GifSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5B28DD7E9300058060 /* GifSearch.swift */; };
+		C9381A6028DECBCD00058060 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5F28DECBCD00058060 /* ImagePicker.swift */; };
+		C9381A6228DEE59B00058060 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A6128DEE59B00058060 /* Camera.swift */; };
+		C9381A6428DEF15800058060 /* Safari.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A6328DEF15800058060 /* Safari.swift */; };
 		C94A744A28D7B79E001CC202 /* categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94A744928D7B79E001CC202 /* categories.txt */; };
 		C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744B28D83E58001CC202 /* CreateAccount.swift */; };
 		C94A744E28D8438B001CC202 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744D28D8438B001CC202 /* User.swift */; };
@@ -49,6 +52,9 @@
 		C9381A5528DC2F7400058060 /* PlayGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayGame.swift; sourceTree = "<group>"; };
 		C9381A5728DC2FD000058060 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		C9381A5B28DD7E9300058060 /* GifSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifSearch.swift; sourceTree = "<group>"; };
+		C9381A5F28DECBCD00058060 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		C9381A6128DEE59B00058060 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
+		C9381A6328DEF15800058060 /* Safari.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Safari.swift; sourceTree = "<group>"; };
 		C94A744928D7B79E001CC202 /* categories.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = categories.txt; sourceTree = "<group>"; };
 		C94A744B28D83E58001CC202 /* CreateAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccount.swift; sourceTree = "<group>"; };
 		C94A744D28D8438B001CC202 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -122,6 +128,9 @@
 				C973AD0128D59B5A006D7A45 /* GifJifApp.swift */,
 				C9381A5B28DD7E9300058060 /* GifSearch.swift */,
 				C9381A5528DC2F7400058060 /* PlayGame.swift */,
+				C9381A6128DEE59B00058060 /* Camera.swift */,
+				C9381A5F28DECBCD00058060 /* ImagePicker.swift */,
+				C9381A6328DEF15800058060 /* Safari.swift */,
 				C94A744D28D8438B001CC202 /* User.swift */,
 				C973AD0528D59B5D006D7A45 /* Assets.xcassets */,
 				C973AD0728D59B5D006D7A45 /* Preview Content */,
@@ -301,8 +310,11 @@
 				C973AD0228D59B5A006D7A45 /* GifJifApp.swift in Sources */,
 				C94A744E28D8438B001CC202 /* User.swift in Sources */,
 				C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */,
+				C9381A6028DECBCD00058060 /* ImagePicker.swift in Sources */,
 				C9381A5C28DD7E9300058060 /* GifSearch.swift in Sources */,
 				C9381A5428DAD55700058060 /* CreateGame.swift in Sources */,
+				C9381A6228DEE59B00058060 /* Camera.swift in Sources */,
+				C9381A6428DEF15800058060 /* Safari.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,6 +477,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GifJif/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "To reply with an image you have taken";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -493,6 +506,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GifJif/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "To reply with an image you have taken";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
