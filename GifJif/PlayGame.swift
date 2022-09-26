@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GiphyUISDK
 
 struct PlayGame: View {
     @State private var topic: String = "Take the most funny photo"
@@ -21,18 +22,25 @@ struct PlayGame: View {
     @State private var show_camera = false
     @State private var image: UIImage?
     //Gifs
-    @State private var gif_search: String = ""
-    @State private var gif: Bool = false
+    @State private var show_giphy: Bool = false
+    @State private var giphy: URL?
+    @State private var giphy_media: GPHMedia?
+    @State private var mediaView = GPHMediaView()
+    var view = UIView()
     //Safari
     @State private var safari: Bool = false
 
     
     var body: some View {
         NavigationView {
-            VStack{
+            VStack {
                 Text("Task: \(topic)")
                 Text("Mode: funny")
                 Text("Time: 60 seconds")
+                
+                if(giphy_media != nil) {
+                    ShowMedia(mediaView: $mediaView)
+                }
                 
                 Canvas { context, size in
                     if(draw) {
@@ -57,8 +65,10 @@ struct PlayGame: View {
                 
                 HStack {
                     Button("Gif", action: {
-                        gif.toggle()
-                    }).disabled(true)
+                        show_giphy.toggle()
+                        //GiphyUI(url: $giphy, media: $giphy_media)
+                        //mediaView.media = giphy_media
+                    })
                     Button("Text", action: {
                         show_text_field.toggle()
                     })
@@ -71,28 +81,9 @@ struct PlayGame: View {
                     Button("Camera", action: {
                         show_camera.toggle()
                     })
-                    Button("Meme", action: {}).disabled(true)
                     Button("Draw", action: {
                         draw.toggle()
                     })
-                }
-                
-                //Make a new struct for this code, pass in prompt as initiailzer
-                if(gif) {
-                    GifSearch()
-                    /*
-                     HStack {
-                     Image(systemName: "magnifyingglass")
-                     TextField(prompt, text: gif ? $gif_search : $text_input)
-                     .onSubmit {
-                     if(gif) {
-                     print("Search API \(gif_search)")
-                     } else {
-                     print("Add text to canvas \(text_input)")
-                     }
-                     }
-                     
-                     }*/
                 }
                 
                 if(show_text_field) {
@@ -111,6 +102,12 @@ struct PlayGame: View {
             .sheet(isPresented: $safari) {
                 Safari()
             }
+            .sheet(isPresented: $show_giphy) {
+                GiphyUI(url: $giphy, media: $giphy_media, media_view: $mediaView)
+            }
+             
+            
+
              
         }
         .navigationViewStyle(StackNavigationViewStyle())

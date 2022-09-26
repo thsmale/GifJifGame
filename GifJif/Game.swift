@@ -22,7 +22,7 @@
  * Birthday may be required to activate dirty mode
  * Add accolades like quickest responses
  * Add bots to play against
- * What if someone wants to share an article? May take longer than 60 seconds
+ * Add some incentive to the game. Prize money for winning the round
  */
 
 /*
