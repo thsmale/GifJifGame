@@ -12,9 +12,9 @@ import SwiftUI
 struct CreateGame: View {
     @State private var group_name: String = ""
     @State private var username: String = ""
-    @State private var players: [User] = [device_owner!]
+    @State private var players: [User] = []
     @State private var category: String = ""
-    @State private var host_id = device_owner!.id
+    @State private var host_id = device_owner?.id ?? UUID()
     @State private var category_id: UUID = UUID()
     @State private var ret: Bool = true
     @State private var invalid_username = false
@@ -98,7 +98,8 @@ struct CreateGame: View {
                     Button("🙄") {}
                     Button("😭") {}
                 }
-                .navigationTitle("Create a game")
+                .navigationTitle("Create Game")
+                .navigationBarTitleDisplayMode(.inline)
             }
         }
         

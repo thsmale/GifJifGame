@@ -56,7 +56,8 @@ import FirebaseFirestore
 
 let db = Firestore.firestore()
 
-struct Game: Codable {
+struct Game: Codable, Identifiable {
+    var id = UUID()
     var name: String
     var player_usernames: [String] //All the usernames
     var host: String

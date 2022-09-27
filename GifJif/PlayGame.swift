@@ -29,8 +29,35 @@ struct PlayGame: View {
     var view = UIView()
     //Safari
     @State private var safari: Bool = false
-
+   
+    @State private var valid_input: Bool = false
+    @State private var preview: UIImage?
+    @State private var show_preview: Bool = false
     
+    var canvas: some View {
+        Canvas { context, size in
+            if(draw) {
+                context.stroke(line, with: .color(.green), lineWidth: 7)
+            }
+            if(image != nil) {
+                context.draw(Image(uiImage: image!), in: CGRect(x: 0, y: 0, width: size.width, height: size.height), style: FillStyle())
+            }
+            if(!text_input.isEmpty) {
+                context.draw(Text(text_input), in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+            }
+        }
+        .border(Color.blue)
+        .gesture(DragGesture(coordinateSpace: .local).onChanged({ value in
+            if (line.isEmpty || new_drag) {
+                line.move(to: value.location)
+                new_drag = false
+            } else {
+                line.addLine(to: value.location)
+            }
+        }).onEnded({ _ in new_drag = true }))
+        .frame(width: 300, height: 300)
+    }
+
     var body: some View {
         NavigationView {
             VStack {
@@ -39,36 +66,17 @@ struct PlayGame: View {
                 Text("Time: 60 seconds")
                 
                 if(giphy_media != nil) {
-                    ShowMedia(mediaView: $mediaView)
+                    ShowMedia(mediaView: $mediaView, media: $giphy_media)
                 }
                 
-                Canvas { context, size in
-                    if(draw) {
-                        context.stroke(line, with: .color(.green), lineWidth: 7)
-                    }
-                    if(image != nil) {
-                        context.draw(Image(uiImage: image!), in: CGRect(x: 0, y: 0, width: size.width, height: size.height), style: FillStyle())
-                    }
-                    if(!text_input.isEmpty) {
-                        context.draw(Text(text_input), in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-                    }
-                }
-                .border(Color.blue)
-                .gesture(DragGesture(coordinateSpace: .local).onChanged({ value in
-                    if (line.isEmpty || new_drag) {
-                        line.move(to: value.location)
-                        new_drag = false
-                    } else {
-                        line.addLine(to: value.location)
-                    }
-                }).onEnded({ _ in new_drag = true }))
+                //canvas
+
                 
                 HStack {
                     Button("Gif", action: {
                         show_giphy.toggle()
-                        //GiphyUI(url: $giphy, media: $giphy_media)
-                        //mediaView.media = giphy_media
                     })
+                    /*
                     Button("Text", action: {
                         show_text_field.toggle()
                     })
@@ -84,13 +92,22 @@ struct PlayGame: View {
                     Button("Draw", action: {
                         draw.toggle()
                     })
+                     */
                 }
                 
                 if(show_text_field) {
                     TextField("Enter text response", text: $text_input)
                 }
                 
-                Button("Submit", action: {})
+                Button("Submit", action: {
+                    //submit_response(giphy_media!.id)
+                }).disabled({
+                    if(giphy_media == nil) {
+                        return false
+                    }
+                    return true
+                }())
+                
             }
             .navigationTitle(Text("Game"))
             .sheet(isPresented: $show_image_picker) {
@@ -105,6 +122,11 @@ struct PlayGame: View {
             .sheet(isPresented: $show_giphy) {
                 GiphyUI(url: $giphy, media: $giphy_media, media_view: $mediaView)
             }
+            .sheet(isPresented: $show_preview) {
+                if preview != nil {
+                    Image(uiImage: preview!)
+                }
+            }
              
             
 
@@ -113,6 +135,23 @@ struct PlayGame: View {
         .navigationViewStyle(StackNavigationViewStyle())
 
     }
+}
+
+extension View {
+    func snapshot() -> UIImage {
+            let controller = UIHostingController(rootView: self)
+            let view = controller.view
+
+            let targetSize = controller.view.intrinsicContentSize
+            view?.bounds = CGRect(origin: .zero, size: targetSize)
+            view?.backgroundColor = .clear
+
+            let renderer = UIGraphicsImageRenderer(size: targetSize)
+
+            return renderer.image { _ in
+                view?.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true)
+            }
+        }
 }
 
 struct PlayGame_Previews: PreviewProvider {

@@ -105,6 +105,7 @@ struct CreateAccount: View {
                 
                 
                 .navigationTitle("Create an account")
+                .navigationBarTitleDisplayMode(.inline)
             }
         }
     }

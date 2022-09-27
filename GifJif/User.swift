@@ -20,7 +20,7 @@ struct User: Identifiable, Codable {
     var first_name: String
     var last_name: String
     var email: String
-    //var games: [Game] = []
+    var games: [Game] = []
 }
 
 //Original purpose for making struct out of CreateAccount form data and the docid generated after saving user data to the database
@@ -147,6 +147,40 @@ func add_user(user_data: inout Dictionary<String, String>) -> Bool {
     }
     return ret
 }
+
+//A wrapper for save_user_locally for when a user is signing into their account
+func save_user_locally(doc_id: String, data: Dictionary<String, Any>) -> Bool {
+    var new_data: Dictionary<String, String> = [:]
+    guard let username = data["username"] as? String else {
+        print("save_user_locally cannot find username in dict")
+        return false
+    }
+    guard let password = data["password"] as? String else {
+        print("save_user_locally cannot find password in dict")
+        return false
+    }
+    if let first_name = data["first_name"] as? String {
+        new_data["first_name"] = first_name
+    } else {
+        new_data["first_name"] = ""
+    }
+    if let last_name = data["last_name"] as? String{
+        new_data["last_name"] = last_name
+    } else {
+        new_data["last_name"] = ""
+    }
+    if let email = data["email"] as? String {
+        new_data["email"] = email
+    } else {
+        new_data["email"] = ""
+    }
+    
+    new_data["doc_id"] = doc_id
+    new_data["username"] = username
+    new_data["password"] = password
+    
+    return save_user_locally(data: new_data)
+}
  
 func save_user_locally(data: Dictionary<String, String>) -> Bool {
     var data_json: Data
@@ -264,4 +298,21 @@ func get_user(username: String) async -> User? {
          */
     print("user: \(String(describing: user))")
     return user
+}
+
+func sign_in(_ username: String, _ password: String) async -> Bool {
+    do {
+        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).whereField("password", isEqualTo: password).getDocuments()
+        if (querySnapshot.documents.isEmpty) {
+            return false
+        }
+        let doc = querySnapshot.documents[0]
+        if(save_user_locally(doc_id: doc.documentID, data: doc.data())) {
+            print("Successfully saved user data!")
+        }
+        return true
+    } catch {
+        print("get_user() \(error)")
+        return false
+    }
 }

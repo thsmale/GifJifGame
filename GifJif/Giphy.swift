@@ -60,21 +60,26 @@ struct GiphyUI: UIViewControllerRepresentable {
 
 struct ShowMedia: UIViewRepresentable {
     @Binding var mediaView: GPHMediaView
+    @Binding var media: GPHMedia?
     
     func makeUIView(context: Context) -> UIView {
-        UIView()
+        let view = UIView()
+        let media_view = GPHMediaView()
+        view.addSubview(media_view)
+        media_view.translatesAutoresizingMaskIntoConstraints = false
+        media_view.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        media_view.widthAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        media_view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        media_view.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        media_view.contentMode = .scaleAspectFit
+        media_view.layer.cornerRadius = view.layer.cornerRadius
+        media_view.layer.masksToBounds = true
+        return view
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {
-        print("UPDATE: \(mediaView.media)")
-        uiView.addSubview(mediaView)
-        mediaView.translatesAutoresizingMaskIntoConstraints = false
-        mediaView.heightAnchor.constraint(equalTo: uiView.heightAnchor).isActive = true
-        mediaView.widthAnchor.constraint(equalTo: uiView.heightAnchor, multiplier: mediaView.media!.aspectRatio).isActive = true
-        mediaView.rightAnchor.constraint(equalTo: uiView.rightAnchor).isActive = true
-        mediaView.centerYAnchor.constraint(equalTo: uiView.centerYAnchor).isActive = true
-        mediaView.contentMode = .scaleAspectFit
-        mediaView.layer.cornerRadius = uiView.layer.cornerRadius
-        mediaView.layer.masksToBounds = true
+        var media_view = uiView.subviews[0] as! GPHMediaView
+        media_view.media = media!
+        media_view.widthAnchor.constraint(equalTo: uiView.heightAnchor, multiplier: media!.aspectRatio).isActive = true
     }
 }
