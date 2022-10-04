@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ViewGames: View {
     @State private var handle: String = get_handle()
-    @State private var games = device_owner.games
+    @ObservedObject private var user = device_owner
     
     var body: some View {
         NavigationView {
@@ -39,10 +39,10 @@ struct ViewGames: View {
                 
                 Form {
                     Section(header: Text("My games")) {
-                        if(games.isEmpty) {
+                        if(user.games.isEmpty) {
                             Text("You are in no games. Create a game or join a live game! Sign in to recover your data.")
                         } else {
-                            List(games) {
+                            List(user.games) {
                                 Text($0.name)
                             }
                         }

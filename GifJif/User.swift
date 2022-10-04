@@ -12,7 +12,7 @@ var device_owner = get_self() ?? User()
 
 //Return username of user
 //To handle ID: Do not let user create game unless they have an account
-class User: Identifiable, Codable {
+class User: Identifiable, Codable, ObservableObject {
     let id: UUID
     let doc_id: String
     var username: String
@@ -20,12 +20,39 @@ class User: Identifiable, Codable {
     var first_name: String
     var last_name: String
     var email: String
-    var games: [Game] = []
-}
-
-//When a user does not have an account
-//Useful for storing their games
-extension User {
+    @Published var games: [Game]
+    
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case doc_id
+        case username
+        case password
+        case first_name
+        case last_name
+        case email
+        case games
+    }
+    
+    
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(UUID.self, forKey: .id)
+        doc_id = try values.decode(String.self, forKey: .doc_id)
+        username = try values.decode(String.self, forKey: .username)
+        password = try values.decode(String.self, forKey: .password)
+        first_name = try values.decode(String.self, forKey: .first_name)
+        last_name = try values.decode(String.self, forKey: .last_name)
+        email = try values.decode(String.self, forKey: .email)
+        games = try values.decode([Game].self, forKey: .games)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        
+    }
+    
+    //When a user does not have an account
+    //Useful for storing their games
     init() {
         self.id = UUID()
         self.doc_id = ""
@@ -34,11 +61,10 @@ extension User {
         self.first_name = ""
         self.last_name = ""
         self.email = ""
+        self.games = []
     }
-}
-
-//Original purpose for making struct out of CreateAccount form data and the docid generated after saving user data to the database
-extension User {
+    //Original purpose for making struct out of CreateAccount form data and the docid generated after saving user data to the database
+    //TODO: User already has games saved but now is creating an account
     init?(doc_id: String, data: Dictionary<String, Any>) {
         guard let username = data["username"] as? String else {
             print("User init cannot find username in dict")
@@ -68,12 +94,9 @@ extension User {
         self.doc_id = doc_id
         self.username = username
         self.password = password
-
+        self.games = []
     }
-}
-
-//Used for initializing device owner
-extension User {
+    //Used for initializing device owner from user.json file stored in documents
     init?(json: [String: Any]) {
         //Verify all of the types
         guard let doc_id = json["doc_id"] as? String,
@@ -81,8 +104,10 @@ extension User {
               let password = json["password"] as? String,
               let first_name = json["first_name"] as? String,
               let last_name = json["last_name"] as? String,
-              let email = json["email"] as? String
+              let email = json["email"] as? String,
+              let games = json["games"] as? [[String: Any]]
         else {
+            print("User unable to decode user")
             return nil
         }
         
@@ -93,19 +118,25 @@ extension User {
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.games = []
+        
+        //Verify all the games are legit
+        for game in games {
+            if let g = Game(game: game) {
+                self.games.append(g)
+            }
+        }
     }
-}
-
-//Used for initializing player retrieved from database
-//TODO: See if there are any optional parameters, delete this duplicated code
-extension User {
+    //Used for initializing player retrieved from database
+    //TODO: See if there are any optional parameters, delete this duplicated code
     init?(doc_id: String, json: [String: Any]) {
         //Verify all of the types
         guard let username = json["username"] as? String,
               let password = json["password"] as? String,
               let first_name = json["first_name"] as? String,
               let last_name = json["last_name"] as? String,
-              let email = json["email"] as? String
+              let email = json["email"] as? String,
+              let games = json["games"] as? [[String: Any]]
         else {
             return nil
         }
@@ -117,8 +148,17 @@ extension User {
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.games = []
+        
+        //Verify all the games are legit
+        for game in games {
+            if let g = Game(game: game) {
+                self.games.append(g)
+            }
+        }
     }
 }
+
 
 //TODO: return different error to user if issue with network than if username is taken
 func available_username(username: String) async -> Bool {

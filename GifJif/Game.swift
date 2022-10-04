@@ -65,6 +65,34 @@ struct Game: Codable, Identifiable {
     var category: String
 }
 
+//Initialize a game from user.json file stored in documents
+extension Game {
+    init?(game: [String: Any]) {
+        guard let doc_id = game["doc_id"] as? String,
+              let name = game["name"] as? String,
+              let player_usernames = game["player_usernames"] as? [Any],
+              let host = game["host"] as? String,
+              let category = game["category"] as? String
+        else{
+            print("Game unable to decode data \(game)")
+            return nil
+        }
+        for player in player_usernames {
+            guard player is String
+            else{
+                print("Game unable to decode player_usernames in game \(player_usernames)")
+                return nil
+            }
+        }
+        
+        self.doc_id = doc_id
+        self.name = name
+        self.player_usernames = player_usernames as! [String]
+        self.host = host
+        self.category = category
+    }
+}
+
 func create_game(game: inout Game) -> Bool {
     var game_json: Data
     do {
