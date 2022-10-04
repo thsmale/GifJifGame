@@ -49,7 +49,9 @@ struct CreateAccount: View {
                                 valid_username = false
                                 return
                             }
-                            valid_username = available_username(username: username)
+                            Task {
+                                valid_username = await available_username(username: username)
+                            }
                         }
                     if(!valid_username && username_submitted) {
                         Text("Username is not available")
@@ -74,9 +76,9 @@ struct CreateAccount: View {
                 }
                 
                 Section(header: Text("Optional reccomended information")) {
-                    TextField("Email", text: $email)
-                    TextField("First Name", text: $first_name)
-                    TextField("Last Name", text: $last_name)
+                    TextField("Email (To recover username/password", text: $email)
+                    TextField("First Name (For finding players)", text: $first_name)
+                    TextField("Last Name (For finding players)", text: $last_name)
                 }
                 
                 Button(action: {

@@ -58,13 +58,14 @@ let db = Firestore.firestore()
 
 struct Game: Codable, Identifiable {
     var id = UUID()
+    var doc_id: String = ""
     var name: String
     var player_usernames: [String] //All the usernames
     var host: String
     var category: String
 }
 
-func create_game(game: Game) -> Bool {
+func create_game(game: inout Game) -> Bool {
     var game_json: Data
     do {
         game_json = try JSONEncoder().encode(game)
@@ -86,6 +87,11 @@ func create_game(game: Game) -> Bool {
         } else {
             print("Document added with id \(ref!.documentID)")
         }
+    }
+    if(ret) {
+        game.doc_id = ref!.documentID
+        device_owner.games.append(game)
+        print(device_owner.games)
     }
     return ret
 }

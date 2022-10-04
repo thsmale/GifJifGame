@@ -12,12 +12,14 @@ import SwiftUI
 struct CreateGame: View {
     @State private var group_name: String = ""
     @State private var username: String = ""
-    @State private var players: [User] = []
+    @State private var players: [User] = [device_owner]
     @State private var category: String = ""
-    @State private var host_id = device_owner?.id ?? UUID()
+    @State private var host_id = device_owner.id 
     @State private var category_id: UUID = UUID()
     @State private var ret: Bool = true
     @State private var invalid_username = false
+    
+    @Environment(\.presentationMode) var presentationMode
 
     private var categories: [Category] = read_categories()
 
@@ -87,8 +89,12 @@ struct CreateGame: View {
                     })  {
                         category_value = categories[index].value
                     }
-                    let game = Game(name: group_name, player_usernames: player_usernames, host: host_username, category: category_value)
-                    return create_game(game: game)
+                    var game = Game(name: group_name, player_usernames: player_usernames, host: host_username, category: category_value)
+                    if (create_game(game: &game)) {
+                        self.presentationMode.wrappedValue.dismiss()
+                        return true
+                    }
+                    return false
                 }()}) {
                     Text("Add data to database")
                         .padding()

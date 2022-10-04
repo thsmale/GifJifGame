@@ -8,11 +8,11 @@
 import Foundation
 import FirebaseFirestore
 
-let device_owner = get_self()
+var device_owner = get_self() ?? User()
 
 //Return username of user
 //To handle ID: Do not let user create game unless they have an account
-struct User: Identifiable, Codable {
+class User: Identifiable, Codable {
     let id: UUID
     let doc_id: String
     var username: String
@@ -21,6 +21,20 @@ struct User: Identifiable, Codable {
     var last_name: String
     var email: String
     var games: [Game] = []
+}
+
+//When a user does not have an account
+//Useful for storing their games
+extension User {
+    init() {
+        self.id = UUID()
+        self.doc_id = ""
+        self.username = ""
+        self.password = ""
+        self.first_name = ""
+        self.last_name = ""
+        self.email = ""
+    }
 }
 
 //Original purpose for making struct out of CreateAccount form data and the docid generated after saving user data to the database
@@ -107,23 +121,16 @@ extension User {
 }
 
 //TODO: return different error to user if issue with network than if username is taken
-func available_username(username: String) -> Bool {
-    var ret: Bool = true
-    let doc_ref = db.collection("users").whereField("username", isEqualTo: username)
-    doc_ref.getDocuments() { (query_snapshot, err) in
-        if let err = err {
-            print("Query failed \(err)")
-            ret = false
-        } else {
-            if (!query_snapshot!.isEmpty) {
-                ret = false
-            }
-            if (query_snapshot!.count > 0) {
-                ret = false
-            }
+func available_username(username: String) async -> Bool {
+    do {
+        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).getDocuments()
+        if (querySnapshot.documents.isEmpty) {
+            return true
         }
+    } catch {
+        print("get_user() \(error)")
     }
-    return ret
+    return false
 }
 
 //This will try to add a user to the database
@@ -315,4 +322,18 @@ func sign_in(_ username: String, _ password: String) async -> Bool {
         print("get_user() \(error)")
         return false
     }
+}
+
+//Returns something to address the user like a name or username
+func get_handle() -> String {
+    if(device_owner.username != "") {
+        return device_owner.username
+    }
+    if(device_owner.first_name != "") {
+        return device_owner.first_name
+    }
+    if(device_owner.last_name != "") {
+        return device_owner.last_name
+    }
+    return ""
 }

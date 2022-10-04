@@ -20,6 +20,7 @@
 		C9381A6F28E170E000058060 /* GiphyUISDK in Frameworks */ = {isa = PBXBuildFile; productRef = C9381A6E28E170E000058060 /* GiphyUISDK */; };
 		C9381A7128E2CB6600058060 /* ViewGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7028E2CB6600058060 /* ViewGames.swift */; };
 		C9381A7328E2E66600058060 /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7228E2E66600058060 /* SignIn.swift */; };
+		C9381A7528E43CBB00058060 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7428E43CBB00058060 /* Profile.swift */; };
 		C94A744A28D7B79E001CC202 /* categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94A744928D7B79E001CC202 /* categories.txt */; };
 		C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744B28D83E58001CC202 /* CreateAccount.swift */; };
 		C94A744E28D8438B001CC202 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744D28D8438B001CC202 /* User.swift */; };
@@ -62,6 +63,7 @@
 		C9381A6628E16BBC00058060 /* Giphy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Giphy.swift; sourceTree = "<group>"; };
 		C9381A7028E2CB6600058060 /* ViewGames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewGames.swift; sourceTree = "<group>"; };
 		C9381A7228E2E66600058060 /* SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
+		C9381A7428E43CBB00058060 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		C94A744928D7B79E001CC202 /* categories.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = categories.txt; sourceTree = "<group>"; };
 		C94A744B28D83E58001CC202 /* CreateAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccount.swift; sourceTree = "<group>"; };
 		C94A744D28D8438B001CC202 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				C9381A7228E2E66600058060 /* SignIn.swift */,
 				C9381A5728DC2FD000058060 /* Game.swift */,
 				C9381A7028E2CB6600058060 /* ViewGames.swift */,
+				C9381A7428E43CBB00058060 /* Profile.swift */,
 				C9381A6628E16BBC00058060 /* Giphy.swift */,
 				C973AD0128D59B5A006D7A45 /* GifJifApp.swift */,
 				C9381A5B28DD7E9300058060 /* GifSearch.swift */,
@@ -320,6 +323,7 @@
 				C9381A5628DC2F7400058060 /* PlayGame.swift in Sources */,
 				C9381A7328E2E66600058060 /* SignIn.swift in Sources */,
 				C9381A5828DC2FD000058060 /* Game.swift in Sources */,
+				C9381A7528E43CBB00058060 /* Profile.swift in Sources */,
 				C973AD0228D59B5A006D7A45 /* GifJifApp.swift in Sources */,
 				C9381A6728E16BBC00058060 /* Giphy.swift in Sources */,
 				C94A744E28D8438B001CC202 /* User.swift in Sources */,
