@@ -8,10 +8,11 @@
 import Foundation
 import FirebaseFirestore
 
-var device_owner = get_self() ?? User()
+var device_owner = get_self()
 
 //Return username of user
 //To handle ID: Do not let user create game unless they have an account
+//Check if user has an account by seeing doc_id is not ""
 class User: Identifiable, Codable, ObservableObject {
     let id: UUID
     let doc_id: String
@@ -104,10 +105,9 @@ class User: Identifiable, Codable, ObservableObject {
               let password = json["password"] as? String,
               let first_name = json["first_name"] as? String,
               let last_name = json["last_name"] as? String,
-              let email = json["email"] as? String,
-              let games = json["games"] as? [[String: Any]]
+              let email = json["email"] as? String
         else {
-            print("User unable to decode user")
+            print("User unable to decode user \(json)")
             return nil
         }
         
@@ -121,11 +121,13 @@ class User: Identifiable, Codable, ObservableObject {
         self.games = []
         
         //Verify all the games are legit
+        /*
         for game in games {
             if let g = Game(game: game) {
                 self.games.append(g)
             }
         }
+         */
     }
     //Used for initializing player retrieved from database
     //TODO: See if there are any optional parameters, delete this duplicated code
@@ -174,7 +176,9 @@ func available_username(username: String) async -> Bool {
 }
 
 //This will try to add a user to the database
-func add_user(user_data: inout Dictionary<String, String>) -> Bool {
+//If successfull it also saves the user data locally
+//TODO: Work with custom encoding to simplify all this Dictionary stuff
+func add_user(user_data: inout Dictionary<String, Any>) -> Bool {
     var ret: Bool = true
     var ref: DocumentReference? = nil
     ref = db.collection("users").addDocument(data: user_data) { err in
@@ -185,8 +189,8 @@ func add_user(user_data: inout Dictionary<String, String>) -> Bool {
     }
     if(ret) {
         print("Document added with id \(ref!.documentID)")
-        user_data["doc_id"] = ref!.documentID
-        if (save_user_locally(data: user_data)) {
+        user_data.removeValue(forKey: "games")
+        if (save_user_locally(doc_id: ref!.documentID, data: user_data)) {
             print("Successfully created user.json file")
         }else {
             print("Failed to create user.json file")
@@ -196,6 +200,7 @@ func add_user(user_data: inout Dictionary<String, String>) -> Bool {
 }
 
 //A wrapper for save_user_locally for when a user is signing into their account
+//TODO: Custom object in firestore (add data to firestore) you can get rid of this
 func save_user_locally(doc_id: String, data: Dictionary<String, Any>) -> Bool {
     var new_data: Dictionary<String, String> = [:]
     guard let username = data["username"] as? String else {
@@ -237,77 +242,39 @@ func save_user_locally(data: Dictionary<String, String>) -> Bool {
         print("Error encoding user dict to json \(error)")
         return false
     }
-    print("type: \(type(of: data_json))")
-    print("Save this: " + String(data: data_json, encoding: .utf8)!)
     
-    //Get file location
-    var file: URL
-    do {
-        file = try FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("user.json", conformingTo: .json)
-    } catch {
-        print("Unable to create path in documents for user.json \(error)")
-        return false
-    }
-    
-    do {
-        try data_json.write(to: file)
-    } catch {
-        print("User write failed \(error)")
-        return false
-    }
-    
-    return true
+    return write_json(filename: "user.json", data: data_json)
 }
 
 //This is the owner of the device
 //This retrives their account settings
-func get_self() -> User? {
-    //Get filepath
-    var file: URL
-    do {
-        file = try FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory, in: FileManager.SearchPathDomainMask.userDomainMask, appropriateFor: nil, create: false).appendingPathComponent("user.json", conformingTo: .json)
-    } catch {
-        print("Unable to create path in documents for user.json \(error)")
-        return nil
+func get_self() -> User {
+    var user: User
+    var games: [Game] = []
+    if let user_data = read_json(filename: "user.json") {
+        if (user_data as? [String: Any] == nil) {
+            user = User()
+            print("Data read from user.json not acceptable")
+        } else {
+            user = User(json: user_data as! [String: Any]) ?? User()
+        }
+    } else {
+        user = User()
     }
-    
-    //Create a file descriptor
-    var file_handle: FileHandle
-    do {
-        file_handle = try FileHandle(forReadingFrom: file)
-    } catch let error as NSError {
-        print("Unable to create FileHandle for \(file.absoluteString) \(error)")
-        return nil;
+    if let game_data = read_json(filename: "games.json") {
+        if (game_data as? [[String: Any]] == nil) {
+            print("Data read from games.json not acceptable")
+        } else {
+            //game_data = game_data as! [[String: Any]]
+            for game in games as! [[String: Any]] {
+                if let g = Game(game: game) {
+                    games.append(g)
+                }
+            }
+        }
     }
-    
-    //Read in bytes from file
-    var data: Data?
-    do {
-        data = try file_handle.readToEnd()
-    } catch {
-        print("Unable to read categories.txt \(error)")
-        return nil;
-    }
-    
-    if(data == nil) {
-        print("\(file) Filehandler returned nil")
-        return nil
-    }
-    
-    var json_data: Any
-    do {
-        json_data = try JSONSerialization.jsonObject(with: data!)
-    } catch {
-        print("Unable to parse JSON \(file.absoluteString) \(error)")
-        return nil
-    }
-
-    if (json_data as? [String: Any] == nil) {
-        print("Data read from file not acceptable")
-        return nil
-    }
-    
-    return User(json: json_data as! [String: Any])
+    user.games = games
+    return user
 }
 
 //Check the database for a username
@@ -325,28 +292,11 @@ func get_user(username: String) async -> User? {
     } catch {
         print("get_user() \(error)")
     }
-        /*
-        .getDocuments() { (querySnapshot, err) in
-            if let err = err {
-                print("Error getting documents \(err)")
-                user = nil
-            } else {
-                if (querySnapshot!.documents.isEmpty) {
-                    user = nil
-                } else {
-                    let doc = querySnapshot!.documents[0]
-                    print("Read user w/ id \(doc.documentID) and data \(doc.data())")
-                    user = User(doc_id: doc.documentID, data: doc.data())
-                    print("player: \(String(describing: user))")
-                }
-                
-            }
-        }
-         */
     print("user: \(String(describing: user))")
     return user
 }
 
+//TODO: handle data not saving
 func sign_in(_ username: String, _ password: String) async -> Bool {
     do {
         let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).whereField("password", isEqualTo: password).getDocuments()
@@ -355,7 +305,11 @@ func sign_in(_ username: String, _ password: String) async -> Bool {
         }
         let doc = querySnapshot.documents[0]
         if(save_user_locally(doc_id: doc.documentID, data: doc.data())) {
+            device_owner = User(doc_id: doc.documentID, data: doc.data()) ?? User()
             print("Successfully saved user data!")
+        }
+        if(save_games_locally(data: doc.data())) {
+            print("Successfully saved game data!")
         }
         return true
     } catch {

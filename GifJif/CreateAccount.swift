@@ -82,12 +82,13 @@ struct CreateAccount: View {
                 }
                 
                 Button(action: {
-                    var dict: [String: String] = [
+                    var dict: [String: Any] = [
                             "username": username,
                             "password": password,
                             "first_name": first_name,
                             "last_name": last_name,
-                            "email": email
+                            "email": email,
+                            "games": []
                         ]
                     if(add_user(user_data: &dict)) {
                         //read_user_file()

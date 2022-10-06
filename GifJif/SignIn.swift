@@ -14,7 +14,6 @@ struct SignIn: View {
     @State private var valid_account: Bool = true
     @State private var loading: Bool = false
     
-    
     var body: some View {
         VStack {
             Text("Sign in").font(.title)

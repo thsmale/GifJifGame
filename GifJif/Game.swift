@@ -53,6 +53,7 @@
 
 import Foundation
 import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 let db = Firestore.firestore()
 
@@ -63,6 +64,15 @@ struct Game: Codable, Identifiable {
     var player_usernames: [String] //All the usernames
     var host: String
     var category: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case doc_id
+        case name
+        case player_usernames
+        case host
+        case category
+    }
 }
 
 //Initialize a game from user.json file stored in documents
@@ -93,35 +103,70 @@ extension Game {
     }
 }
 
+//Creates a game in the database
+//Adds it to list of games for user in database
+//Also saves it locally
 func create_game(game: inout Game) -> Bool {
-    var game_json: Data
+    //Upload to games collection
+    let ref = db.collection("games").document()
     do {
-        game_json = try JSONEncoder().encode(game)
+        try ref.setData(from: game)
+        game.doc_id = ref.documentID
+        device_owner.games.append(game)
+        //Upload doc_id to user data stored in cloud
+        if(device_owner.doc_id != "") {
+            db.collection("users").document(device_owner.doc_id).updateData([
+                "games": FieldValue.arrayUnion([ref.documentID])
+            ])
+        }
+        //Save game data locally
+        if(!write_games(games: device_owner.games)) {
+            print("Failed to save games locally")
+        }
+        return true
+    } catch let error {
+        print("Error writing game to firestore \(error)")
+        return false
+    }
+}
+
+//Every time a game is created the data is updated by rewriting it to disc
+func write_games(games: [Game]) -> Bool {
+    var data_json: Data
+    do {
+        data_json = try JSONEncoder().encode(games)
     } catch {
-        print("Unable to convert game to json")
+        print("Failed to encode games \(games) \(error)")
         return false
     }
-    let game_str = String(data: game_json, encoding: .utf8) ?? ""
-    if(game_str == "") {
-        print("Failed to convert type Data to string")
+    print("Save this: " + String(data: data_json, encoding: .utf8)!)
+    return write_json(filename: "games.json", data: data_json)
+}
+
+//After a user signs in, this saves the data to the device locally
+//TODO: Do not over write already saved data
+func save_games_locally(data: [String: Any]) -> Bool {
+    guard let game_doc_ids = data["games"] as? [String] else {
+        print("Could not find games array from \(data)")
         return false
     }
-    var ret: Bool = true
-    var ref: DocumentReference? = nil
-    ref = db.collection("games").addDocument(data: ["game": game_str]) { err in
-        if let err = err {
-            print("Error adding document: \(err)")
-            ret = false
-        } else {
-            print("Document added with id \(ref!.documentID)")
+    var games: [Game] = []
+    for doc_id in game_doc_ids {
+        if (doc_id.isEmpty) {
+            continue
+        }
+        let doc_ref = db.collection("games").document(doc_id)
+        doc_ref.getDocument(as: Game.self) { result in
+            switch result {
+            case .success(let game):
+                games.append(game)
+            case .failure(let error):
+                print("Error decoding game from database \(error)")
+            }
         }
     }
-    if(ret) {
-        game.doc_id = ref!.documentID
-        device_owner.games.append(game)
-        print(device_owner.games)
-    }
-    return ret
+    device_owner.games = games
+    return write_games(games: games)
 }
 
 struct Category: Identifiable, Hashable {

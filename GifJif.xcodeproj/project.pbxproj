@@ -21,6 +21,8 @@
 		C9381A7128E2CB6600058060 /* ViewGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7028E2CB6600058060 /* ViewGames.swift */; };
 		C9381A7328E2E66600058060 /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7228E2E66600058060 /* SignIn.swift */; };
 		C9381A7528E43CBB00058060 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7428E43CBB00058060 /* Profile.swift */; };
+		C9381A7728ED448D00058060 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7628ED448C00058060 /* Model.swift */; };
+		C9381A7A28ED63A400058060 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C9381A7928ED63A400058060 /* FirebaseFirestoreSwift */; };
 		C94A744A28D7B79E001CC202 /* categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94A744928D7B79E001CC202 /* categories.txt */; };
 		C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744B28D83E58001CC202 /* CreateAccount.swift */; };
 		C94A744E28D8438B001CC202 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744D28D8438B001CC202 /* User.swift */; };
@@ -64,6 +66,7 @@
 		C9381A7028E2CB6600058060 /* ViewGames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewGames.swift; sourceTree = "<group>"; };
 		C9381A7228E2E66600058060 /* SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
 		C9381A7428E43CBB00058060 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		C9381A7628ED448C00058060 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		C94A744928D7B79E001CC202 /* categories.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = categories.txt; sourceTree = "<group>"; };
 		C94A744B28D83E58001CC202 /* CreateAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccount.swift; sourceTree = "<group>"; };
 		C94A744D28D8438B001CC202 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -87,6 +90,7 @@
 				C9381A6F28E170E000058060 /* GiphyUISDK in Frameworks */,
 				C9381A6A28E1706700058060 /* FirebaseAnalytics in Frameworks */,
 				C9381A6C28E1706700058060 /* FirebaseFirestore in Frameworks */,
+				C9381A7A28ED63A400058060 /* FirebaseFirestoreSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,6 +111,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C9381A7828ED63A400058060 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C973ACF528D59B5A006D7A45 = {
 			isa = PBXGroup;
 			children = (
@@ -114,6 +125,7 @@
 				C973AD1128D59B5D006D7A45 /* GifJifTests */,
 				C973AD1B28D59B5D006D7A45 /* GifJifUITests */,
 				C973ACFF28D59B5A006D7A45 /* Products */,
+				C9381A7828ED63A400058060 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -135,7 +147,6 @@
 				C9381A5328DAD55700058060 /* CreateGame.swift */,
 				C94A744B28D83E58001CC202 /* CreateAccount.swift */,
 				C9381A7228E2E66600058060 /* SignIn.swift */,
-				C9381A5728DC2FD000058060 /* Game.swift */,
 				C9381A7028E2CB6600058060 /* ViewGames.swift */,
 				C9381A7428E43CBB00058060 /* Profile.swift */,
 				C9381A6628E16BBC00058060 /* Giphy.swift */,
@@ -145,7 +156,9 @@
 				C9381A6128DEE59B00058060 /* Camera.swift */,
 				C9381A5F28DECBCD00058060 /* ImagePicker.swift */,
 				C9381A6328DEF15800058060 /* Safari.swift */,
+				C9381A5728DC2FD000058060 /* Game.swift */,
 				C94A744D28D8438B001CC202 /* User.swift */,
+				C9381A7628ED448C00058060 /* Model.swift */,
 				C973AD0528D59B5D006D7A45 /* Assets.xcassets */,
 				C973AD0728D59B5D006D7A45 /* Preview Content */,
 			);
@@ -197,6 +210,7 @@
 				C9381A6928E1706700058060 /* FirebaseAnalytics */,
 				C9381A6B28E1706700058060 /* FirebaseFirestore */,
 				C9381A6E28E170E000058060 /* GiphyUISDK */,
+				C9381A7928ED63A400058060 /* FirebaseFirestoreSwift */,
 			);
 			productName = GifJif;
 			productReference = C973ACFE28D59B5A006D7A45 /* GifJif.app */;
@@ -320,6 +334,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9381A7728ED448D00058060 /* Model.swift in Sources */,
 				C9381A5628DC2F7400058060 /* PlayGame.swift in Sources */,
 				C9381A7328E2E66600058060 /* SignIn.swift in Sources */,
 				C9381A5828DC2FD000058060 /* Game.swift in Sources */,
@@ -691,6 +706,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C9381A6D28E170E000058060 /* XCRemoteSwiftPackageReference "giphy-ios-sdk" */;
 			productName = GiphyUISDK;
+		};
+		C9381A7928ED63A400058060 /* FirebaseFirestoreSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C9381A6828E1706700058060 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestoreSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
