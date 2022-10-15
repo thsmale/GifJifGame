@@ -23,7 +23,7 @@ struct GifJifApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ViewGames()
+            Home()
         }
     }
 }

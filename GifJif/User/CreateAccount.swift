@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CreateAccount: View {
+    @ObservedObject var player: Player
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var password_confirmation: String = ""
@@ -82,15 +83,18 @@ struct CreateAccount: View {
                 }
                 
                 Button(action: {
-                    var dict: [String: Any] = [
-                            "username": username,
-                            "password": password,
-                            "first_name": first_name,
-                            "last_name": last_name,
-                            "email": email,
-                            "games": []
-                        ]
-                    if(add_user(user_data: &dict)) {
+                    var user = User(
+                        id: UUID(),
+                        doc_id: "",
+                        username: username,
+                        password: password,
+                        first_name: first_name,
+                        last_name: last_name,
+                        email: email
+                    )
+                    player.user = user
+                        
+                    if(player.user.create_user()) {
                         //read_user_file()
                     }else {
                         show_error = true
@@ -116,8 +120,3 @@ struct CreateAccount: View {
 
 
 
-struct CreateAccount_Previews: PreviewProvider {
-    static var previews: some View {
-        CreateAccount()
-    }
-}

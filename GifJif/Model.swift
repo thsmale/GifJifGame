@@ -11,6 +11,22 @@
  */
 import Foundation
 
+
+class Player: ObservableObject {
+    @Published var user: User
+    @Published var games: [Game]
+    
+    init() {
+        user = read_user()
+        games = read_games()
+    }
+    
+    func sign_out() {
+        user = User()
+        games = []
+    }
+}
+
 //For writing user data to the Documents directory
 func write_json(filename: String, data: Data) -> Bool {
     //Get file location
@@ -70,6 +86,26 @@ func read_json(filename: String) -> Any? {
         return nil
     }
     return json_data
+}
 
-    
+//TODO: handle data not saving
+func sign_in(_ username: String, _ password: String) async -> Bool {
+    do {
+        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).whereField("password", isEqualTo: password).getDocuments()
+        if (querySnapshot.documents.isEmpty) {
+            return false
+        }
+        let doc = querySnapshot.documents[0]
+        if(save_user_locally(doc_id: doc.documentID, data: doc.data())) {
+            //device_owner = User(doc_id: doc.documentID, data: doc.data()) ?? User()
+            print("Successfully saved user data!")
+        }
+        if(save_games_locally(data: doc.data())) {
+            print("Successfully saved game data!")
+        }
+        return true
+    } catch {
+        print("get_user() \(error)")
+        return false
+    }
 }

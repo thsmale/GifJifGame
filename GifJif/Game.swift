@@ -61,10 +61,12 @@ struct Game: Codable, Identifiable {
     var id = UUID()
     var doc_id: String = ""
     var name: String
-    var player_usernames: [String] //All the usernames
+    var player_usernames: [String] //All the usernames should probably be docid
     var host: String
-    var category: String
+    var topic: String
+    var time: Int
     
+    /*
     enum CodingKeys: String, CodingKey {
         case id
         case doc_id
@@ -73,6 +75,7 @@ struct Game: Codable, Identifiable {
         case host
         case category
     }
+     */
 }
 
 //Initialize a game from user.json file stored in documents
@@ -82,11 +85,13 @@ extension Game {
               let name = game["name"] as? String,
               let player_usernames = game["player_usernames"] as? [Any],
               let host = game["host"] as? String,
-              let category = game["category"] as? String
+              let topic = game["topic"] as? String,
+              let time = game["time"] as? Int
         else{
             print("Game unable to decode data \(game)")
             return nil
         }
+        
         for player in player_usernames {
             guard player is String
             else{
@@ -99,7 +104,8 @@ extension Game {
         self.name = name
         self.player_usernames = player_usernames as! [String]
         self.host = host
-        self.category = category
+        self.topic = topic
+        self.time = time
     }
 }
 
@@ -112,17 +118,7 @@ func create_game(game: inout Game) -> Bool {
     do {
         try ref.setData(from: game)
         game.doc_id = ref.documentID
-        device_owner.games.append(game)
-        //Upload doc_id to user data stored in cloud
-        if(device_owner.doc_id != "") {
-            db.collection("users").document(device_owner.doc_id).updateData([
-                "games": FieldValue.arrayUnion([ref.documentID])
-            ])
-        }
-        //Save game data locally
-        if(!write_games(games: device_owner.games)) {
-            print("Failed to save games locally")
-        }
+        print("Game \(game.name) successfully added to database")
         return true
     } catch let error {
         print("Error writing game to firestore \(error)")
@@ -131,7 +127,9 @@ func create_game(game: inout Game) -> Bool {
 }
 
 //Every time a game is created the data is updated by rewriting it to disc
+//TODO: Append to file instead of rewriting it
 func write_games(games: [Game]) -> Bool {
+    print("ENCODING: \(games)")
     var data_json: Data
     do {
         data_json = try JSONEncoder().encode(games)
@@ -139,8 +137,28 @@ func write_games(games: [Game]) -> Bool {
         print("Failed to encode games \(games) \(error)")
         return false
     }
-    print("Save this: " + String(data: data_json, encoding: .utf8)!)
     return write_json(filename: "games.json", data: data_json)
+}
+
+//Reads the local games saved to the device
+func read_games() -> [Game] {
+    var games: [Game] = []
+    var game_data = read_json(filename: "games.json")
+    if (game_data == nil) {
+        print("received nil from read_json games.json")
+        return games
+    }
+    if (game_data as? [[String: Any]] == nil) {
+        print("Data read from games.json not able to be casted")
+        return games
+    }
+    for game in game_data as! [[String: Any]] {
+        if let g = Game(game: game) {
+            games.append(g)
+        }
+        
+    }
+    return games
 }
 
 //After a user signs in, this saves the data to the device locally
@@ -165,41 +183,5 @@ func save_games_locally(data: [String: Any]) -> Bool {
             }
         }
     }
-    device_owner.games = games
     return write_games(games: games)
 }
-
-struct Category: Identifiable, Hashable {
-    var value: String = ""
-    let id = UUID()
-}
-
-func read_categories() -> [Category] {
-    let filepath = Bundle.main.resourcePath! + "/categories.txt"
-    let file_handler = FileHandle(forReadingAtPath: filepath) ?? nil
-    if(file_handler == nil) {
-        print("Unable to create FileHandle for categories.txt")
-        return [Category(value: "Failed to load categories")]
-    }
-    var categories: [Category] = []
-    do {
-        let data: Data = try file_handler!.readToEnd() ?? Data()
-        if(data.isEmpty == true) {
-            print("categories.txt readToEnd() failed")
-            return [Category(value: "Failed to load categories")]
-        }
-        let category_values = String(decoding: data, as: UTF8.self)
-            .split(separator: "\n")
-        for category_value in category_values {
-            var category: Category = Category()
-            category.value = String(category_value)
-            categories.append(category)
-        }
-    } catch {
-        print("Unable to read categories.txt")
-        return [Category(value: "Failed to load categories")]
-    }
-    return categories
-}
-
-

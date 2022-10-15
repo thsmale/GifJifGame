@@ -10,18 +10,31 @@ import SwiftUI
 //For now force to read device_owner but in the future do not allow user to open this view if they do not have an account
 //Or allow user to create game w/out account but change structure to handle that
 struct CreateGame: View {
+    @ObservedObject var player: Player
     @State private var group_name: String = ""
     @State private var username: String = ""
-    @State private var players: [User] = [device_owner]
+    @State private var players: [Username] = []
+    @State private var host_id: UUID = UUID()
+    @State private var topic: String = ""
+    @State private var mode: String = ""
+    @State private var time: Int = 60
     @State private var category: String = ""
-    @State private var host_id = device_owner.id 
     @State private var category_id: UUID = UUID()
     @State private var ret: Bool = true
     @State private var invalid_username = false
     
     @Environment(\.presentationMode) var presentationMode
-
-    private var categories: [Category] = read_categories()
+    
+    init(player: Player) {
+        self.player = player
+        players.append(Username(username: player.user.username))
+        host_id = player.user.id
+    }
+    
+    struct Username: Identifiable {
+        let id = UUID()
+        var username: String
+    }
 
     var body: some View {
         NavigationView {
@@ -36,13 +49,13 @@ struct CreateGame: View {
                     })
                         .onSubmit {
                             Task {
-                                if let user: User = await get_user(username: username) {
-                                    players.append(user)
+                                invalid_username = await !available_username(username: username)
+                                if(!invalid_username) {
+                                    players.append(Username(username: username))
                                     invalid_username = false
-                                } else {
-                                    invalid_username = true
                                 }
                             }
+                             
                         }
                     if(invalid_username) {
                         Text("User does not exist")
@@ -51,6 +64,7 @@ struct CreateGame: View {
                     List(players) {
                         Text($0.username)
                     }
+                     
                 }
                 
                 Section(header: Text("Game settings")) {
@@ -60,11 +74,11 @@ struct CreateGame: View {
                         }
                     }
                     
-                    List {
-                        Picker("Select category", selection: $category_id) {
-                            ForEach(categories) { category in
-                                Text(category.value)
-                            }
+                    TextField("Topic", text: $topic)
+                    TextField("Mode", text: $mode).disabled(true)
+                    Picker("Time", selection: $time) {
+                        ForEach(0 ..< 61) {
+                            Text("\($0)")
                         }
                     }
                 }
@@ -75,7 +89,6 @@ struct CreateGame: View {
                      */
                     var player_usernames: [String] = []
                     var host_username: String = ""
-                    var category_value: String = ""
                     for player in players {
                         player_usernames.append(player.username)
                     }
@@ -84,13 +97,20 @@ struct CreateGame: View {
                     }) {
                         host_username = players[index].username
                     }
-                    if let index = categories.firstIndex(where: {
-                        $0.id == category_id
-                    })  {
-                        category_value = categories[index].value
-                    }
-                    var game = Game(name: group_name, player_usernames: player_usernames, host: host_username, category: category_value)
+                    //Save game to database
+                    //Add to model
+                    //TODO: Save locally
+                    //Add to game_doc_id user in database
+                    var game = Game(name: group_name,
+                                    player_usernames: player_usernames,
+                                    host: host_username,
+                                    topic: topic,
+                                    time: time)
                     if (create_game(game: &game)) {
+                        player.games.append(game)
+                        if (write_games(games: player.games)) {
+                            print("Successfully saved games locally!")
+                        }
                         self.presentationMode.wrappedValue.dismiss()
                         return true
                     }
@@ -110,12 +130,6 @@ struct CreateGame: View {
         }
         
         
-    }
-}
-
-struct CreateGame_Previews: PreviewProvider {
-    static var previews: some View {
-        CreateGame()
     }
 }
 

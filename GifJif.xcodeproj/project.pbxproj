@@ -7,26 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C9381A5428DAD55700058060 /* CreateGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5328DAD55700058060 /* CreateGame.swift */; };
-		C9381A5628DC2F7400058060 /* PlayGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5528DC2F7400058060 /* PlayGame.swift */; };
-		C9381A5828DC2FD000058060 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5728DC2FD000058060 /* Game.swift */; };
-		C9381A5C28DD7E9300058060 /* GifSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5B28DD7E9300058060 /* GifSearch.swift */; };
-		C9381A6028DECBCD00058060 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A5F28DECBCD00058060 /* ImagePicker.swift */; };
-		C9381A6228DEE59B00058060 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A6128DEE59B00058060 /* Camera.swift */; };
-		C9381A6428DEF15800058060 /* Safari.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A6328DEF15800058060 /* Safari.swift */; };
-		C9381A6728E16BBC00058060 /* Giphy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A6628E16BBC00058060 /* Giphy.swift */; };
 		C9381A6A28E1706700058060 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C9381A6928E1706700058060 /* FirebaseAnalytics */; };
 		C9381A6C28E1706700058060 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = C9381A6B28E1706700058060 /* FirebaseFirestore */; };
 		C9381A6F28E170E000058060 /* GiphyUISDK in Frameworks */ = {isa = PBXBuildFile; productRef = C9381A6E28E170E000058060 /* GiphyUISDK */; };
-		C9381A7128E2CB6600058060 /* ViewGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7028E2CB6600058060 /* ViewGames.swift */; };
-		C9381A7328E2E66600058060 /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7228E2E66600058060 /* SignIn.swift */; };
-		C9381A7528E43CBB00058060 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7428E43CBB00058060 /* Profile.swift */; };
-		C9381A7728ED448D00058060 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7628ED448C00058060 /* Model.swift */; };
 		C9381A7A28ED63A400058060 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C9381A7928ED63A400058060 /* FirebaseFirestoreSwift */; };
-		C94A744A28D7B79E001CC202 /* categories.txt in Resources */ = {isa = PBXBuildFile; fileRef = C94A744928D7B79E001CC202 /* categories.txt */; };
-		C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744B28D83E58001CC202 /* CreateAccount.swift */; };
-		C94A744E28D8438B001CC202 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94A744D28D8438B001CC202 /* User.swift */; };
-		C973AD0228D59B5A006D7A45 /* GifJifApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973AD0128D59B5A006D7A45 /* GifJifApp.swift */; };
+		C9381A7C28F3CA1E00058060 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9381A7B28F3CA1E00058060 /* Home.swift */; };
+		C943EF6828F6909F000D220C /* GifSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF6128F6909F000D220C /* GifSearch.swift */; };
+		C943EF6928F6909F000D220C /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF6228F6909F000D220C /* Camera.swift */; };
+		C943EF6A28F6909F000D220C /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF6328F6909F000D220C /* ImagePicker.swift */; };
+		C943EF6B28F690A0000D220C /* CreateGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF6428F6909F000D220C /* CreateGame.swift */; };
+		C943EF6C28F690A0000D220C /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF6528F6909F000D220C /* Game.swift */; };
+		C943EF6D28F690A0000D220C /* Safari.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF6628F6909F000D220C /* Safari.swift */; };
+		C943EF6E28F690A0000D220C /* Giphy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF6728F6909F000D220C /* Giphy.swift */; };
+		C943EF7428F690DB000D220C /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7028F690DA000D220C /* SignIn.swift */; };
+		C943EF7528F690DB000D220C /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7128F690DA000D220C /* Profile.swift */; };
+		C943EF7628F690DB000D220C /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7228F690DA000D220C /* CreateAccount.swift */; };
+		C943EF7728F690DB000D220C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7328F690DA000D220C /* User.swift */; };
+		C943EF7E28FA603D000D220C /* PlayGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7D28FA603C000D220C /* PlayGame.swift */; };
+		C9703D6928F6728400BC6FDC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9703D6728F6728400BC6FDC /* Model.swift */; };
+		C9703D6A28F6728400BC6FDC /* GifJifApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9703D6828F6728400BC6FDC /* GifJifApp.swift */; };
 		C973AD0628D59B5D006D7A45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973AD0528D59B5D006D7A45 /* Assets.xcassets */; };
 		C973AD0928D59B5D006D7A45 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973AD0828D59B5D006D7A45 /* Preview Assets.xcassets */; };
 		C973AD1328D59B5D006D7A45 /* GifJifTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C973AD1228D59B5D006D7A45 /* GifJifTests.swift */; };
@@ -55,23 +54,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C9381A5328DAD55700058060 /* CreateGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateGame.swift; sourceTree = "<group>"; };
-		C9381A5528DC2F7400058060 /* PlayGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayGame.swift; sourceTree = "<group>"; };
-		C9381A5728DC2FD000058060 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
-		C9381A5B28DD7E9300058060 /* GifSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifSearch.swift; sourceTree = "<group>"; };
-		C9381A5F28DECBCD00058060 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		C9381A6128DEE59B00058060 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
-		C9381A6328DEF15800058060 /* Safari.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Safari.swift; sourceTree = "<group>"; };
-		C9381A6628E16BBC00058060 /* Giphy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Giphy.swift; sourceTree = "<group>"; };
-		C9381A7028E2CB6600058060 /* ViewGames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewGames.swift; sourceTree = "<group>"; };
-		C9381A7228E2E66600058060 /* SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignIn.swift; sourceTree = "<group>"; };
-		C9381A7428E43CBB00058060 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
-		C9381A7628ED448C00058060 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
-		C94A744928D7B79E001CC202 /* categories.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = categories.txt; sourceTree = "<group>"; };
-		C94A744B28D83E58001CC202 /* CreateAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccount.swift; sourceTree = "<group>"; };
-		C94A744D28D8438B001CC202 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		C9381A7B28F3CA1E00058060 /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		C943EF6128F6909F000D220C /* GifSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GifSearch.swift; path = Game/GifSearch.swift; sourceTree = "<group>"; };
+		C943EF6228F6909F000D220C /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Camera.swift; path = Game/Camera.swift; sourceTree = "<group>"; };
+		C943EF6328F6909F000D220C /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ImagePicker.swift; path = Game/ImagePicker.swift; sourceTree = "<group>"; };
+		C943EF6428F6909F000D220C /* CreateGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateGame.swift; sourceTree = "<group>"; };
+		C943EF6528F6909F000D220C /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		C943EF6628F6909F000D220C /* Safari.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Safari.swift; path = Game/Safari.swift; sourceTree = "<group>"; };
+		C943EF6728F6909F000D220C /* Giphy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Giphy.swift; path = Game/Giphy.swift; sourceTree = "<group>"; };
+		C943EF7028F690DA000D220C /* SignIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignIn.swift; path = User/SignIn.swift; sourceTree = "<group>"; };
+		C943EF7128F690DA000D220C /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Profile.swift; path = User/Profile.swift; sourceTree = "<group>"; };
+		C943EF7228F690DA000D220C /* CreateAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateAccount.swift; path = User/CreateAccount.swift; sourceTree = "<group>"; };
+		C943EF7328F690DA000D220C /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = User/User.swift; sourceTree = "<group>"; };
+		C943EF7D28FA603C000D220C /* PlayGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayGame.swift; sourceTree = "<group>"; };
+		C9703D6728F6728400BC6FDC /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Model.swift; path = GifJif/Model.swift; sourceTree = SOURCE_ROOT; };
+		C9703D6828F6728400BC6FDC /* GifJifApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifJifApp.swift; sourceTree = "<group>"; };
 		C973ACFE28D59B5A006D7A45 /* GifJif.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GifJif.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C973AD0128D59B5A006D7A45 /* GifJifApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifJifApp.swift; sourceTree = "<group>"; };
 		C973AD0528D59B5D006D7A45 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C973AD0828D59B5D006D7A45 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C973AD0E28D59B5D006D7A45 /* GifJifTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GifJifTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,6 +116,29 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C943EF6F28F690BB000D220C /* Gamez */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Gamez;
+			sourceTree = "<group>";
+		};
+		C943EF7928F690F4000D220C /* Userz */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Userz;
+			path = "New Group2";
+			sourceTree = "<group>";
+		};
+		C943EF7A28F69118000D220C /* Other */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Other;
+			path = "New Group2";
+			sourceTree = "<group>";
+		};
 		C973ACF528D59B5A006D7A45 = {
 			isa = PBXGroup;
 			children = (
@@ -142,23 +163,25 @@
 		C973AD0028D59B5A006D7A45 /* GifJif */ = {
 			isa = PBXGroup;
 			children = (
-				C94A744928D7B79E001CC202 /* categories.txt */,
+				C943EF6F28F690BB000D220C /* Gamez */,
+				C943EF6528F6909F000D220C /* Game.swift */,
+				C943EF6428F6909F000D220C /* CreateGame.swift */,
+				C943EF7D28FA603C000D220C /* PlayGame.swift */,
+				C943EF6228F6909F000D220C /* Camera.swift */,
+				C943EF6128F6909F000D220C /* GifSearch.swift */,
+				C943EF6728F6909F000D220C /* Giphy.swift */,
+				C943EF6328F6909F000D220C /* ImagePicker.swift */,
+				C943EF6628F6909F000D220C /* Safari.swift */,
+				C943EF7928F690F4000D220C /* Userz */,
+				C943EF7228F690DA000D220C /* CreateAccount.swift */,
+				C943EF7128F690DA000D220C /* Profile.swift */,
+				C943EF7028F690DA000D220C /* SignIn.swift */,
+				C943EF7328F690DA000D220C /* User.swift */,
+				C943EF7A28F69118000D220C /* Other */,
+				C9703D6828F6728400BC6FDC /* GifJifApp.swift */,
+				C9703D6728F6728400BC6FDC /* Model.swift */,
+				C9381A7B28F3CA1E00058060 /* Home.swift */,
 				C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */,
-				C9381A5328DAD55700058060 /* CreateGame.swift */,
-				C94A744B28D83E58001CC202 /* CreateAccount.swift */,
-				C9381A7228E2E66600058060 /* SignIn.swift */,
-				C9381A7028E2CB6600058060 /* ViewGames.swift */,
-				C9381A7428E43CBB00058060 /* Profile.swift */,
-				C9381A6628E16BBC00058060 /* Giphy.swift */,
-				C973AD0128D59B5A006D7A45 /* GifJifApp.swift */,
-				C9381A5B28DD7E9300058060 /* GifSearch.swift */,
-				C9381A5528DC2F7400058060 /* PlayGame.swift */,
-				C9381A6128DEE59B00058060 /* Camera.swift */,
-				C9381A5F28DECBCD00058060 /* ImagePicker.swift */,
-				C9381A6328DEF15800058060 /* Safari.swift */,
-				C9381A5728DC2FD000058060 /* Game.swift */,
-				C94A744D28D8438B001CC202 /* User.swift */,
-				C9381A7628ED448C00058060 /* Model.swift */,
 				C973AD0528D59B5D006D7A45 /* Assets.xcassets */,
 				C973AD0728D59B5D006D7A45 /* Preview Content */,
 			);
@@ -306,7 +329,6 @@
 			files = (
 				C973AD0928D59B5D006D7A45 /* Preview Assets.xcassets in Resources */,
 				C973AD0628D59B5D006D7A45 /* Assets.xcassets in Resources */,
-				C94A744A28D7B79E001CC202 /* categories.txt in Resources */,
 				C973AD2C28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -334,21 +356,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9381A7728ED448D00058060 /* Model.swift in Sources */,
-				C9381A5628DC2F7400058060 /* PlayGame.swift in Sources */,
-				C9381A7328E2E66600058060 /* SignIn.swift in Sources */,
-				C9381A5828DC2FD000058060 /* Game.swift in Sources */,
-				C9381A7528E43CBB00058060 /* Profile.swift in Sources */,
-				C973AD0228D59B5A006D7A45 /* GifJifApp.swift in Sources */,
-				C9381A6728E16BBC00058060 /* Giphy.swift in Sources */,
-				C94A744E28D8438B001CC202 /* User.swift in Sources */,
-				C94A744C28D83E58001CC202 /* CreateAccount.swift in Sources */,
-				C9381A6028DECBCD00058060 /* ImagePicker.swift in Sources */,
-				C9381A5C28DD7E9300058060 /* GifSearch.swift in Sources */,
-				C9381A5428DAD55700058060 /* CreateGame.swift in Sources */,
-				C9381A6228DEE59B00058060 /* Camera.swift in Sources */,
-				C9381A7128E2CB6600058060 /* ViewGames.swift in Sources */,
-				C9381A6428DEF15800058060 /* Safari.swift in Sources */,
+				C9381A7C28F3CA1E00058060 /* Home.swift in Sources */,
+				C943EF7528F690DB000D220C /* Profile.swift in Sources */,
+				C943EF6928F6909F000D220C /* Camera.swift in Sources */,
+				C9703D6928F6728400BC6FDC /* Model.swift in Sources */,
+				C943EF7628F690DB000D220C /* CreateAccount.swift in Sources */,
+				C943EF7428F690DB000D220C /* SignIn.swift in Sources */,
+				C943EF7728F690DB000D220C /* User.swift in Sources */,
+				C943EF6B28F690A0000D220C /* CreateGame.swift in Sources */,
+				C943EF6A28F6909F000D220C /* ImagePicker.swift in Sources */,
+				C943EF6D28F690A0000D220C /* Safari.swift in Sources */,
+				C943EF6828F6909F000D220C /* GifSearch.swift in Sources */,
+				C9703D6A28F6728400BC6FDC /* GifJifApp.swift in Sources */,
+				C943EF6C28F690A0000D220C /* Game.swift in Sources */,
+				C943EF7E28FA603D000D220C /* PlayGame.swift in Sources */,
+				C943EF6E28F690A0000D220C /* Giphy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
