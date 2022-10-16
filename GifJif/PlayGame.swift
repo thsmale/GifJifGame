@@ -9,10 +9,15 @@ import SwiftUI
 import GiphyUISDK
 
 struct PlayGame: View {
-    //@State var player: Player
+    @State var player_one: PlayerOne
     @State var game: Game
     @State private var timer: Timer? = nil
-    
+    @State private var handpick_host: String = ""
+    @State private var handpick_topic: String = ""
+    @State private var winner: String = ""
+    @State private var response_disabled = false
+    @State private var submit_disabled = true
+    @State private var status_text = "Preview..."
     //Text
     @State private var show_text_field: Bool = false
     @State private var text_input: String = ""
@@ -54,17 +59,18 @@ struct PlayGame: View {
                         Text("Time: \(game.time) seconds")
                         Text("Host: \(game.host)")
                         NavigationLink("Players") {
-                            List(game.player_usernames, id: \.self) { username in
-                                Text(username)
+                            List(game.players) {
+                                Text($0.username)
                             }
                         }
+                        Text("Responses received: \(game.responses.count) / \(game.players.count-1)")
                     }
                 }
               //  Spacer()
            // }
             
             VStack {
-                Text("Preview...")
+                Text(status_text)
                 if (giphy_media != nil) {
                     ShowMedia(mediaView: $mediaView, media: $giphy_media)
                     //.frame(alignment: .center)
@@ -78,6 +84,7 @@ struct PlayGame: View {
             HStack (alignment: .bottom) {
                 Button(action: {
                     show_giphy.toggle()
+                    submit_disabled = false
                     if (timer == nil) {
                         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
                             game.time = game.time - 1
@@ -85,13 +92,22 @@ struct PlayGame: View {
                     }
                 }, label: {
                     Text("Respond")
-                })
+                }).disabled(response_disabled)
                 .buttonBorderShape(.roundedRectangle)
                 Spacer()
                 Button("Submit", action: {
-                    //submit_response(giphy_media!.id)
+                    print(giphy_media!.id)
+                    let response = Response(gif_id: giphy_media!.id, player: Player(doc_id: player_one.user.doc_id, username: player_one.user.username))
+                    game.responses.append(response)
+                    if (submit_response(game: game, response: response)) {
+                        response_disabled = true
+                        submit_disabled = true
+                        status_text = "Submission successful!!"
+                    } else {
+                        status_text = "Failed to submit response 😭"
+                    }
                 }).disabled({
-                    if(giphy_media == nil) {
+                    if(giphy_media == nil || submit_disabled == true) {
                         return true
                     }
                     return false
@@ -124,8 +140,27 @@ struct PlayGame: View {
     
 }
 
-struct HostView: View {
-    var body: some View {
-        Text("YOLO")
+extension PlayGame {
+    func HostView() -> some View {
+        handpick_host = game.host
+        handpick_topic = game.topic
+        return Form {
+            Section(header: Text("Host info")) {
+                TextField("Host", text: $handpick_host)
+                TextField("Topic", text: $handpick_topic)
+                if (game.responses.count <= 0) {
+                    Text("Responses received: \(game.responses.count) / \(game.players.count-1)")
+                } else {
+                    //Scroll View of Giphy UI
+                    Picker("Responses", selection: $winner) {
+                        List(game.responses) {
+                            Text($0.player.username)
+                        }
+                    }
+                }
+                Button("Submit", action: {})
+                Button("Start", action: {})
+            }
+        }
     }
 }

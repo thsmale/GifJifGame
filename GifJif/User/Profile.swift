@@ -9,15 +9,15 @@ import SwiftUI
 
 //TODO: Make all of this editable
 struct Profile: View {
-    @ObservedObject var player: Player
+    @ObservedObject var player_one: PlayerOne
     var body: some View {
         ZStack {
                 Form {
-                    Text("Username: \(player.user.username)")
-                    Text("Password: \(player.user.password)")
-                    Text("First name: \(player.user.first_name)")
-                    Text("Last name: \(player.user.last_name)")
-                    Text("Email: \(player.user.email)")
+                    Text("Username: \(player_one.user.username)")
+                    Text("Password: \(player_one.user.password)")
+                    Text("First name: \(player_one.user.first_name)")
+                    Text("Last name: \(player_one.user.last_name)")
+                    Text("Email: \(player_one.user.email)")
                 }
                 .navigationTitle("Edit Profile")
             }

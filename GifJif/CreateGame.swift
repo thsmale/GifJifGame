@@ -10,10 +10,10 @@ import SwiftUI
 //For now force to read device_owner but in the future do not allow user to open this view if they do not have an account
 //Or allow user to create game w/out account but change structure to handle that
 struct CreateGame: View {
-    @ObservedObject var player: Player
+    @ObservedObject var player_one: PlayerOne
     @State private var group_name: String = ""
     @State private var username: String = ""
-    @State private var players: [Username] = []
+    @State private var players: [Player] = []
     @State private var host_id: UUID = UUID()
     @State private var topic: String = ""
     @State private var mode: String = ""
@@ -24,17 +24,6 @@ struct CreateGame: View {
     @State private var invalid_username = false
     
     @Environment(\.presentationMode) var presentationMode
-    
-    init(player: Player) {
-        self.player = player
-        players.append(Username(username: player.user.username))
-        host_id = player.user.id
-    }
-    
-    struct Username: Identifiable {
-        let id = UUID()
-        var username: String
-    }
 
     var body: some View {
         NavigationView {
@@ -49,10 +38,11 @@ struct CreateGame: View {
                     })
                         .onSubmit {
                             Task {
-                                invalid_username = await !available_username(username: username)
-                                if(!invalid_username) {
-                                    players.append(Username(username: username))
+                                if let user = await get_user(username: username) {
+                                    players.append(Player(doc_id: user.doc_id, username: username))
                                     invalid_username = false
+                                } else {
+                                    invalid_username = true
                                 }
                             }
                              
@@ -102,13 +92,13 @@ struct CreateGame: View {
                     //TODO: Save locally
                     //Add to game_doc_id user in database
                     var game = Game(name: group_name,
-                                    player_usernames: player_usernames,
+                                    players: players,
                                     host: host_username,
                                     topic: topic,
                                     time: time)
                     if (create_game(game: &game)) {
-                        player.games.append(game)
-                        if (write_games(games: player.games)) {
+                        player_one.games.append(game)
+                        if (write_games(games: player_one.games)) {
                             print("Successfully saved games locally!")
                         }
                         self.presentationMode.wrappedValue.dismiss()

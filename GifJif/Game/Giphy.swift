@@ -69,16 +69,14 @@ struct ShowMedia: UIViewRepresentable {
         media_view.translatesAutoresizingMaskIntoConstraints = false
         media_view.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
         media_view.widthAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-        media_view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        media_view.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         media_view.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         media_view.contentMode = .scaleAspectFit
-        media_view.layer.cornerRadius = view.layer.cornerRadius
-        media_view.layer.masksToBounds = true
         return view
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {
-        var media_view = uiView.subviews[0] as! GPHMediaView
+        let media_view = uiView.subviews[0] as! GPHMediaView
         media_view.media = media!
         media_view.widthAnchor.constraint(equalTo: uiView.heightAnchor, multiplier: media!.aspectRatio).isActive = true
     }

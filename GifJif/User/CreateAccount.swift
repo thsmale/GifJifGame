@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CreateAccount: View {
-    @ObservedObject var player: Player
+    @ObservedObject var player_one: PlayerOne
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var password_confirmation: String = ""
@@ -51,7 +51,11 @@ struct CreateAccount: View {
                                 return
                             }
                             Task {
-                                valid_username = await available_username(username: username)
+                                if (await get_user(username: username)) != nil {
+                                    valid_username = true
+                                } else {
+                                    valid_username = false
+                                }
                             }
                         }
                     if(!valid_username && username_submitted) {
@@ -92,9 +96,9 @@ struct CreateAccount: View {
                         last_name: last_name,
                         email: email
                     )
-                    player.user = user
+                    player_one.user = user
                         
-                    if(player.user.create_user()) {
+                    if(player_one.user.create_user()) {
                         //read_user_file()
                     }else {
                         show_error = true

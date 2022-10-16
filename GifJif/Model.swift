@@ -12,7 +12,7 @@
 import Foundation
 
 
-class Player: ObservableObject {
+class PlayerOne: ObservableObject {
     @Published var user: User
     @Published var games: [Game]
     

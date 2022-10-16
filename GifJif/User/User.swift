@@ -85,21 +85,6 @@ extension User {
 }
 
 
-//TODO: return different error to user if issue with network than if username is taken
-func available_username(username: String) async -> Bool {
-    do {
-        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).getDocuments()
-        if (querySnapshot.documents.isEmpty) {
-            return true
-        }
-    } catch {
-        print("get_user() \(error)")
-    }
-    return false
-}
-
-
-
 //A wrapper for save_user_locally for when a user is signing into their account
 //TODO: Custom object in firestore (add data to firestore) you can get rid of this
 func save_user_locally(doc_id: String, data: Dictionary<String, Any>) -> Bool {

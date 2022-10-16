@@ -23,6 +23,7 @@
  * Add accolades like quickest responses
  * Add bots to play against
  * Add some incentive to the game. Prize money for winning the round
+ * Make official rules like any other game does, let users read them, also tells them how to play
  */
 
 /*
@@ -61,21 +62,40 @@ struct Game: Codable, Identifiable {
     var id = UUID()
     var doc_id: String = ""
     var name: String
-    var player_usernames: [String] //All the usernames should probably be docid
+    var players: [Player] = []
     var host: String
     var topic: String
     var time: Int
+    var responses: [Response] = []
+}
+
+struct Player: Codable, Identifiable {
+    var id = UUID()
+    let doc_id: String
+    let username: String
     
-    /*
-    enum CodingKeys: String, CodingKey {
-        case id
-        case doc_id
-        case name
-        case player_usernames
-        case host
-        case category
+    init?(player: [String: Any]) {
+        guard let doc_id = player["doc_id"] as? String,
+              let username = player["username"] as? String else {
+                print("Unable to decode athlete data\(player)")
+                return nil
+              }
+        
+        self.doc_id = doc_id
+        self.username = username
     }
-     */
+    
+    init(doc_id: String, username: String) {
+        self.doc_id = doc_id
+        self.username = username
+    }
+}
+
+//This is the content of when the user responds to the prompt
+struct Response: Codable, Identifiable {
+    var id = UUID()
+    var gif_id: String
+    var player: Player
 }
 
 //Initialize a game from user.json file stored in documents
@@ -83,7 +103,7 @@ extension Game {
     init?(game: [String: Any]) {
         guard let doc_id = game["doc_id"] as? String,
               let name = game["name"] as? String,
-              let player_usernames = game["player_usernames"] as? [Any],
+              let players = game["players"] as? [[String: Any]],
               let host = game["host"] as? String,
               let topic = game["topic"] as? String,
               let time = game["time"] as? Int
@@ -92,17 +112,13 @@ extension Game {
             return nil
         }
         
-        for player in player_usernames {
-            guard player is String
-            else{
-                print("Game unable to decode player_usernames in game \(player_usernames)")
-                return nil
-            }
-        }
-        
         self.doc_id = doc_id
         self.name = name
-        self.player_usernames = player_usernames as! [String]
+        for player in players {
+            if let athlete = Player(player: player) {
+                self.players.append(athlete)
+            }
+        }
         self.host = host
         self.topic = topic
         self.time = time
@@ -185,3 +201,15 @@ func save_games_locally(data: [String: Any]) -> Bool {
     }
     return write_games(games: games)
 }
+
+func submit_response(game: Game, response: Response) -> Bool {
+    let ref = db.collection("games").document(game.doc_id)
+    do {
+        try ref.setData(from: game)
+        return true
+    } catch {
+        print("Failed to update Game \(game.doc_id) with response")
+        return false
+    }
+}
+

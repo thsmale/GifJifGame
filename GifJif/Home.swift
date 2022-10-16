@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Home: View {
-    @StateObject var player = Player()
+    @StateObject var player_one = PlayerOne()
     
     var body: some View {
         NavigationView {
@@ -19,40 +19,42 @@ struct Home: View {
                 
                 Form {
                     Section(header: Text("Account")) {
-                        if (!player.user.username.isEmpty) {
-                            Text("Welcome " + player.user.username)
+                        if (!player_one.user.username.isEmpty) {
+                            Text("Welcome " + player_one.user.username)
                         }
-                        NavigationLink(destination: Profile(player: player)) {
+                        NavigationLink(destination: Profile(player_one: player_one)) {
                             Text("Profile")
                         }
-                        if(player.user.username.isEmpty) {
-                            NavigationLink(destination: CreateAccount(player: player)) {
+                        if(player_one.user.username.isEmpty) {
+                            NavigationLink(destination: CreateAccount(player_one: player_one)) {
                                 Text("Create account")
                             }
                             NavigationLink(destination: SignIn()) {
                                 Text("Sign in")
                             }
                         } else {
-                            Button(action: {player.sign_out()}) {
+                            Button(action: {player_one.sign_out()}) {
                                 Text("Sign out")
                             }
                         }
                     }
                     
+                    
                     Section(header: Text("My games")) {
-                        NavigationLink(destination: CreateGame(player: player)) {
+                        NavigationLink(destination: CreateGame(player_one: player_one)) {
                             Text("Create Game")
                         }
-                        if(player.games.isEmpty) {
+                        if(player_one.games.isEmpty) {
                             Text("You are in no games. Create a game or join a live game!")
                         } else {
-                            List(player.games) { game in
-                                NavigationLink(destination: PlayGame(game: game/*, player: player.user*/)) {
+                            List(player_one.games) { game in
+                                NavigationLink(destination: PlayGame(player_one: player_one, game: game)) {
                                     Text(game.name)
                                 }
                             }
                         }
                     }
+                     
                     
                     Section(header: Text("Invintations")) {
                         Text("List game's the player has been invited to join")
