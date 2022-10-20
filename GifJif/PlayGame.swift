@@ -35,6 +35,7 @@ struct PlayGame: View {
     @State private var giphy_media: GPHMedia? = nil
     @State private var mediaView = GPHMediaView()
     var view = UIView()
+    @State private var gif_responses: [GPHMedia?] = []
     //Safari
     @State private var safari: Bool = false
     
@@ -44,9 +45,6 @@ struct PlayGame: View {
     
     
     var body: some View {
-        //NavigationView {
-        //Game View
-        //ZStack {
         VStack {
             if (false) {
                 HostView()
@@ -69,12 +67,14 @@ struct PlayGame: View {
               //  Spacer()
            // }
             
+            if (submit_disabled && response_disabled) {
+                showResponses()
+            }
+            
             VStack {
                 Text(status_text)
                 if (giphy_media != nil) {
-                    ShowMedia(mediaView: $mediaView, media: $giphy_media)
-                    //.frame(alignment: .center)
-                    //.frame(alignment: .top)
+                    ShowMedia(media: $giphy_media)
                 }
                 
                 Spacer()
@@ -120,8 +120,8 @@ struct PlayGame: View {
                     Text("Task: \(game.topic)")
                     Text("Time: \(game.time) seconds")
                     if (giphy_media != nil) {
-                        ShowMedia(mediaView: $mediaView, media: $giphy_media)
-                            .frame(width: 90, height: 90, alignment: .center)
+                        ShowMedia(media: $giphy_media)
+                            //.frame(width: 90, height: 90, alignment: .center)
                     }
                     GiphyUI(url: $giphy, media: $giphy_media, media_view: $mediaView)
                 }
@@ -129,14 +129,6 @@ struct PlayGame: View {
             .navigationTitle(game.name)
         }
     }
-
-    
-    //}
-    //.frame(alignment: .top)
-    
-    
-    
-    //}
     
 }
 
@@ -163,4 +155,64 @@ extension PlayGame {
             }
         }
     }
+    
+    func get_media(gif_id: String, completion: @escaping (GPHMedia?) -> ()) {
+        GiphyCore.shared.gifByID(gif_id, completionHandler: { (response, error) in
+            print("RES: \(String(describing: response))")
+            print("Data: \(String(describing: response?.data))")
+            if let gif_media = response?.data {
+                print("BF Dispatch Queue")
+                DispatchQueue.main.sync {
+                    print("Media (dispatch queue): \(String(describing: gif_media))")
+                    completion(gif_media)
+                }
+            }
+            if (error != nil) {
+                print("Err getting gifByID \(String(describing: error)) for \(gif_id)")
+                completion(nil)
+            }
+        })
+    }
+    
+    
+    func showResponses() -> some View {
+        return ScrollView {
+                VStack {
+                    Text("Responses...")
+                    
+                    ForEach(game.responses) { response in
+                        Text(response.gif_id)
+                        Task {
+                            GiphyCore.shared.gifByID(response.gif_id, completionHandler: { (response, error) in
+                                //print("RES: \(String(describing: response))")
+                                //print("Data: \(String(describing: response?.data))")
+                                if let gif_media = response?.data {
+                                    //print("BF Dispatch Queue")
+                                    DispatchQueue.main.sync {
+                                        //print("Media (dispatch queue): \(String(describing: gif_media))")
+                                        ShowStaticMedia(media: gif_media)
+                                    }
+                                }
+                                if (error != nil) {
+                                    //print("Err getting gifByID \(String(describing: error)) for \(response.gif_id)")
+                                    Text("Failed to laod")
+                                }
+                            })
+                        }
+                        /*
+                        get_media(gif_id: response.gif_id, completion: { media in
+                            if (media != nil) {
+                                ShowStaticMedia(media: media)
+
+                            } else {
+                                Text("Failed to load")
+                            }
+                        })
+                         */
+
+                }
+            }
+        }
+    }
+     
 }
