@@ -15,35 +15,36 @@ struct SignIn: View {
     @State private var loading: Bool = false
     
     var body: some View {
-        VStack {
-            Text("Sign in").font(.title)
-            TextField("Username", text: $username)
-            SecureField("Password", text: $password)
-            Button("Sign in", action: {
-                if(username.isEmpty && password.isEmpty) {
-                    valid_input = false
-                    return
+            Form {
+                TextField("Username", text: $username)
+                SecureField("Password", text: $password)
+                Button("Sign in", action: {
+                    if(username.isEmpty && password.isEmpty) {
+                        valid_input = false
+                        return
+                    }
+                    valid_input = true
+                    Task {
+                        loading = true
+                        valid_account = await sign_in(username, password)
+                        loading = false
+                    }
+                })
+                if(loading) {
+                    ProgressView()
                 }
-                valid_input = true
-                Task {
-                    loading = true
-                    valid_account = await sign_in(username, password)
-                    loading = false
+                if(valid_input) {
+                    if(valid_account) {
+                        Text("Successfully signed in")
+                            .foregroundColor(.green)
+                    } else {
+                        Text("Invalid username or password")
+                            .foregroundColor(.red)
+                    }
                 }
-            })
-            if(loading) {
-                ProgressView()
             }
-            if(valid_input) {
-                if(valid_account) {
-                    Text("Successfully signed in")
-                        .foregroundColor(.green)
-                } else {
-                    Text("Invalid username or password")
-                        .foregroundColor(.red)
-                }
-            }
-        }
+            .navigationTitle("Sign in")
+
     }
 }
 

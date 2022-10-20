@@ -106,7 +106,7 @@ struct CreateGame: View {
                     }
                     return false
                 }()}) {
-                    Text("Add data to database")
+                    Text("Create Game")
                         .padding()
                 }
                 .alert("Server failed to create group", isPresented: Binding<Bool>(get: {!ret}, set: {ret = !$0})) {

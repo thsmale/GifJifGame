@@ -19,6 +19,7 @@ struct User: Identifiable, Codable {
     var first_name: String
     var last_name: String
     var email: String
+    var invintations: [String]
 }
 
 //Initializers for user
@@ -33,6 +34,7 @@ extension User {
         self.first_name = ""
         self.last_name = ""
         self.email = ""
+        self.invintations = []
     }
     //Used for initializing device owner from user.json file stored in documents
     init?(json: [String: Any]) {
@@ -42,7 +44,8 @@ extension User {
               let password = json["password"] as? String,
               let first_name = json["first_name"] as? String,
               let last_name = json["last_name"] as? String,
-              let email = json["email"] as? String
+              let email = json["email"] as? String,
+              let invintations = json["invintations"] as? [Any]
         else {
             print("User unable to decode user \(json)")
             return nil
@@ -55,6 +58,11 @@ extension User {
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.invintations = []
+        
+        for case let invintation as String in invintations {
+            self.invintations.append(invintation)
+        }
     }
 }
 

@@ -128,6 +128,7 @@ extension Game {
 //Creates a game in the database
 //Adds it to list of games for user in database
 //Also saves it locally
+//Adds to users invintations so they get alerted
 func create_game(game: inout Game) -> Bool {
     //Upload to games collection
     let ref = db.collection("games").document()
@@ -135,11 +136,20 @@ func create_game(game: inout Game) -> Bool {
         try ref.setData(from: game)
         game.doc_id = ref.documentID
         print("Game \(game.name) successfully added to database")
+        //Send invintations out
+        for player in game.players {
+            let user_ref = db.collection("users").document(player.doc_id)
+            user_ref.updateData([
+                "invintations": FieldValue.arrayUnion([ref.documentID])
+            ])
+        }
         return true
     } catch let error {
         print("Error writing game to firestore \(error)")
         return false
     }
+
+    
 }
 
 //Every time a game is created the data is updated by rewriting it to disc

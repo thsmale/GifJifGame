@@ -6,9 +6,28 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct Home: View {
     @StateObject var player_one = PlayerOne()
+    @State var invintations_ref: DocumentReference? = nil
+    
+    init() {
+        if (player_one.user.doc_id != "") {
+            invintations_ref = db.collection("users").document(player_one.user.doc_id)
+            invintations_ref?.addSnapshotListener { documentSnapshot, error in
+                    guard let document = documentSnapshot else {
+                        print("Error fetching document \(String(describing: error))")
+                        return
+                    }
+                    guard let data = document.data() else {
+                        print("Document data was empty")
+                        return
+                    }
+                    print("Data: \(data)")
+                }
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -70,6 +89,7 @@ struct Home: View {
         }
          
     }
+
 }
 
 struct Home_Previews: PreviewProvider {

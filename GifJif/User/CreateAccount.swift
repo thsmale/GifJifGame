@@ -51,7 +51,7 @@ struct CreateAccount: View {
                                 return
                             }
                             Task {
-                                if (await get_user(username: username)) != nil {
+                                if (await get_user(username: username)) == nil {
                                     valid_username = true
                                 } else {
                                     valid_username = false
@@ -87,14 +87,15 @@ struct CreateAccount: View {
                 }
                 
                 Button(action: {
-                    var user = User(
+                    let user = User(
                         id: UUID(),
                         doc_id: "",
                         username: username,
                         password: password,
                         first_name: first_name,
                         last_name: last_name,
-                        email: email
+                        email: email,
+                        invintations: []
                     )
                     player_one.user = user
                         

@@ -50,34 +50,39 @@ struct PlayGame: View {
                 HostView()
             }
 
-            //VStack {
-                Form {
-                    Section(header: Text("Game info")) {
-                        Text("Task: \(game.topic)")
-                        Text("Time: \(game.time) seconds")
-                        Text("Host: \(game.host)")
-                        NavigationLink("Players") {
-                            List(game.players) {
-                                Text($0.username)
-                            }
+            Form {
+                Section(header: Text("Game info")) {
+                    Text("Task: \(game.topic)")
+                    Text("Time: \(game.time) seconds")
+                    Text("Host: \(game.host)")
+                    NavigationLink("Players") {
+                        List(game.players) {
+                            Text($0.username)
                         }
-                        Text("Responses received: \(game.responses.count) / \(game.players.count-1)")
                     }
+                    Text("Responses received: \(game.responses.count) / \(game.players.count-1)")
                 }
-              //  Spacer()
-           // }
-            
-            if (submit_disabled && response_disabled) {
-                showResponses()
             }
-            
-            VStack {
-                Text(status_text)
-                if (giphy_media != nil) {
-                    ShowMedia(media: $giphy_media)
+
+            ScrollView {
+                VStack {
+                    if (submit_disabled && response_disabled) {
+                        Text("Responses...")
+                        //VStack() {
+                            ForEach(game.responses) { response in
+                                LoadGif(gif_id: response.gif_id)
+                                    .aspectRatio(contentMode: .fit)
+
+                            }
+                        //}
+                    }
+                        Text(status_text)
+                        if (giphy_media != nil) {
+                            ShowMedia(media: $giphy_media)
+                                .aspectRatio(contentMode: .fit)
+                        }
+                        Spacer()
                 }
-                
-                Spacer()
             }
             
 
@@ -150,69 +155,57 @@ extension PlayGame {
                         }
                     }
                 }
+                Button("Delete Game", action: {})
                 Button("Submit", action: {})
                 Button("Start", action: {})
             }
         }
     }
+}
+
+struct LoadGif: View {
+    @StateObject private var gif: IDtoGif
     
-    func get_media(gif_id: String, completion: @escaping (GPHMedia?) -> ()) {
-        GiphyCore.shared.gifByID(gif_id, completionHandler: { (response, error) in
-            print("RES: \(String(describing: response))")
-            print("Data: \(String(describing: response?.data))")
-            if let gif_media = response?.data {
-                print("BF Dispatch Queue")
-                DispatchQueue.main.sync {
-                    print("Media (dispatch queue): \(String(describing: gif_media))")
-                    completion(gif_media)
-                }
-            }
-            if (error != nil) {
-                print("Err getting gifByID \(String(describing: error)) for \(gif_id)")
-                completion(nil)
-            }
-        })
+    init (gif_id: String) {
+        _gif = StateObject(wrappedValue: IDtoGif(gif_id: gif_id))
     }
     
-    
-    func showResponses() -> some View {
-        return ScrollView {
-                VStack {
-                    Text("Responses...")
-                    
-                    ForEach(game.responses) { response in
-                        Text(response.gif_id)
-                        Task {
-                            GiphyCore.shared.gifByID(response.gif_id, completionHandler: { (response, error) in
-                                //print("RES: \(String(describing: response))")
-                                //print("Data: \(String(describing: response?.data))")
-                                if let gif_media = response?.data {
-                                    //print("BF Dispatch Queue")
-                                    DispatchQueue.main.sync {
-                                        //print("Media (dispatch queue): \(String(describing: gif_media))")
-                                        ShowStaticMedia(media: gif_media)
-                                    }
-                                }
-                                if (error != nil) {
-                                    //print("Err getting gifByID \(String(describing: error)) for \(response.gif_id)")
-                                    Text("Failed to laod")
-                                }
-                            })
-                        }
-                        /*
-                        get_media(gif_id: response.gif_id, completion: { media in
-                            if (media != nil) {
-                                ShowStaticMedia(media: media)
-
-                            } else {
-                                Text("Failed to load")
-                            }
-                        })
-                         */
-
-                }
+    var body: some View {
+        if (gif.loading) {
+            ProgressView()
+        } else {
+            if (gif.gif_media != nil) {
+                ShowStaticMedia(media: gif.gif_media!)
+            } else {
+                Image("froggy")
             }
         }
     }
-     
+    
+    private class IDtoGif: ObservableObject {
+        @Published var gif_media: GPHMedia? = nil
+        @Published var loading = true
+        
+        init (gif_id: String) {
+            print("init")
+            GiphyCore.shared.gifByID(gif_id, completionHandler: { (response, error) in
+                print("converting id to media")
+                //print("RES: \(String(describing: response))")
+                //print("Data: \(String(describing: response?.data))")
+                if let media = response?.data {
+                    //print("BF Dispatch Queue")
+                    DispatchQueue.main.sync { [weak self] in
+                        print("Media (dispatch queue): \(String(describing: media))")
+                        self?.gif_media = media
+                    }
+                }
+                if (error != nil) {
+                    print("Err getting gifByID \(String(describing: error)) for \(gif_id)")
+                }
+                DispatchQueue.main.sync { [weak self] in
+                    self?.loading = false
+                }
+            })
+        }
+    }
 }
