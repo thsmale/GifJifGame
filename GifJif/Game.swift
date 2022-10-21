@@ -128,7 +128,7 @@ extension Game {
 //Creates a game in the database
 //Adds it to list of games for user in database
 //Also saves it locally
-//Adds to users invintations so they get alerted
+//Adds to users invitations so they get alerted
 func create_game(game: inout Game) -> Bool {
     //Upload to games collection
     let ref = db.collection("games").document()
@@ -136,11 +136,11 @@ func create_game(game: inout Game) -> Bool {
         try ref.setData(from: game)
         game.doc_id = ref.documentID
         print("Game \(game.name) successfully added to database")
-        //Send invintations out
+        //Send invitations out
         for player in game.players {
             let user_ref = db.collection("users").document(player.doc_id)
             user_ref.updateData([
-                "invintations": FieldValue.arrayUnion([ref.documentID])
+                "invitations": FieldValue.arrayUnion([ref.documentID])
             ])
         }
         return true
@@ -169,7 +169,7 @@ func write_games(games: [Game]) -> Bool {
 //Reads the local games saved to the device
 func read_games() -> [Game] {
     var games: [Game] = []
-    var game_data = read_json(filename: "games.json")
+    let game_data = read_json(filename: "games.json")
     if (game_data == nil) {
         print("received nil from read_json games.json")
         return games
@@ -185,31 +185,6 @@ func read_games() -> [Game] {
         
     }
     return games
-}
-
-//After a user signs in, this saves the data to the device locally
-//TODO: Do not over write already saved data
-func save_games_locally(data: [String: Any]) -> Bool {
-    guard let game_doc_ids = data["games"] as? [String] else {
-        print("Could not find games array from \(data)")
-        return false
-    }
-    var games: [Game] = []
-    for doc_id in game_doc_ids {
-        if (doc_id.isEmpty) {
-            continue
-        }
-        let doc_ref = db.collection("games").document(doc_id)
-        doc_ref.getDocument(as: Game.self) { result in
-            switch result {
-            case .success(let game):
-                games.append(game)
-            case .failure(let error):
-                print("Error decoding game from database \(error)")
-            }
-        }
-    }
-    return write_games(games: games)
 }
 
 func submit_response(game: Game, response: Response) -> Bool {

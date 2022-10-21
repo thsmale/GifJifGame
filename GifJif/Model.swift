@@ -10,11 +10,13 @@
  Goal is to reduce the amount of repeated code
  */
 import Foundation
+import FirebaseFirestore
 
 
 class PlayerOne: ObservableObject {
     @Published var user: User
     @Published var games: [Game]
+    private var user_listeners: [DocumentSnapshot] = []
     
     init() {
         user = read_user()
@@ -24,6 +26,68 @@ class PlayerOne: ObservableObject {
     func sign_out() {
         user = User()
         games = []
+    }
+    
+    //After a user signs in, we use all the game_doc_ids to retrieve game data from the database
+    func load_games() {
+        print("Entering load_games")
+        for doc_id in user.game_doc_ids {
+            let doc_ref = db.collection("games").document(doc_id)
+            doc_ref.getDocument { (document, error) in
+                if let document = document, document.exists {
+                    if (document.data() == nil) {
+                        print("Doucment is empty \(String(describing: error))")
+                        return
+                    }
+                    if let game = Game(game: document.data()!) {
+                        self.games.append(game)
+                        print("Adding listener to \(game)")
+                        doc_ref.addSnapshotListener { documentSnapshot, error in
+                            guard let doc = documentSnapshot else {
+                              print("Error fetching document: \(error!)")
+                              return
+                            }
+                            guard let data = doc.data() else {
+                              print("Document data was empty.")
+                              return
+                            }
+                            if (error == nil) {
+                                print(data)
+                            } else {
+                                print("addSnapshotListener error \(String(describing: error))")
+                            }
+                        }
+                    }
+                }
+                if (error != nil) {
+                    print("Error getting game \(String(describing: error)) from \(doc_id)")
+                }
+            }
+        }
+        if (write_games(games: games)) {
+            print("Successfully saved games locally")
+        } else {
+            print("Failed to save games locally")
+        }
+    }
+    
+    func add_listeners() {
+        print("Adding listeners")
+        for doc_id in user.game_doc_ids {
+             db.collection("users").document(doc_id)
+                .addSnapshotListener { documentSnapshot, error in
+                    guard let document = documentSnapshot else {
+                        print("Err fetching document \(String(describing: error))")
+                        return
+                    }
+                    if (error == nil) {
+                        print(document.data())
+                        self.user_listeners.append(document)
+                    } else {
+                        print("add_listeners error \(String(describing: error))")
+                    }
+                }
+        }
     }
 }
 
@@ -88,24 +152,3 @@ func read_json(filename: String) -> Any? {
     return json_data
 }
 
-//TODO: handle data not saving
-func sign_in(_ username: String, _ password: String) async -> Bool {
-    do {
-        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).whereField("password", isEqualTo: password).getDocuments()
-        if (querySnapshot.documents.isEmpty) {
-            return false
-        }
-        let doc = querySnapshot.documents[0]
-        if(save_user_locally(doc_id: doc.documentID, data: doc.data())) {
-            //device_owner = User(doc_id: doc.documentID, data: doc.data()) ?? User()
-            print("Successfully saved user data!")
-        }
-        if(save_games_locally(data: doc.data())) {
-            print("Successfully saved game data!")
-        }
-        return true
-    } catch {
-        print("get_user() \(error)")
-        return false
-    }
-}

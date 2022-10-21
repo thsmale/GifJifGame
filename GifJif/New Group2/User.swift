@@ -19,7 +19,8 @@ struct User: Identifiable, Codable {
     var first_name: String
     var last_name: String
     var email: String
-    var invintations: [String]
+    var game_doc_ids: [String]
+    var invitations: [String]
 }
 
 //Initializers for user
@@ -34,7 +35,8 @@ extension User {
         self.first_name = ""
         self.last_name = ""
         self.email = ""
-        self.invintations = []
+        self.game_doc_ids = []
+        self.invitations = []
     }
     //Used for initializing device owner from user.json file stored in documents
     init?(json: [String: Any]) {
@@ -45,7 +47,8 @@ extension User {
               let first_name = json["first_name"] as? String,
               let last_name = json["last_name"] as? String,
               let email = json["email"] as? String,
-              let invintations = json["invintations"] as? [Any]
+              let game_doc_ids = json["game_doc_ids"] as? [Any],
+              let invitations = json["invitations"] as? [Any]
         else {
             print("User unable to decode user \(json)")
             return nil
@@ -58,10 +61,15 @@ extension User {
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.invintations = []
+        self.game_doc_ids = []
+        self.invitations = []
         
-        for case let invintation as String in invintations {
-            self.invintations.append(invintation)
+        for case let doc_id as String in game_doc_ids {
+            self.game_doc_ids.append(doc_id)
+        }
+        
+        for case let invitation as String in invitations {
+            self.invitations.append(invitation)
         }
     }
 }
@@ -87,57 +95,20 @@ extension User {
     func add_game_doc_id(game_doc_id: String) {
         //Upload doc_id to user data stored in cloud
         db.collection("users").document(self.doc_id).updateData([
-            "games": FieldValue.arrayUnion([game_doc_id])
+            "game_doc_ids": FieldValue.arrayUnion([game_doc_id])
         ])
     }
-}
-
-
-//A wrapper for save_user_locally for when a user is signing into their account
-//TODO: Custom object in firestore (add data to firestore) you can get rid of this
-func save_user_locally(doc_id: String, data: Dictionary<String, Any>) -> Bool {
-    var new_data: Dictionary<String, String> = [:]
-    guard let username = data["username"] as? String else {
-        print("save_user_locally cannot find username in dict")
-        return false
+    func save_locally() -> Bool {
+        print("Entering save locally")
+        var data_json: Data
+        do {
+            data_json = try JSONEncoder().encode(self)
+            return write_json(filename: "user.json", data: data_json)
+        } catch {
+            print("Failed to encode User \(self) \(error)")
+            return false
+        }
     }
-    guard let password = data["password"] as? String else {
-        print("save_user_locally cannot find password in dict")
-        return false
-    }
-    if let first_name = data["first_name"] as? String {
-        new_data["first_name"] = first_name
-    } else {
-        new_data["first_name"] = ""
-    }
-    if let last_name = data["last_name"] as? String{
-        new_data["last_name"] = last_name
-    } else {
-        new_data["last_name"] = ""
-    }
-    if let email = data["email"] as? String {
-        new_data["email"] = email
-    } else {
-        new_data["email"] = ""
-    }
-    
-    new_data["doc_id"] = doc_id
-    new_data["username"] = username
-    new_data["password"] = password
-    
-    return save_user_locally(data: new_data)
-}
- 
-func save_user_locally(data: Dictionary<String, String>) -> Bool {
-    var data_json: Data
-    do {
-        data_json = try JSONEncoder().encode(data)
-    } catch {
-        print("Error encoding user dict to json \(error)")
-        return false
-    }
-    
-    return write_json(filename: "user.json", data: data_json)
 }
 
 //This is the owner of the device
@@ -157,24 +128,45 @@ func read_user() -> User {
     return user
 }
 
-//Check the database for a username
-//When player is creating a game and adding other players
-//TODO: pass in a doc_id then get data
-func get_user(username: String) async -> User? {
-    var user: User? = nil
+//Finds username and password in database, saves user locally
+func sign_in(_ username: String, _ password: String) async -> User? {
+    print("Entering sign_in")
     do {
-        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).getDocuments()
+        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).whereField("password", isEqualTo: password).getDocuments()
         if (querySnapshot.documents.isEmpty) {
+            print("Found no docs for \(username)")
             return nil
         }
         let doc = querySnapshot.documents[0]
-        print("Read user w/ id \(doc.documentID) and data \(doc.data())")
-        //user = User(doc_id: doc.documentID, data: doc.data())
-        print("player: \(String(describing: user))")
+        if let user = User(json: doc.data()) {
+            print("Sign in successful")
+            return user
+        }
     } catch {
         print("get_user() \(error)")
     }
-    return user
+    return nil
+}
+
+
+//Check the database for a username
+//When player is creating a game and adding other players
+func get_user(username: String) async -> User? {
+    print("Entering get_user")
+    do {
+        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).getDocuments()
+        if (querySnapshot.documents.isEmpty) {
+            print("No documents found for \(username)")
+            return nil
+        }
+        let doc = querySnapshot.documents[0]
+        if let user = User(json: doc.data()) {
+            return user
+        }
+    } catch {
+        print("get_user() \(error)")
+    }
+    return nil
 }
 
 

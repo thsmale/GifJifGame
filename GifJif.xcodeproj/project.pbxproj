@@ -22,8 +22,8 @@
 		C943EF7428F690DB000D220C /* SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7028F690DA000D220C /* SignIn.swift */; };
 		C943EF7528F690DB000D220C /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7128F690DA000D220C /* Profile.swift */; };
 		C943EF7628F690DB000D220C /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7228F690DA000D220C /* CreateAccount.swift */; };
-		C943EF7728F690DB000D220C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7328F690DA000D220C /* User.swift */; };
 		C943EF7E28FA603D000D220C /* PlayGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7D28FA603C000D220C /* PlayGame.swift */; };
+		C943EF8029025AC2000D220C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7F29025AC2000D220C /* User.swift */; };
 		C9703D6928F6728400BC6FDC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9703D6728F6728400BC6FDC /* Model.swift */; };
 		C9703D6A28F6728400BC6FDC /* GifJifApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9703D6828F6728400BC6FDC /* GifJifApp.swift */; };
 		C973AD0628D59B5D006D7A45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973AD0528D59B5D006D7A45 /* Assets.xcassets */; };
@@ -65,8 +65,8 @@
 		C943EF7028F690DA000D220C /* SignIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SignIn.swift; path = User/SignIn.swift; sourceTree = "<group>"; };
 		C943EF7128F690DA000D220C /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Profile.swift; path = User/Profile.swift; sourceTree = "<group>"; };
 		C943EF7228F690DA000D220C /* CreateAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateAccount.swift; path = User/CreateAccount.swift; sourceTree = "<group>"; };
-		C943EF7328F690DA000D220C /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = User/User.swift; sourceTree = "<group>"; };
 		C943EF7D28FA603C000D220C /* PlayGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayGame.swift; sourceTree = "<group>"; };
+		C943EF7F29025AC2000D220C /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = "New Group2/User.swift"; sourceTree = "<group>"; };
 		C9703D6728F6728400BC6FDC /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Model.swift; path = GifJif/Model.swift; sourceTree = SOURCE_ROOT; };
 		C9703D6828F6728400BC6FDC /* GifJifApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifJifApp.swift; sourceTree = "<group>"; };
 		C973ACFE28D59B5A006D7A45 /* GifJif.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GifJif.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -173,14 +173,14 @@
 				C943EF6328F6909F000D220C /* ImagePicker.swift */,
 				C943EF6628F6909F000D220C /* Safari.swift */,
 				C943EF7928F690F4000D220C /* Userz */,
+				C943EF7F29025AC2000D220C /* User.swift */,
 				C943EF7228F690DA000D220C /* CreateAccount.swift */,
 				C943EF7128F690DA000D220C /* Profile.swift */,
 				C943EF7028F690DA000D220C /* SignIn.swift */,
-				C943EF7328F690DA000D220C /* User.swift */,
 				C943EF7A28F69118000D220C /* Other */,
-				C9703D6828F6728400BC6FDC /* GifJifApp.swift */,
 				C9703D6728F6728400BC6FDC /* Model.swift */,
 				C9381A7B28F3CA1E00058060 /* Home.swift */,
+				C9703D6828F6728400BC6FDC /* GifJifApp.swift */,
 				C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */,
 				C973AD0528D59B5D006D7A45 /* Assets.xcassets */,
 				C973AD0728D59B5D006D7A45 /* Preview Content */,
@@ -360,9 +360,9 @@
 				C943EF7528F690DB000D220C /* Profile.swift in Sources */,
 				C943EF6928F6909F000D220C /* Camera.swift in Sources */,
 				C9703D6928F6728400BC6FDC /* Model.swift in Sources */,
+				C943EF8029025AC2000D220C /* User.swift in Sources */,
 				C943EF7628F690DB000D220C /* CreateAccount.swift in Sources */,
 				C943EF7428F690DB000D220C /* SignIn.swift in Sources */,
-				C943EF7728F690DB000D220C /* User.swift in Sources */,
 				C943EF6B28F690A0000D220C /* CreateGame.swift in Sources */,
 				C943EF6A28F6909F000D220C /* ImagePicker.swift in Sources */,
 				C943EF6D28F690A0000D220C /* Safari.swift in Sources */,

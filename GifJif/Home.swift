@@ -9,25 +9,7 @@ import SwiftUI
 import FirebaseFirestore
 
 struct Home: View {
-    @StateObject var player_one = PlayerOne()
-    @State var invintations_ref: DocumentReference? = nil
-    
-    init() {
-        if (player_one.user.doc_id != "") {
-            invintations_ref = db.collection("users").document(player_one.user.doc_id)
-            invintations_ref?.addSnapshotListener { documentSnapshot, error in
-                    guard let document = documentSnapshot else {
-                        print("Error fetching document \(String(describing: error))")
-                        return
-                    }
-                    guard let data = document.data() else {
-                        print("Document data was empty")
-                        return
-                    }
-                    print("Data: \(data)")
-                }
-        }
-    }
+    @ObservedObject var player_one = PlayerOne()
     
     var body: some View {
         NavigationView {
@@ -48,7 +30,7 @@ struct Home: View {
                             NavigationLink(destination: CreateAccount(player_one: player_one)) {
                                 Text("Create account")
                             }
-                            NavigationLink(destination: SignIn()) {
+                            NavigationLink(destination: SignIn(player_one: player_one)) {
                                 Text("Sign in")
                             }
                         } else {
@@ -75,7 +57,7 @@ struct Home: View {
                     }
                      
                     
-                    Section(header: Text("Invintations")) {
+                    Section(header: Text("Invitations")) {
                         Text("List game's the player has been invited to join")
                     }
                     

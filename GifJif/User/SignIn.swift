@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct SignIn: View {
+    @ObservedObject var player_one: PlayerOne
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var valid_input: Bool = false
-    @State private var valid_account: Bool = true
+    @State private var valid_account: Bool = false
     @State private var loading: Bool = false
+    @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     
     var body: some View {
             Form {
@@ -26,14 +28,24 @@ struct SignIn: View {
                     valid_input = true
                     Task {
                         loading = true
-                        valid_account = await sign_in(username, password)
+                        if let user = await sign_in(username, password) {
+                            valid_account = true
+                            player_one.user = user
+                            if (player_one.user.save_locally()) {
+                                print("Successfully saved user \(username) locally")
+                            } else {
+                                print("Failed to save user \(username) locally")
+                            }
+                            player_one.load_games()
+                            self.mode.wrappedValue.dismiss()
+                        }
                         loading = false
                     }
                 })
                 if(loading) {
                     ProgressView()
                 }
-                if(valid_input) {
+                if(valid_input && !loading) {
                     if(valid_account) {
                         Text("Successfully signed in")
                             .foregroundColor(.green)
@@ -48,8 +60,3 @@ struct SignIn: View {
     }
 }
 
-struct SignIn_Previews: PreviewProvider {
-    static var previews: some View {
-        SignIn()
-    }
-}

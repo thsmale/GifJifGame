@@ -95,7 +95,8 @@ struct CreateAccount: View {
                         first_name: first_name,
                         last_name: last_name,
                         email: email,
-                        invintations: []
+                        game_doc_ids: [],
+                        invitations: []
                     )
                     player_one.user = user
                         
