@@ -130,8 +130,8 @@ extension Game {
 //Adds to users invitations so they get alerted
 func create_game(game: inout Game) -> Bool {
     //Upload to games collection
-    let ref = db.collection("games").document()
     do {
+        let ref = db.collection("games").document()
         try ref.setData(from: game)
         game.doc_id = ref.documentID
         print("Game \(game.name) successfully added to database")
@@ -154,7 +154,7 @@ func create_game(game: inout Game) -> Bool {
 //Every time a game is created the data is updated by rewriting it to disc
 //TODO: Append to file instead of rewriting it
 func write_games(games: [Game]) -> Bool {
-    print("ENCODING: \(games)")
+    print("Entering write_games")
     var data_json: Data
     do {
         data_json = try JSONEncoder().encode(games)

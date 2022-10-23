@@ -19,6 +19,7 @@ struct SignIn: View {
     var body: some View {
             Form {
                 TextField("Username", text: $username)
+                    .textInputAutocapitalization(.never)
                 SecureField("Password", text: $password)
                 Button("Sign in", action: {
                     if(username.isEmpty && password.isEmpty) {
@@ -28,17 +29,19 @@ struct SignIn: View {
                     valid_input = true
                     Task {
                         loading = true
-                        if player_one.sign_in(username, password) {
-                            valid_account = true
-                            if (player_one.user.save_locally()) {
-                                print("Successfully saved user \(username) locally")
-                            } else {
-                                print("Failed to save user \(username) locally")
+                        player_one.sign_in(username, password) { success in
+                            if (success)  {
+                                valid_account = true
+                                if (player_one.user.save_locally()) {
+                                    print("Successfully saved user \(username) locally")
+                                } else {
+                                    print("Failed to save user \(username) locally")
+                                }
+                                player_one.load_games()
+                                self.mode.wrappedValue.dismiss()
                             }
-                            player_one.load_games()
-                            self.mode.wrappedValue.dismiss()
+                            loading = false //TODO: Does it matter that this is here? 
                         }
-                        loading = false
                     }
                 })
                 if(loading) {

@@ -18,7 +18,7 @@ let db = Firestore.firestore()
 class PlayerOne: ObservableObject {
     @Published var user: User
     @Published var games: [Game]
-
+    
     //TODO: Remove listeners
     
     init() {
@@ -27,9 +27,9 @@ class PlayerOne: ObservableObject {
     }
     
     func sign_out() {
-         //Publishing changes from within view updates is not allowed, this will cause undefined behavior.
-         user = User()
-         games = []
+        //Publishing changes from within view updates is not allowed, this will cause undefined behavior.
+        user = User()
+        games = []
     }
     
     //Reads the local games saved to the device
@@ -39,8 +39,12 @@ class PlayerOne: ObservableObject {
         if let game_data = read_json(filename: "games.json") as? [[String: Any]] {
             for game in game_data {
                 if let g = Game(game: game) {
-                    if (add_listener(game_doc_id: g.doc_id)) {
-                        games.append(g)
+                    add_listener(game_doc_id: g.doc_id) { success in
+                        if (success) {
+                            print("Added listener for \(g)")
+                        } else {
+                            print("Failed to add listener for \(g)")
+                        }
                     }
                 }
             }
@@ -55,49 +59,61 @@ class PlayerOne: ObservableObject {
     //Also we set all the games
     func load_games() {
         print("Entering load_games")
+        let group = DispatchGroup()
         for doc_id in user.game_doc_ids {
-            if (add_listener(game_doc_id: doc_id)) {
-                print("Failed to add game \(doc_id)")
+            group.enter()
+            add_listener(game_doc_id: doc_id) { success in
+                if (success) {
+                    print("Added listener for game \(doc_id)")
+                } else {
+                    print("Failed to add listener for game \(doc_id)")
+                }
+                group.leave()
             }
         }
-        if (write_games(games: games)) {
-            print("Successfully saved games locally")
-        } else {
-            print("Failed to save games locally")
+        //Waits for entire for loop to complete before saving games
+        group.notify(queue:.main) {
+            if (write_games(games: self.games)) {
+                print("Successfully saved games locally")
+            } else {
+                print("Failed to save games locally")
+            }
         }
         print("Exiting load games")
     }
     
     //Receives updates to the game from the database
-    func add_listener(game_doc_id doc_id: String) -> Bool  {
+    func add_listener(game_doc_id doc_id: String, completion: @escaping ((Bool) -> Void)) {
         print("Entering add listener")
-        var ret = true
         let ref = db.collection("games").document(doc_id)
         ref.addSnapshotListener { [self] documentSnapshot, error in
             guard let doc = documentSnapshot else {
-              print("Error fetching document: \(error!)")
-                ret = false
-              return
+                print("Error fetching document: \(error!)")
+                completion(false)
+                return
             }
             guard doc.data() != nil else {
-              print("Document data was empty for \(doc_id).")
-                ret = false
-              return
+                print("Document data was empty for id \(doc_id).")
+                completion(false)
+                return
             }
             if let game = Game(game: doc.data()!) {
                 //Updating an existing game
-                for i in 0...games.count {
+                for i in 0..<games.count {
                     if (games[i].doc_id == doc_id) {
                         games[i] = game
+                        print("Updaing game \(doc_id)")
+                        completion(true)
                         return
                     }
                 }
                 //New game on device
+                print("Adding new game \(game)")
                 games.append(game)
+                completion(true)
             }
         }
         print("Exiting add listener")
-        return ret
     }
 }
 
@@ -121,28 +137,28 @@ extension PlayerOne {
         }
     }
     //Finds username and password in database, saves user locally
-    func sign_in(_ username: String, _ password: String) -> Bool {
+    func sign_in(_ username: String, _ password: String,
+                 _ completion: @escaping ((Bool) -> Void)) {
         print("Entering sign_in")
-        var ret = true
         db.collection("users").whereField("username", isEqualTo: username)
             .addSnapshotListener { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else {
                     print("Error fetching documents: \(error!)")
-                    ret = false
+                    completion(false)
                     return
                 }
                 if (documents.count <= 0) {
                     print("No documents found for \(username)")
-                    ret = false
+                    completion(false)
                     return
                 }
                 if let user = User(json: documents[0].data()) {
                     print ("Sign in successful")
                     self.user = user
+                    completion(true)
                 }
             }
-        print ("Exiting sign_in w status \(ret)")
-        return ret
+        print("Exiting sign_in")
     }
     //Creates a listener for User
     //Receives updates to the User from the database
@@ -151,14 +167,15 @@ extension PlayerOne {
     func user_listener() {
         print("Entering user_listener")
         let ref = db.collection("users").document(self.user.doc_id)
+        //let ref = db.collection("users").document(self.user.doc_id)
         ref.addSnapshotListener { [self] documentSnapshot, error in
             guard let doc = documentSnapshot else {
-              print("Error fetching document: \(error!)")
-              return
+                print("Error fetching document: \(error!)")
+                return
             }
             guard doc.data() != nil else {
-                print("Document data was empty for \(user.doc_id) \(user.username).")
-              return
+                print("Document data was empty for id: \(user.doc_id), user:\(user.username).")
+                return
             }
             if let player = User(json: doc.data()!) {
                 print("Updating user")
@@ -171,6 +188,7 @@ extension PlayerOne {
 
 //For writing user data to the Documents directory
 func write_json(filename: String, data: Data) -> Bool {
+    print("Entering write_json")
     //Get file location
     var file: URL
     do {

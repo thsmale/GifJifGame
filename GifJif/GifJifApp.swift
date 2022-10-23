@@ -27,6 +27,7 @@ struct GifJifApp: App {
         FirebaseApp.configure()
 
         if let user = read_user() {
+            print("Successfully read \(user) from user.json")
             player_one.user = user
             player_one.user_listener()
         }
