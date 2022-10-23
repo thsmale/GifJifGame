@@ -56,7 +56,6 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-let db = Firestore.firestore()
 
 struct Game: Codable, Identifiable {
     var id = UUID()
@@ -164,27 +163,6 @@ func write_games(games: [Game]) -> Bool {
         return false
     }
     return write_json(filename: "games.json", data: data_json)
-}
-
-//Reads the local games saved to the device
-func read_games() -> [Game] {
-    var games: [Game] = []
-    let game_data = read_json(filename: "games.json")
-    if (game_data == nil) {
-        print("received nil from read_json games.json")
-        return games
-    }
-    if (game_data as? [[String: Any]] == nil) {
-        print("Data read from games.json not able to be casted")
-        return games
-    }
-    for game in game_data as! [[String: Any]] {
-        if let g = Game(game: game) {
-            games.append(g)
-        }
-        
-    }
-    return games
 }
 
 func submit_response(game: Game, response: Response) -> Bool {

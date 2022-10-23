@@ -9,8 +9,8 @@ import SwiftUI
 import FirebaseFirestore
 
 struct Home: View {
-    @ObservedObject var player_one = PlayerOne()
-    
+    @ObservedObject var player_one: PlayerOne
+
     var body: some View {
         NavigationView {
             VStack {
@@ -74,8 +74,3 @@ struct Home: View {
 
 }
 
-struct Home_Previews: PreviewProvider {
-    static var previews: some View {
-        Home()
-    }
-}

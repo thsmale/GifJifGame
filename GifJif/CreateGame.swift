@@ -97,7 +97,7 @@ struct CreateGame: View {
                                     topic: topic,
                                     time: time)
                     if (create_game(game: &game)) {
-                        player_one.games.append(game)
+                        player_one.add_listener(game_doc_id: game.doc_id)
                         if (write_games(games: player_one.games)) {
                             print("Successfully saved games locally!")
                         }

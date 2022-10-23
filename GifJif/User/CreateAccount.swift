@@ -87,7 +87,7 @@ struct CreateAccount: View {
                 }
                 
                 Button(action: {
-                    let user = User(
+                    var user = User(
                         id: UUID(),
                         doc_id: "",
                         username: username,
@@ -98,10 +98,8 @@ struct CreateAccount: View {
                         game_doc_ids: [],
                         invitations: []
                     )
-                    player_one.user = user
-                        
-                    if(player_one.user.create_user()) {
-                        //read_user_file()
+                    if(player_one.create_account(user: &user)) {
+                        player_one.user_listener()
                     }else {
                         show_error = true
                     }

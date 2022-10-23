@@ -76,20 +76,6 @@ extension User {
 
 //User methods that interact with the database
 extension User {
-    //This will try to add a user to the database
-    //Called when user creates an account
-    mutating func create_user() -> Bool {
-        let ref = db.collection("users").document()
-        do {
-            try ref.setData(from: self)
-            self.doc_id = ref.documentID
-            print("User \(self.username) successfully added to database")
-            return true
-        } catch let error {
-            print("Error writing game to firestore \(error)")
-            return false
-        }
-    }
     //TODO: Make non void function
     //When player creates a new game add game_doc_id to player doc
     func add_game_doc_id(game_doc_id: String) {
@@ -109,41 +95,23 @@ extension User {
             return false
         }
     }
-}
-
-//This is the owner of the device
-//This retrives their account settings
-func read_user() -> User {
-    var user: User
-    if let user_data = read_json(filename: "user.json") {
-        if (user_data as? [String: Any] == nil) {
-            user = User()
-            print("Data read from user.json not acceptable")
-        } else {
-            user = User(json: user_data as! [String: Any]) ?? User()
-        }
-    } else {
-        user = User()
+    //Called by the sign out function
+    //Need it cause you can't just set games and user to games() user()
+    func reset_vals() {
+        
     }
-    return user
 }
 
-//Finds username and password in database, saves user locally
-func sign_in(_ username: String, _ password: String) async -> User? {
-    print("Entering sign_in")
-    do {
-        let querySnapshot = try await db.collection("users").whereField("username", isEqualTo: username).whereField("password", isEqualTo: password).getDocuments()
-        if (querySnapshot.documents.isEmpty) {
-            print("Found no docs for \(username)")
-            return nil
-        }
-        let doc = querySnapshot.documents[0]
-        if let user = User(json: doc.data()) {
-            print("Sign in successful")
+//Get account data from local file saved on device
+//Data returned from read_json is of type Any
+func read_user() -> User? {
+    print("Entering read_user")
+    if let user_data = read_json(filename: "user.json") as? [String: Any] {
+        if let user = User(json: user_data) {
             return user
         }
-    } catch {
-        print("get_user() \(error)")
+    } else {
+        print("user.json unable to be casted to [string: any]")
     }
     return nil
 }

@@ -28,9 +28,8 @@ struct SignIn: View {
                     valid_input = true
                     Task {
                         loading = true
-                        if let user = await sign_in(username, password) {
+                        if player_one.sign_in(username, password) {
                             valid_account = true
-                            player_one.user = user
                             if (player_one.user.save_locally()) {
                                 print("Successfully saved user \(username) locally")
                             } else {
