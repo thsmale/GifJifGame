@@ -176,3 +176,27 @@ func submit_response(game: Game, response: Response) -> Bool {
     }
 }
 
+func get_game(game_doc_id: String, completion: @escaping ((Game?) -> Void)) {
+    let docRef = db.collection("games").document(game_doc_id)
+    
+    docRef.getDocument { (document, error) in
+        if let document = document, document.exists {
+            if let data = document.data() {
+                if let game = Game(game: data) {
+                    completion(game)
+                    return
+                }
+            } else {
+                print("data received is empty")
+                completion(nil)
+            }
+        } else {
+            print("Document id \(game_doc_id) does not exist")
+            completion(nil)
+        }
+        if (error != nil) {
+            print("Error \(String(describing: error))")
+            completion(nil)
+        }
+    }
+}

@@ -24,6 +24,7 @@
 		C943EF7628F690DB000D220C /* CreateAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7228F690DA000D220C /* CreateAccount.swift */; };
 		C943EF7E28FA603D000D220C /* PlayGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7D28FA603C000D220C /* PlayGame.swift */; };
 		C943EF8029025AC2000D220C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7F29025AC2000D220C /* User.swift */; };
+		C943EF84290642DC000D220C /* Invitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF83290642DC000D220C /* Invitation.swift */; };
 		C9703D6928F6728400BC6FDC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9703D6728F6728400BC6FDC /* Model.swift */; };
 		C9703D6A28F6728400BC6FDC /* GifJifApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9703D6828F6728400BC6FDC /* GifJifApp.swift */; };
 		C973AD0628D59B5D006D7A45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973AD0528D59B5D006D7A45 /* Assets.xcassets */; };
@@ -67,6 +68,7 @@
 		C943EF7228F690DA000D220C /* CreateAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CreateAccount.swift; path = User/CreateAccount.swift; sourceTree = "<group>"; };
 		C943EF7D28FA603C000D220C /* PlayGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayGame.swift; sourceTree = "<group>"; };
 		C943EF7F29025AC2000D220C /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = "New Group2/User.swift"; sourceTree = "<group>"; };
+		C943EF83290642DC000D220C /* Invitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invitation.swift; sourceTree = "<group>"; };
 		C9703D6728F6728400BC6FDC /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Model.swift; path = GifJif/Model.swift; sourceTree = SOURCE_ROOT; };
 		C9703D6828F6728400BC6FDC /* GifJifApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifJifApp.swift; sourceTree = "<group>"; };
 		C973ACFE28D59B5A006D7A45 /* GifJif.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GifJif.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -167,9 +169,10 @@
 				C943EF6528F6909F000D220C /* Game.swift */,
 				C943EF6428F6909F000D220C /* CreateGame.swift */,
 				C943EF7D28FA603C000D220C /* PlayGame.swift */,
-				C943EF6228F6909F000D220C /* Camera.swift */,
 				C943EF6128F6909F000D220C /* GifSearch.swift */,
 				C943EF6728F6909F000D220C /* Giphy.swift */,
+				C943EF83290642DC000D220C /* Invitation.swift */,
+				C943EF6228F6909F000D220C /* Camera.swift */,
 				C943EF6328F6909F000D220C /* ImagePicker.swift */,
 				C943EF6628F6909F000D220C /* Safari.swift */,
 				C943EF7928F690F4000D220C /* Userz */,
@@ -356,6 +359,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C943EF84290642DC000D220C /* Invitation.swift in Sources */,
 				C9381A7C28F3CA1E00058060 /* Home.swift in Sources */,
 				C943EF7528F690DB000D220C /* Profile.swift in Sources */,
 				C943EF6928F6909F000D220C /* Camera.swift in Sources */,

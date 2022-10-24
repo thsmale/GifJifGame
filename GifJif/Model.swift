@@ -31,7 +31,10 @@ class PlayerOne: ObservableObject {
         user = User()
         games = []
     }
-    
+}
+
+//Methods related to Games
+extension PlayerOne {
     //Reads the local games saved to the device
     //TODO: Handle game that was deleted
     func read_games() {
@@ -82,7 +85,9 @@ class PlayerOne: ObservableObject {
         print("Exiting load games")
     }
     
+    //Loads game from the database
     //Receives updates to the game from the database
+    //Also appends game to games[] array
     func add_listener(game_doc_id doc_id: String, completion: @escaping ((Bool) -> Void)) {
         print("Entering add listener")
         let ref = db.collection("games").document(doc_id)
@@ -117,7 +122,7 @@ class PlayerOne: ObservableObject {
     }
 }
 
-//Functions related to User
+//Methods related to User
 extension PlayerOne {
     //This will try to add a user to the database
     //Called when user creates an account
@@ -183,6 +188,22 @@ extension PlayerOne {
             }
         }
         print("Exiting user_listener")
+    }
+    //Rejecting an invitation involves removing it from local array and updating database with the state
+    //Used when user accepts an invitation and rejects one
+    func delete_invitation(game_doc_id: String) {
+        //Remove locally
+        for i in 0..<user.invitations.count {
+            if (user.invitations[i] == game_doc_id) {
+                user.invitations.remove(at: i)
+                break
+            }
+        }
+        //Remove from database
+        let ref = db.collection("users").document(user.doc_id)
+        ref.updateData([
+            "invitations": FieldValue.arrayRemove([ game_doc_id ])
+        ])
     }
 }
 
