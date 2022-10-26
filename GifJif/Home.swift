@@ -11,35 +11,6 @@ import FirebaseFirestore
 struct Home: View {
     @ObservedObject var player_one: PlayerOne
     @State var invitation_games: [Game] = []
-    
-    private class FetchGame: ObservableObject {
-        @Published var game: Game? = nil
-        @Published var loading = true
-        
-        init (game_doc_id: String) {
-            let docRef = db.collection("games").document(game_doc_id)
-
-            docRef.getDocument { (document, error) in
-                if let document = document, document.exists {
-                    if let data = document.data() {
-                        if let game = Game(game: data) {
-                            self.game = game
-                        }
-                    } else {
-                        print("data received is empty")
-                    }
-                } else {
-                    print("Document id \(game_doc_id) does not exist")
-                }
-                if (error != nil) {
-                    print("Error \(String(describing: error))")
-                }
-                self.loading = false
-            }
-        }
-    }
-    
-    
     //Invitations are stored as a string of game_doc_id's
     //We listen to this array in the database
     //We fetch the Game, then load it for the user
@@ -91,19 +62,6 @@ struct Home: View {
             }
         }
     }
-    
-    func load_invitations() {
-        for invitation in player_one.user.invitations {
-            get_game(game_doc_id: invitation) { game in
-                if (game != nil) {
-                    invitation_games.append(game!)
-                }
-            }
-        }
-    }
-
-
-
 
     var body: some View {
         NavigationView {
@@ -159,23 +117,6 @@ struct Home: View {
                                 LoadInvitation(game_doc_id: game_doc_id, player_one: player_one)
                             }
                         }
-                        /*
-                        List(invitation_games) { game in
-                            //Text($0.name)
-                            NavigationLink(destination: Invitation(game: game, player_one: player_one)) {
-                                Text(game.name)
-                            }
-                         
-                        }.onAppear(perform: {
-                            for game_doc_id in player_one.user.invitations {
-                                get_game(game_doc_id: game_doc_id) { game in
-                                    if (game != nil) {
-                                        invitation_games.append(game!)
-                                    }
-                                }
-                            }
-                        })
-                          */
                     }
                     
                     Section(header: Text("Public games")) {
