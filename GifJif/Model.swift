@@ -237,7 +237,54 @@ extension PlayerOne {
             }
         }
     }
-}
+    func update_first_name(first_name: String, completion: @escaping ((Bool) -> Void)) {
+        print("Updating first_name in database")
+        let user_ref = db.collection("users").document(user.doc_id)
+        user_ref.updateData([
+            "first_name": first_name
+        ]) { [self] err in
+            if let err = err {
+                print("Error updating first name: \(err)")
+                completion(false)
+            } else {
+                print("first name successfully updated")
+                user.first_name = first_name
+                completion(true)
+            }
+        }
+    }
+    func update_last_name(last_name: String, completion: @escaping ((Bool) -> Void)) {
+        print("Updating last_name in database")
+        let user_ref = db.collection("users").document(user.doc_id)
+        user_ref.updateData([
+            "last_name": last_name
+        ]) { [self] err in
+            if let err = err {
+                print("Error updating last name: \(err)")
+                completion(false)
+            } else {
+                print("last name successfully updated")
+                user.last_name = last_name
+                completion(true)
+            }
+        }
+    }
+    func update_email(email: String, completion: @escaping ((Bool) -> Void)) {
+        print("Updating email in database")
+        let user_ref = db.collection("users").document(user.doc_id)
+        user_ref.updateData([
+            "email": email
+        ]) { [self] err in
+            if let err = err {
+                print("Error updating email: \(err)")
+                completion(false)
+            } else {
+                print("last name successfully updated")
+                user.email = email
+                completion(true)
+            }
+        }
+    }}
 
 //For writing user data to the Documents directory
 func write_json(filename: String, data: Data) -> Bool {

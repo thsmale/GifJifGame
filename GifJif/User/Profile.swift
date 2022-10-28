@@ -25,10 +25,17 @@ struct Profile: View {
     @State private var show_password_status = false
     @State private var password_status = Status()
     
-    @State private var first_name: String
-    @State private var last_name : String
+    @State private var first_name: String = ""
+    @State private var first_name_status = Status()
+    @State private var show_first_name_status = false
+    
+    @State private var last_name: String = ""
+    @State private var last_name_status = Status()
+    @State private var show_last_name_status = false
     
     @State private var email: String
+    @State private var email_status = Status()
+    @State private var show_email_status = false
         
     private struct Status {
         var msg: String = ""
@@ -86,6 +93,7 @@ struct Profile: View {
         Form {
             Section(header: Text("Username")) {
                 TextField("Username", text: $username)
+                    .textInputAutocapitalization(.never)
                     .onSubmit {
 
                         Task {
@@ -189,26 +197,138 @@ struct Profile: View {
             }
             
             Section(header: Text("Name")) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Spacer(minLength: 2)
+                VStack(alignment: .leading) {
                     Text("First Name")
                         .font(.caption)
                         .foregroundColor(Color(.placeholderText))
                     TextField("First name", text: $first_name)
-                    Spacer(minLength: 2)
+                        .onSubmit {
+                            var precheck = true
+                            if (player_one.user.first_name == first_name) {
+                                first_name_status.set(msg: "No change in first name", updating: false, success: true)
+                                precheck = false
+                            }
+
+                            if (first_name.count >= MAX_USERNAME_LENGTH) {
+                                first_name_status.set(msg: "Name exceeds character limit \(MAX_USERNAME_LENGTH)", updating: false, success: false)
+                                precheck = false
+                            }
+                            if (precheck == false) {
+                                self.show_first_name_status = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    self.show_first_name_status = false
+                                }
+                                return
+                            }
+                            first_name_status.updating = true
+                            player_one.update_first_name(first_name: first_name) { [self] success in
+                                if (success) {
+                                    first_name_status.set(msg: "First name successfully updated", updating: false, success: true)
+                                } else {
+                                    first_name_status.set(msg: "Failed to change first name", updating: false, success: false)
+                                }
+                                self.show_first_name_status = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    self.show_first_name_status = false
+                                }
+                            }
+                        }
+                    if (first_name_status.updating) {
+                        ProgressView()
+                    }
+                    if (show_first_name_status) {
+                        Text(first_name_status.msg)
+                            .foregroundColor(first_name_status.success ? .green : .red)
+                    }
                     Divider()
-                    Spacer(minLength: 2)
+                        //.padding(.top, 2)
+                        //.padding(.bottom, 2)
+
                     Text("Last Name")
                         .font(.caption)
                         .foregroundColor(Color(.placeholderText))
-                        .frame(alignment: .leading)
                     TextField("Last name", text: $last_name)
-                    Spacer(minLength: 2)
+                        .onSubmit {
+                            var precheck = true
+                            if (player_one.user.last_name == last_name) {
+                                last_name_status.set(msg: "No change in last name", updating: false, success: false)
+                                precheck = false
+                            }
+                            if (last_name.count >= MAX_USERNAME_LENGTH) {
+                                last_name_status.set(msg: "Last name character limit exceeds \(MAX_USERNAME_LENGTH)", updating: false, success: true)
+                                precheck = false
+                            }
+                            if (precheck == false) {
+                                show_last_name_status = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    self.show_last_name_status = false
+                                }
+                                return
+                            }
+                            self.last_name_status.updating = true
+                            player_one.update_last_name(last_name: last_name) { [self] success in
+                                if (success) {
+                                    last_name_status.set(msg: "Successfully updated last name", updating: false, success: true)
+                                } else {
+                                    last_name_status.set(msg: "Failed to change last_name", updating: false, success: false)
+                                }
+                                show_last_name_status = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                    self.show_last_name_status = false
+                                }
+                            }
+                            
+                        }
+                    //Spacer(minLength: 2)
+                    if (last_name_status.updating) {
+                        ProgressView()
+                    }
+                    if (show_last_name_status) {
+                        Text(last_name_status.msg)
+                            .foregroundColor(last_name_status.success ? .green : .red)
+                    }
                 }
             }
             
             Section(header: Text("Email")) {
                 TextField("Email", text: $email)
+                    .textInputAutocapitalization(.never)
+                    .onSubmit {
+                        var precheck = true
+                        if (player_one.user.email == email) {
+                            email_status.set(msg: "No change in email", updating: false, success: false)
+                            precheck = false
+                        }
+                        if (email.count >= MAX_USERNAME_LENGTH) {
+                            email_status.set(msg: "Email exceeded max character length of \(MAX_USERNAME_LENGTH)", updating: false, success: false)
+                        }
+                        if (!precheck) {
+                            show_email_status = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                self.show_email_status = false
+                            }
+                            return
+                        }
+                        email_status.updating = true
+                        player_one.update_email(email: email) { [self] success in
+                            if (success) {
+                                email_status.set(msg: "Successfully changed email", updating: false, success: true)
+                            } else {
+                                email_status.set(msg: "Failed to change email", updating: false, success: false)
+                            }
+                            show_email_status = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                self.show_email_status = false
+                            }
+                        }
+                    }
+                if (email_status.updating) {
+                    ProgressView()
+                }
+                if (show_email_status) {
+                    Text(email_status.msg)
+                        .foregroundColor(email_status.success ? .green : .red)
+                }
             }
 
 
@@ -267,7 +387,7 @@ struct Profile: View {
                             incorrect_password = false
                             validate_identity(password: password_check)
                         }
-                    //TODO: animate text every time password is submitted /entered 
+                    //TODO: animate text every time password is submitted /entered
                     if (incorrect_password) {
                         Text("Incorrect password")
                             .foregroundColor(.red)

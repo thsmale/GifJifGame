@@ -44,7 +44,8 @@ struct CreateAccount: View {
             Form {
                 //[username, password, email, birthday, name]
                 Section(header: Text("Required")) {
-                    TextField("Username", text: $username) 
+                    TextField("Username", text: $username)
+                        .textInputAutocapitalization(.never)
                         .onSubmit {
                             username_submitted = true
                             if(username == "" || username.count >= MAX_USERNAME_LENGTH) {
@@ -83,6 +84,7 @@ struct CreateAccount: View {
                 
                 Section(header: Text("Optional reccomended information")) {
                     TextField("Email (To recover username/password", text: $email)
+                        .textInputAutocapitalization(.never)
                     TextField("First Name (For finding players)", text: $first_name)
                     TextField("Last Name (For finding players)", text: $last_name)
                 }
