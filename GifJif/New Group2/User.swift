@@ -8,6 +8,9 @@
 import Foundation
 import FirebaseFirestore
 
+let MAX_USERNAME_LENGTH = 30
+let MAX_PASSWORD_ATTEMPT = 10
+
 //Return username of user
 //To handle ID: Do not let user create game unless they have an account
 //Check if user has an account by seeing doc_id is not ""

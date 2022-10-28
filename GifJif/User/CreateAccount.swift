@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct CreateAccount: View {
     @ObservedObject var player_one: PlayerOne
     @State private var username: String = ""
@@ -46,7 +47,7 @@ struct CreateAccount: View {
                     TextField("Username", text: $username) 
                         .onSubmit {
                             username_submitted = true
-                            if(username == "" || username.count > 20) {
+                            if(username == "" || username.count >= MAX_USERNAME_LENGTH) {
                                 valid_username = false
                                 return
                             }

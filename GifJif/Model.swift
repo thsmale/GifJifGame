@@ -205,6 +205,38 @@ extension PlayerOne {
             "invitations": FieldValue.arrayRemove([ game_doc_id ])
         ])
     }
+    func update_username(username: String, completion: @escaping ((Bool) -> Void)) {
+        print("Updating username in database")
+        let user_ref = db.collection("users").document(user.doc_id)
+        user_ref.updateData([
+            "username": username
+        ]) { [self] err in
+            if let err = err {
+                print("Error updating username: \(err)")
+                completion(false)
+            } else {
+                print("Username successfully updated")
+                user.username = username
+                completion(true)
+            }
+        }
+    }
+    func update_password(password: String, completion: @escaping ((Bool) -> Void)) {
+        print("Updating password in database")
+        let user_ref = db.collection("users").document(user.doc_id)
+        user_ref.updateData([
+            "password": password
+        ]) { [self] err in
+            if let err = err {
+                print("Error updating password: \(err)")
+                completion(false)
+            } else {
+                print("Username successfully updated")
+                user.password = password
+                completion(true)
+            }
+        }
+    }
 }
 
 //For writing user data to the Documents directory
