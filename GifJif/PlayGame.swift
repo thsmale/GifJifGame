@@ -9,26 +9,17 @@ import SwiftUI
 import GiphyUISDK
 
 struct PlayGame: View {
-    @State var player_one: PlayerOne
+    @ObservedObject var player_one: PlayerOne
     @State var game: Game
+    @State private var show_topic = false
     @State private var timer: Timer? = nil
     @State private var handpick_host: String = ""
     @State private var handpick_topic: String = ""
     @State private var winner: String = ""
     @State private var response_disabled = false
     @State private var submit_disabled = true
-    @State private var status_text = "Preview..."
-    //Text
-    @State private var show_text_field: Bool = false
-    @State private var text_input: String = ""
-    //Drawing
-    @State private var draw: Bool = false
-    @State private var line: Path = Path()
-    @State private var new_drag: Bool = false
-    //Images
-    @State private var show_image_picker = false
-    @State private var show_camera = false
-    @State private var image: UIImage?
+    @State private var user_responded = false
+    @State private var show_alert = false
     //Gifs
     @State private var show_giphy: Bool = false
     @State private var giphy: URL?
@@ -36,8 +27,6 @@ struct PlayGame: View {
     @State private var mediaView = GPHMediaView()
     var view = UIView()
     @State private var gif_responses: [GPHMedia?] = []
-    //Safari
-    @State private var safari: Bool = false
     
     @State private var valid_input: Bool = false
     @State private var preview: UIImage?
@@ -47,12 +36,15 @@ struct PlayGame: View {
     var body: some View {
         VStack {
             if (false) {
-                HostView()
+                HostView() //Lobby (where people hang out after submitting, while waiting for others to submit, waiting for host to pick new topic)
             }
 
             Form {
+                //Anybody can change game info
+                //Host has control over game settings like category, topic, and time
+                //Game settings is not mutable during game play
+                //TODO: Edit game settings
                 Section(header: Text("Game info")) {
-                    Text("Task: \(game.topic)")
                     Text("Time: \(game.time) seconds")
                     Text("Host: \(game.host)")
                     NavigationLink("Players") {
@@ -60,75 +52,53 @@ struct PlayGame: View {
                             Text($0.username)
                         }
                     }
-                    Text("Responses received: \(game.responses.count) / \(game.players.count-1)")
+                    Text("Responses received: \(game.responses.count) / \(game.players.count)")
                 }
-            }
-
-            ScrollView {
-                VStack {
-                    if (submit_disabled && response_disabled) {
-                        Text("Responses...")
-                        //VStack() {
+                
+                if (user_responded) {
+                    //Show all the respones
+                    //Show users response first
+                    Section(header: Text("Responses")) {
+                        Text("Responses")
+                        VStack {
                             ForEach(game.responses) { response in
+                                //TODO: Show user as well
                                 LoadGif(gif_id: response.gif_id)
                                     .aspectRatio(contentMode: .fit)
-
+                                
                             }
-                        //}
-                    }
-                        Text(status_text)
-                        if (giphy_media != nil) {
-                            ShowMedia(media: $giphy_media)
-                                .aspectRatio(contentMode: .fit)
                         }
-                        Spacer()
+                    }
+                } else {
+                    //Let the user pick their response
+                    respond()
                 }
+                
             }
             
-
-            HStack (alignment: .bottom) {
-                Button(action: {
-                    show_giphy.toggle()
-                    submit_disabled = false
-                    if (timer == nil) {
-                        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
-                            game.time = game.time - 1
-                        })
-                    }
-                }, label: {
-                    Text("Respond")
-                }).disabled(response_disabled)
-                .buttonBorderShape(.roundedRectangle)
-                Spacer()
-                Button("Submit", action: {
-                    print(giphy_media!.id)
-                    let response = Response(gif_id: giphy_media!.id, player: Player(doc_id: player_one.user.doc_id, username: player_one.user.username))
-                    game.responses.append(response)
-                    if (submit_response(game: game, response: response)) {
-                        response_disabled = true
-                        submit_disabled = true
-                        status_text = "Submission successful!!"
-                    } else {
-                        status_text = "Failed to submit response 😭"
-                    }
-                }).disabled({
-                    if(giphy_media == nil || submit_disabled == true) {
-                        return true
-                    }
-                    return false
-                }())
-            }
-            
-            
+            //How the user picks a GIF
             .sheet(isPresented: $show_giphy, content: {
                 VStack {
                     Text("Task: \(game.topic)")
                     Text("Time: \(game.time) seconds")
                     if (giphy_media != nil) {
                         ShowMedia(media: $giphy_media)
-                            //.frame(width: 90, height: 90, alignment: .center)
+                            .frame(width: 90, height: 90, alignment: .center)
                     }
                     GiphyUI(url: $giphy, media: $giphy_media, media_view: $mediaView)
+                }
+            })
+            .alert(Text("Time's up!"), isPresented: $show_alert, actions: {
+                VStack {
+                    //TODO add timer to this when expiring
+                    Text("You didn't pick anything. This snail will be submitted on your behalf")
+                    Image("snail")
+                    Button("Ok") {
+                        show_alert = false
+                    }
+                    Button("Whatever") {
+                        show_alert = false
+                    }
                 }
             })
             .navigationTitle(game.name)
@@ -146,7 +116,7 @@ extension PlayGame {
                 TextField("Host", text: $handpick_host)
                 TextField("Topic", text: $handpick_topic)
                 if (game.responses.count <= 0) {
-                    Text("Responses received: \(game.responses.count) / \(game.players.count-1)")
+                    Text("Responses received: \(game.responses.count) / \(game.players.count)")
                 } else {
                     //Scroll View of Giphy UI
                     Picker("Responses", selection: $winner) {
@@ -161,6 +131,73 @@ extension PlayGame {
             }
         }
     }
+    
+    func respond() -> some View {
+        Section(header: Text("Play")) {
+            Text("Topic: \(show_topic ? game.topic : "Click respond to reveal")")
+                .foregroundColor(show_topic ? .black : .gray)
+            HStack {
+                Button(show_topic ? "Pick gif" : "Show topic", action: {
+                    show_topic = true
+                    show_giphy.toggle()
+                    if (timer == nil) {
+                        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+                            game.time = game.time - 1
+                            if (game.time <= 0) {
+                                print("Time is up")
+                                submit()
+                            }
+                        })
+                    }
+                })
+                Spacer()
+                Button("Submit", action: {
+                    submit()
+                }).disabled({
+                    if(show_topic == false || game.time <= 0) {
+                        return true
+                    }
+                    return false
+                }())
+            }
+            if (show_topic) {
+                Text("Preview...")
+            }
+            if (giphy_media != nil) {
+                ShowMedia(media: $giphy_media)
+                    .aspectRatio(contentMode: .fit)
+            }
+        }
+    }
+    
+    //Submits the response to the userbase
+    //Called when time is up or user presses submit button
+    func submit() {
+        timer?.invalidate()
+        response_disabled = true
+        if (giphy_media == nil) {
+            show_alert = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
+                self.show_alert = false
+            }
+            user_responded = true
+            return
+        }
+        let player = Player(doc_id: player_one.user.doc_id, username: player_one.user.username)
+        let response = Response(gif_id: giphy_media!.id, player: player)
+        submit_response(doc_id: game.doc_id, response: response) { success in
+            if (success) {
+                //player_one.games.filter
+                game.responses.append(response)
+                print("Submission successful!!")
+            }
+            else {
+                //TODO: Handle if unable to submit response..
+                print("Failed to submit response 😭")
+            }
+            user_responded = true
+        }
+    }
 }
 
 struct LoadGif: View {
@@ -173,6 +210,7 @@ struct LoadGif: View {
     var body: some View {
         if (gif.loading) {
             ProgressView()
+                .aspectRatio(contentMode: .fit)
         } else {
             if (gif.gif_media != nil) {
                 ShowStaticMedia(media: gif.gif_media!)
@@ -187,9 +225,8 @@ struct LoadGif: View {
         @Published var loading = true
         
         init (gif_id: String) {
-            print("init")
+            print("Getting gifByID \(gif_id)")
             GiphyCore.shared.gifByID(gif_id, completionHandler: { (response, error) in
-                print("converting id to media")
                 //print("RES: \(String(describing: response))")
                 //print("Data: \(String(describing: response?.data))")
                 if let media = response?.data {

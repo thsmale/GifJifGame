@@ -68,6 +68,7 @@ struct Game: Codable, Identifiable {
     var responses: [Response] = []
 }
 
+//A ligher weight User for identifying who sent what response
 struct Player: Codable, Identifiable {
     var id = UUID()
     let doc_id: String
@@ -95,6 +96,27 @@ struct Response: Codable, Identifiable {
     var id = UUID()
     var gif_id: String
     var player: Player
+    
+    init?(response: [String: Any]) {
+        guard let gif_id = response["gif_id"] as? String,
+              let player = response["player"] as? [String: Any] else {
+            print("Unable to decode response \(response)")
+            return nil
+        }
+        
+        self.gif_id = gif_id
+        if let playa = Player(player: player) {
+            self.player = playa
+        } else {
+            print("response Unable to decode player \(player)")
+            return nil
+        }
+    }
+    
+    init(gif_id: String, player: Player) {
+        self.gif_id = gif_id
+        self.player = player
+    }
 }
 
 //Initialize a game from user.json file stored in documents
@@ -105,12 +127,14 @@ extension Game {
               let players = game["players"] as? [[String: Any]],
               let host = game["host"] as? String,
               let topic = game["topic"] as? String,
-              let time = game["time"] as? Int
+              let time = game["time"] as? Int,
+              let responses = game["responses"] as? [[String: Any]]
         else{
             print("Game unable to decode data \(game)")
             return nil
         }
         
+        //TODO: Handle if players or responses failed to initialize
         self.doc_id = doc_id
         self.name = name
         for player in players {
@@ -121,6 +145,11 @@ extension Game {
         self.host = host
         self.topic = topic
         self.time = time
+        for response in responses {
+            if let res = Response(response: response) {
+                self.responses.append(res)
+            }
+        }
     }
 }
 
@@ -165,15 +194,47 @@ func write_games(games: [Game]) -> Bool {
     return write_json(filename: "games.json", data: data_json)
 }
 
-func submit_response(game: Game, response: Response) -> Bool {
-    let ref = db.collection("games").document(game.doc_id)
+func submit_response(doc_id: String, response: Response, completion: @escaping ((Bool) -> Void)) {
+    print("Submitting response...")
+    let encoded_response: [String: Any]
     do {
-        try ref.setData(from: game)
-        return true
+        // encode the swift struct instance into a dictionary
+        // using the Firestore encoder
+        encoded_response = try Firestore.Encoder().encode(response)
+    } catch {
+        // encoding error
+        print("Error encoding response \(error)")
+        completion(false)
+        return
+    }
+    let ref = db.collection("games").document(doc_id)
+    ref.updateData([
+        "responses": FieldValue.arrayUnion([encoded_response])
+    ]) { err in
+        if let err = err {
+            print("Error updating document: \(err)")
+            completion(false)
+        } else {
+            print("Document successfully updated")
+            completion(true)
+        }
+    }
+    /*
+    do {
+        try ref.setData(from: game) { err in
+            if let err = err {
+                print("Error updating document: \(err)")
+                completion(false)
+            } else {
+                print("Document successfully updated")
+                completion(true)
+            }
+        }
     } catch {
         print("Failed to update Game \(game.doc_id) with response")
-        return false
+        completion(false)
     }
+     */
 }
 
 func get_game(game_doc_id: String, completion: @escaping ((Game?) -> Void)) {

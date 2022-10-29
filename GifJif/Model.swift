@@ -44,9 +44,9 @@ extension PlayerOne {
                 if let g = Game(game: game) {
                     add_listener(game_doc_id: g.doc_id) { success in
                         if (success) {
-                            print("Added listener for \(g)")
+                            print("read_games added listener for \(g.doc_id)")
                         } else {
-                            print("Failed to add listener for \(g)")
+                            print("read_games failed to add listener for \(g.doc_id)")
                         }
                     }
                 }
@@ -67,9 +67,9 @@ extension PlayerOne {
             group.enter()
             add_listener(game_doc_id: doc_id) { success in
                 if (success) {
-                    print("Added listener for game \(doc_id)")
+                    print("load_games added listener for game \(doc_id)")
                 } else {
-                    print("Failed to add listener for game \(doc_id)")
+                    print("load_games failed to add listener for game \(doc_id)")
                 }
                 group.leave()
             }
@@ -89,11 +89,17 @@ extension PlayerOne {
     //Receives updates to the game from the database
     //Also appends game to games[] array
     func add_listener(game_doc_id doc_id: String, completion: @escaping ((Bool) -> Void)) {
-        print("Entering add listener")
+        print("Entering add game listener")
         let ref = db.collection("games").document(doc_id)
         ref.addSnapshotListener { [self] documentSnapshot, error in
+            print("game snapshot listener")
             guard let doc = documentSnapshot else {
                 print("Error fetching document: \(error!)")
+                completion(false)
+                return
+            }
+            if (doc.metadata.hasPendingWrites) {
+                print("Wait for local changes to write to database..")
                 completion(false)
                 return
             }
@@ -107,13 +113,13 @@ extension PlayerOne {
                 for i in 0..<games.count {
                     if (games[i].doc_id == doc_id) {
                         games[i] = game
-                        print("Updaing game \(doc_id)")
+                        print("add_listener updated game \(game)")
                         completion(true)
                         return
                     }
                 }
                 //New game on device
-                print("Adding new game \(game)")
+                print("add_listener adding new game \(game)")
                 games.append(game)
                 completion(true)
             }
