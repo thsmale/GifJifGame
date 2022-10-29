@@ -10,7 +10,7 @@ import GiphyUISDK
 
 struct PlayGame: View {
     @ObservedObject var player_one: PlayerOne
-    @State var game: Game
+    @Binding var game: Game
     @State private var show_topic = false
     @State private var timer: Timer? = nil
     @State private var handpick_host: String = ""
@@ -34,26 +34,29 @@ struct PlayGame: View {
     
     
     var body: some View {
-        VStack {
-            if (false) {
-                HostView() //Lobby (where people hang out after submitting, while waiting for others to submit, waiting for host to pick new topic)
-            }
-
             Form {
-                //Anybody can change game info
-                //Host has control over game settings like category, topic, and time
-                //Game settings is not mutable during game play
-                //TODO: Edit game settings
-                Section(header: Text("Game info")) {
-                    Text("Time: \(game.time) seconds")
-                    Text("Host: \(game.host)")
-                    NavigationLink("Players") {
-                        List(game.players) {
-                            Text($0.username)
+                if (game.responses.count == game.players.count) {
+                    //TODO: Edit game settings
+                    //Lobby (where people hang out after submitting, while waiting for others to submit, waiting for host to pick new topic)
+                    //Anybody can change game info
+                    //Only Host has control over game settings like category, topic, and time
+                    //EditGame(game: $game, player_one: player_one)
+                } else {
+                    //Game settings is not mutable during game play
+                    Section(header: Text("Game info")) {
+                        Text("Time: \(game.time) seconds")
+                        Text("Host: \(game.host)")
+                        NavigationLink("Players") {
+                            List(game.players) { player in
+                                Text(player.username)
+                            }
                         }
+                        Text("Responses received: \($game.responses.count) / \($game.players.count)")
                     }
-                    Text("Responses received: \(game.responses.count) / \(game.players.count)")
                 }
+                
+
+
                 
                 if (user_responded) {
                     //Show all the respones
@@ -65,7 +68,6 @@ struct PlayGame: View {
                                 //TODO: Show user as well
                                 LoadGif(gif_id: response.gif_id)
                                     .aspectRatio(contentMode: .fit)
-                                
                             }
                         }
                     }
@@ -103,8 +105,6 @@ struct PlayGame: View {
             })
             .navigationTitle(game.name)
         }
-    }
-    
 }
 
 extension PlayGame {
@@ -136,32 +136,23 @@ extension PlayGame {
         Section(header: Text("Play")) {
             Text("Topic: \(show_topic ? game.topic : "Click respond to reveal")")
                 .foregroundColor(show_topic ? .black : .gray)
-            HStack {
-                Button(show_topic ? "Pick gif" : "Show topic", action: {
-                    show_topic = true
-                    show_giphy.toggle()
-                    if (timer == nil) {
-                        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
-                            game.time = game.time - 1
-                            if (game.time <= 0) {
-                                print("Time is up")
-                                submit()
-                            }
-                        })
-                    }
-                })
-                Spacer()
+            Button(show_topic ? "Pick gif" : "Show topic", action: {
+                show_topic = true
+                show_giphy.toggle()
+                if (timer == nil) {
+                    timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+                        game.time = game.time - 1
+                        if (game.time <= 0) {
+                            print("Time is up")
+                            submit()
+                        }
+                    })
+                }
+            })
+            if (show_topic) {
                 Button("Submit", action: {
                     submit()
-                }).disabled({
-                    if(show_topic == false || game.time <= 0) {
-                        return true
-                    }
-                    return false
-                }())
-            }
-            if (show_topic) {
-                Text("Preview...")
+                }).disabled(game.time <= 0 || response_disabled)
             }
             if (giphy_media != nil) {
                 ShowMedia(media: $giphy_media)

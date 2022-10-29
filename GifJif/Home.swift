@@ -100,9 +100,9 @@ struct Home: View {
                         if(player_one.games.isEmpty) {
                             Text("You are in no games. Create a game or join a live game!")
                         } else {
-                            List(player_one.games) { game in
-                                NavigationLink(destination: PlayGame(player_one: player_one, game: game)) {
-                                    Text(game.name)
+                            List(player_one.games.indices) { index in
+                                NavigationLink(destination: PlayGame(player_one: player_one, game: self.$player_one.games[index])) {
+                                    Text(player_one.games[index].name)
                                 }
                             }
                         }
