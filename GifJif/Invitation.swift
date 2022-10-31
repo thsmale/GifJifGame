@@ -26,16 +26,18 @@ struct Invitation: View {
                 }
                 Button("Accept") {
                     print("Player accepted invitation")
-                    player_one.add_listener(game_doc_id: game.doc_id, completion: { success in
+                    player_one.add_game_doc_id(game_doc_id: game.doc_id) { success in
                         if (success) {
-                            print("Successfully accepted invitation \(game)")
                             player_one.delete_invitation(game_doc_id: game.doc_id)
-                            self.mode.wrappedValue.dismiss()
+                            player_one.user.save_locally()
                         } else {
                             print("Failed to accept invitation \(game)")
                             err = true
+                            return
                         }
-                    })
+                    }
+                    player_one.game_listener(game_doc_id: game.doc_id)
+                    self.mode.wrappedValue.dismiss()
                 }
                 Button("Reject") {
                     print("Player rejected invitation")

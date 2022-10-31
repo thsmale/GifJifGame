@@ -56,16 +56,67 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-
+//TODO: Change winner to optional
 struct Game: Codable, Identifiable {
     var id = UUID()
     var doc_id: String = ""
     var name: String
     var players: [Player] = []
-    var host: String
+    var host: Player
     var topic: String
     var time: Int
     var responses: [Response] = []
+    var winner: Response
+    
+    //for CreateGame
+    init(name: String, players: [Player], host: Player, topic: String, time: Int) {
+        self.name = name
+        self.players = players
+        self.host = host
+        self.topic = topic
+        self.time = time
+        self.winner = Response()
+    }
+    
+    //For dealing with json data
+    init?(game: [String: Any]) {
+        guard let doc_id = game["doc_id"] as? String,
+              let name = game["name"] as? String,
+              let players = game["players"] as? [[String: Any]],
+              let host = game["host"] as? [String: Any],
+              let topic = game["topic"] as? String,
+              let time = game["time"] as? Int,
+              let responses = game["responses"] as? [[String: Any]],
+              let winner = game["winner"] as? [String: Any]
+        else{
+            print("Game unable to decode data \(game)")
+            return nil
+        }
+        
+        //TODO: Handle if players or responses failed to initialize
+        self.doc_id = doc_id
+        self.name = name
+        for player in players {
+            if let athlete = Player(player: player) {
+                self.players.append(athlete)
+            }
+        }
+        self.host = Player()
+        if let host = Player(player: host) {
+            self.host = host
+        }
+        self.topic = topic
+        self.time = time
+        for response in responses {
+            if let res = Response(response: response) {
+                self.responses.append(res)
+            }
+        }
+        self.winner = Response()
+        if let winner = Response(response: winner) {
+            self.winner = winner
+        }
+    }
 }
 
 //A ligher weight User for identifying who sent what response
@@ -89,6 +140,19 @@ struct Player: Codable, Identifiable {
         self.doc_id = doc_id
         self.username = username
     }
+    
+    //Used for picker's, like CreateGame need player in add_players to match id of player_one
+    init(id: UUID, doc_id: String, username: String) {
+        self.id = id
+        self.doc_id = doc_id
+        self.username = username
+    }
+    
+    //Used as placeholder for winner
+    init() {
+        self.doc_id = ""
+        self.username = ""
+    }
 }
 
 //This is the content of when the user responds to the prompt
@@ -100,6 +164,12 @@ struct Response: Codable, Identifiable {
     init?(response: [String: Any]) {
         guard let gif_id = response["gif_id"] as? String,
               let player = response["player"] as? [String: Any] else {
+            if let gif_id = response["gif_id"] as? String {
+                print("gif_id chill")
+            }
+            if let player = response["player"] as? [String: Any] {
+                print("player chill")
+            }
             print("Unable to decode response \(response)")
             return nil
         }
@@ -117,67 +187,51 @@ struct Response: Codable, Identifiable {
         self.gif_id = gif_id
         self.player = player
     }
+    
+    //Reserved for the spot of the winner
+    init() {
+        self.gif_id = ""
+        self.player = Player()
+    }
 }
 
 //Initialize a game from user.json file stored in documents
 extension Game {
-    init?(game: [String: Any]) {
-        guard let doc_id = game["doc_id"] as? String,
-              let name = game["name"] as? String,
-              let players = game["players"] as? [[String: Any]],
-              let host = game["host"] as? String,
-              let topic = game["topic"] as? String,
-              let time = game["time"] as? Int,
-              let responses = game["responses"] as? [[String: Any]]
-        else{
-            print("Game unable to decode data \(game)")
-            return nil
-        }
-        
-        //TODO: Handle if players or responses failed to initialize
-        self.doc_id = doc_id
-        self.name = name
-        for player in players {
-            if let athlete = Player(player: player) {
-                self.players.append(athlete)
-            }
-        }
-        self.host = host
-        self.topic = topic
-        self.time = time
-        for response in responses {
-            if let res = Response(response: response) {
-                self.responses.append(res)
-            }
-        }
-    }
+
 }
 
 //Creates a game in the database
 //Adds it to list of games for user in database
 //Also saves it locally
 //Adds to users invitations so they get alerted
-func create_game(game: inout Game) -> Bool {
+//NOTE doc_id in database will be ""
+func create_game(game: Game, player_one_doc_id: String, completion: @escaping ((String?) -> Void)) {
     //Upload to games collection
     do {
         let ref = db.collection("games").document()
-        try ref.setData(from: game)
-        game.doc_id = ref.documentID
-        print("Game \(game.name) successfully added to database")
-        //Send invitations out
-        for player in game.players {
-            let user_ref = db.collection("users").document(player.doc_id)
-            user_ref.updateData([
-                "invitations": FieldValue.arrayUnion([ref.documentID])
-            ])
+        try ref.setData(from: game) { err in
+            if let err = err {
+                print("Error adding game: \(err)")
+                completion(nil)
+            } else {
+                print("Game \(game.name) successfully added to database with doc_id \(ref.documentID)")
+                //Send invitations out except to self
+                for player in game.players {
+                    if (player.doc_id == player_one_doc_id) {
+                        continue
+                    }
+                    let user_ref = db.collection("users").document(player.doc_id)
+                    user_ref.updateData([
+                        "invitations": FieldValue.arrayUnion([ref.documentID])
+                    ])
+                }
+                completion(ref.documentID)
+            }
         }
-        return true
     } catch let error {
         print("Error writing game to firestore \(error)")
-        return false
+        completion(nil)
     }
-
-    
 }
 
 //Every time a game is created the data is updated by rewriting it to disc
@@ -219,23 +273,111 @@ func submit_response(doc_id: String, response: Response, completion: @escaping (
             completion(true)
         }
     }
-    /*
-    do {
-        try ref.setData(from: game) { err in
-            if let err = err {
-                print("Error updating document: \(err)")
-                completion(false)
-            } else {
-                print("Document successfully updated")
-                completion(true)
-            }
-        }
-    } catch {
-        print("Failed to update Game \(game.doc_id) with response")
-        completion(false)
-    }
-     */
 }
+
+func submit_winner(doc_id: String, winner: Response, completion: @escaping ((Bool) -> Void)) {
+    print("Submitting winner...")
+    let encoded_response: [String: Any]
+    do {
+        // encode the swift struct instance into a dictionary
+        // using the Firestore encoder
+        encoded_response = try Firestore.Encoder().encode(winner)
+    } catch {
+        // encoding error
+        print("Error encoding response \(error)")
+        completion(false)
+        return
+    }
+    let ref = db.collection("games").document(doc_id)
+    ref.updateData([
+        "winner": encoded_response
+    ]) { err in
+        if let err = err {
+            print("Error updating document: \(err)")
+            completion(false)
+        } else {
+            print("Document successfully updated")
+            completion(true)
+        }
+    }
+}
+
+func add_player(doc_id: String, player: Player, completion: @escaping ((Bool) -> Void)) {
+    print("Adding player...")
+    let encoded_player: [String: Any]
+    do {
+        // encode the swift struct instance into a dictionary
+        // using the Firestore encoder
+        encoded_player = try Firestore.Encoder().encode(player)
+    } catch {
+        // encoding error
+        print("Error encoding player \(error)")
+        completion(false)
+        return
+    }
+    let ref = db.collection("games").document(doc_id)
+    ref.updateData([
+        "players": FieldValue.arrayUnion([encoded_player])
+    ]) { err in
+        if let err = err {
+            print("Error updating document: \(err)")
+            completion(false)
+        } else {
+            print("Document successfully updated")
+            completion(true)
+        }
+    }
+}
+
+func start_round(doc_id: String, topic: String, time: Int, completion: @escaping ((Bool) -> Void)) {
+    print("Starting new round...")
+    let encoded_player: [String: Any]
+    do {
+        encoded_player = try Firestore.Encoder().encode(Player())
+    } catch {
+        print("Error encoding player \(error)")
+        completion(false)
+        return
+    }
+    let ref = db.collection("games").document(doc_id)
+    ref.updateData([
+        "topic": topic, "time": time, "winner": encoded_player
+    ]) { err in
+        if let err = err {
+            print("Error starting round: \(err)")
+            completion(false)
+        } else {
+            print("Round successfully started")
+            completion(true)
+        }
+    }
+}
+
+
+func end_round(doc_id: String, host: Player, completion: @escaping ((Bool) -> Void)) {
+    print("Ending round...")
+    let encoded_player: [String: Any]
+    do {
+        encoded_player = try Firestore.Encoder().encode(host)
+    } catch {
+        print("Error encoding player \(error)")
+        completion(false)
+        return
+    }
+    let ref = db.collection("games").document(doc_id)
+    ref.updateData([
+        "topic": "", "host": encoded_player
+    ]) { err in
+        if let err = err {
+            print("Error ending round: \(err)")
+            completion(false)
+        } else {
+            print("Sucessfully ended round")
+            completion(true)
+        }
+    }
+}
+
 
 func get_game(game_doc_id: String, completion: @escaping ((Game?) -> Void)) {
     let docRef = db.collection("games").document(game_doc_id)
@@ -248,16 +390,17 @@ func get_game(game_doc_id: String, completion: @escaping ((Game?) -> Void)) {
                     return
                 }
             } else {
-                print("data received is empty")
+                print("get_game data received is empty")
                 completion(nil)
             }
         } else {
-            print("Document id \(game_doc_id) does not exist")
+            print("get_game Document id \(game_doc_id) does not exist")
             completion(nil)
         }
         if (error != nil) {
-            print("Error \(String(describing: error))")
+            print("get_game Error \(String(describing: error))")
             completion(nil)
         }
     }
 }
+

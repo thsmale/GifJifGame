@@ -8,8 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-let MAX_USERNAME_LENGTH = 30
-let MAX_PASSWORD_ATTEMPT = 10
+
 
 //Return username of user
 //To handle ID: Do not let user create game unless they have an account
@@ -79,14 +78,6 @@ extension User {
 
 //User methods that interact with the database
 extension User {
-    //TODO: Make non void function
-    //When player creates a new game add game_doc_id to player doc
-    func add_game_doc_id(game_doc_id: String) {
-        //Upload doc_id to user data stored in cloud
-        db.collection("users").document(self.doc_id).updateData([
-            "game_doc_ids": FieldValue.arrayUnion([game_doc_id])
-        ])
-    }
     func save_locally() -> Bool {
         print("Entering save locally")
         var data_json: Data
@@ -122,6 +113,7 @@ func read_user() -> User? {
 
 //Check the database for a username
 //When player is creating a game and adding other players
+//TODO: Return Player instead. Just get the fields you want
 func get_user(username: String) async -> User? {
     print("Entering get_user")
     do {
@@ -140,7 +132,27 @@ func get_user(username: String) async -> User? {
     return nil
 }
 
-
+//This will try to add a user to the database
+//Called when user creates an account
+//TODO: Val of doc_id in database will be ""
+func create_account(user: User, completion: @escaping ((String?) -> Void)) {
+    print("Entering create account")
+    let ref = db.collection("users").document()
+    do {
+        try ref.setData(from: user) { err in
+            if let err = err {
+                print("Failed to create account \(err)")
+                completion(nil)
+            } else {
+                print("Successfully created account")
+                completion(ref.documentID)
+            }
+        }
+    } catch let error {
+        print("Error creating account \(error)")
+        completion(nil)
+    }
+}
 
 
 

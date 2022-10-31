@@ -13,9 +13,11 @@ struct PlayGame: View {
     @Binding var game: Game
     @State private var show_topic = false
     @State private var timer: Timer? = nil
-    @State private var handpick_host: String = ""
-    @State private var handpick_topic: String = ""
-    @State private var winner: String = ""
+    //Vars related to winner
+    @State private var winner: Response? = nil
+    @State private var show_winner = false //TODO: Show winner if next round hasn't started yet
+    @State private var submit_winner_fail = false
+    
     @State private var response_disabled = false
     @State private var submit_disabled = true
     @State private var user_responded = false
@@ -32,48 +34,84 @@ struct PlayGame: View {
     @State private var preview: UIImage?
     @State private var show_preview: Bool = false
     
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
             Form {
-                if (game.responses.count == game.players.count) {
-                    //TODO: Edit game settings
+                if (game.topic == "") {
                     //Lobby (where people hang out after submitting, while waiting for others to submit, waiting for host to pick new topic)
                     //Anybody can change game info
                     //Only Host has control over game settings like category, topic, and time
-                    //EditGame(game: $game, player_one: player_one)
+                    EditGame(game: $game, player_one: player_one)
                 } else {
                     //Game settings is not mutable during game play
                     Section(header: Text("Game info")) {
-                        Text("Time: \(game.time) seconds")
-                        Text("Host: \(game.host)")
+                        Text("Host: \(game.host.username)")
                         NavigationLink("Players") {
                             List(game.players) { player in
                                 Text(player.username)
                             }
                         }
                         Text("Responses received: \($game.responses.count) / \($game.players.count)")
+                        Button(action: {
+                            player_one.leave_game(doc_id: game.doc_id)
+                            self.presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Text("Leave game")
+                                .foregroundColor(.red)
+                        }
                     }
                 }
                 
+                if (game.winner.gif_id != "") {
+                    Section(header: Text("Winner")) {
+                        Text("🏆🏆🐔🍽")
+                        Text("\(game.winner.player.username) wins!")
+                        LoadGif(gif_id: game.winner.gif_id)
+                            .aspectRatio(contentMode: .fit)
+                    }
+                }
 
-
-                
-                if (user_responded) {
-                    //Show all the respones
-                    //Show users response first
-                    Section(header: Text("Responses")) {
-                        Text("Responses")
-                        VStack {
+                if (game.host.doc_id == player_one.user.doc_id) {
+                    //View for the host
+                    //TODO: test that game.responess.count wont exceed number of players
+                    if (game.responses.count == 0) {
+                       Text("No responses yet")
+                    } else if (game.responses.count < game.players.count) {
+                        Section(header: Text("Responses")) {
+                            if (game.responses.count == 0) {
+                                Text("No responses yet")
+                            }
+                            if (game.responses.count == game.players.count) {
+                                Text("All responses received")
+                            }
                             ForEach(game.responses) { response in
-                                //TODO: Show user as well
                                 LoadGif(gif_id: response.gif_id)
                                     .aspectRatio(contentMode: .fit)
                             }
                         }
+                    } else {
+                        pick_winner()
                     }
                 } else {
-                    //Let the user pick their response
-                    respond()
+                    //View for player
+                    if (user_responded) {
+                        Section(header: Text("Responses")) {
+                            if (game.responses.count == 0) {
+                                Text("No responses yet")
+                            }
+                            if (game.responses.count == game.players.count) {
+                                Text("All responses received")
+                            }
+                            ForEach(game.responses) { response in
+                                LoadGif(gif_id: response.gif_id)
+                                    .aspectRatio(contentMode: .fit)
+                            }
+                        }
+                    } else {
+                        //Let the user pick their response
+                        respond()
+                    }
                 }
                 
             }
@@ -103,39 +141,21 @@ struct PlayGame: View {
                     }
                 }
             })
+            .alert(Text("Failed to submit winner"), isPresented: $submit_winner_fail) {
+                Button("🤬") {}
+                Button("🙄") {}
+                Button("😭") {}
+            }
             .navigationTitle(game.name)
         }
 }
 
 extension PlayGame {
-    func HostView() -> some View {
-        handpick_host = game.host
-        handpick_topic = game.topic
-        return Form {
-            Section(header: Text("Host info")) {
-                TextField("Host", text: $handpick_host)
-                TextField("Topic", text: $handpick_topic)
-                if (game.responses.count <= 0) {
-                    Text("Responses received: \(game.responses.count) / \(game.players.count)")
-                } else {
-                    //Scroll View of Giphy UI
-                    Picker("Responses", selection: $winner) {
-                        List(game.responses) {
-                            Text($0.player.username)
-                        }
-                    }
-                }
-                Button("Delete Game", action: {})
-                Button("Submit", action: {})
-                Button("Start", action: {})
-            }
-        }
-    }
-    
     func respond() -> some View {
         Section(header: Text("Play")) {
             Text("Topic: \(show_topic ? game.topic : "Click respond to reveal")")
                 .foregroundColor(show_topic ? .black : .gray)
+            Text("Time: \(game.time)")
             Button(show_topic ? "Pick gif" : "Show topic", action: {
                 show_topic = true
                 show_giphy.toggle()
@@ -148,7 +168,7 @@ extension PlayGame {
                         }
                     })
                 }
-            })
+            }).disabled(game.topic == "")
             if (show_topic) {
                 Button("Submit", action: {
                     submit()
@@ -158,6 +178,43 @@ extension PlayGame {
                 ShowMedia(media: $giphy_media)
                     .aspectRatio(contentMode: .fit)
             }
+        }
+    }
+    
+    func pick_winner() -> some View {
+        Section(header: Text("Pick Winner")) {
+            Text("All responses received")
+                ForEach(game.responses) { response in
+                    VStack {
+                        if (winner?.player.doc_id == response.player.doc_id) {
+                            Image(systemName: "checkmark.circle.fill")
+                        } else {
+                            Image(systemName: "checkmark.circle")
+                        }
+                        LoadGif(gif_id: response.gif_id)
+                            .aspectRatio(contentMode: .fit)
+                            .onTapGesture {
+                                winner = response
+                            }
+                    }
+                }
+            Button("Confirm winner") {
+                submit_winner(doc_id: game.doc_id, winner: winner!) { success in
+                    if (success) {
+                        let random_int = Int.random(in: 0..<game.players.count)
+                        let new_host = game.players[random_int]
+                        end_round(doc_id: game.doc_id, host: new_host) { success in
+                            if (!success) {
+                                //TODO: Handle this better
+                                submit_winner_fail = true
+                            }
+                        }
+                    } else {
+                        submit_winner_fail = true
+                    }
+                }
+            }.disabled(winner == nil)
+                
         }
     }
     
@@ -206,7 +263,7 @@ struct LoadGif: View {
             if (gif.gif_media != nil) {
                 ShowStaticMedia(media: gif.gif_media!)
             } else {
-                Image("froggy")
+                Image("froggy_fail")
             }
         }
     }

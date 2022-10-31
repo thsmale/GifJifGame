@@ -24,14 +24,17 @@ struct GifJifApp: App {
     @ObservedObject var player_one = PlayerOne()
 
     init() {
+        print("-----Setting up game------")
         FirebaseApp.configure()
-
+        //TODO: Save each acount to it's own file
+        //  Have some way to read locally whoever is signed in so load their data 
         if let user = read_user() {
             print("Successfully read \(user) from user.json")
             player_one.user = user
             player_one.user_listener()
+            player_one.load_games()
         }
-        player_one.read_games()
+        print("-----------------------------\n")
     }
     
     var body: some Scene {

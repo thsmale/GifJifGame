@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "froggy.jpeg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "froggy_fail.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

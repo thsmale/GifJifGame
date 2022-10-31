@@ -31,12 +31,9 @@ struct SignIn: View {
                         loading = true
                         player_one.sign_in(username, password) { success in
                             if (success)  {
+                                print("Successfully signed in \(player_one.user)")
                                 valid_account = true
-                                if (player_one.user.save_locally()) {
-                                    print("Successfully saved user \(username) locally")
-                                } else {
-                                    print("Failed to save user \(username) locally")
-                                }
+                                player_one.user.save_locally()
                                 player_one.load_games()
                                 self.mode.wrappedValue.dismiss()
                             }

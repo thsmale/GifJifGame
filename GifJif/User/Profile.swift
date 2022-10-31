@@ -36,6 +36,9 @@ struct Profile: View {
     @State private var email: String
     @State private var email_status = Status()
     @State private var show_email_status = false
+    
+    @State private var show_delete_account_confirmation = false
+    @State private var delete_account_confirmation = false
         
     private struct Status {
         var msg: String = ""
@@ -359,7 +362,11 @@ struct Profile: View {
                     .padding(.top, 4)
                     .padding(.bottom, 4)
                 Button(action: {
-                    
+                    //TODO: Password protect this action
+                    show_delete_account_confirmation = true
+                    if (delete_account_confirmation) {
+                        player_one.delete_account()
+                    }
                 }) {
                     HStack {
                         Spacer()
@@ -401,6 +408,16 @@ struct Profile: View {
                     }
                 }
             })
+            .alert(Text("Confirm account deletion"), isPresented: $show_delete_account_confirmation) {
+                Text("Deleting your account will remove all data locally and in the database. You will be removed from all games you are in. This cannot be undone. Are you sure?")
+                Button("No") {
+                    show_delete_account_confirmation = false
+                }
+                Button("Yes") {
+                    delete_account_confirmation = true
+                    show_delete_account_confirmation = false
+                }
+            }
     }
     
 

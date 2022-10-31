@@ -43,19 +43,22 @@ struct Home: View {
                 let docRef = db.collection("games").document(game_doc_id)
                 
                 docRef.getDocument { (document, error) in
+                    if let error = error {
+                        print("FetchGame error \(error)")
+                    }
                     if let document = document, document.exists {
                         if let data = document.data() {
-                            if let game = Game(game: data) {
+                            if var game = Game(game: data) {
+                                if (game.doc_id == "") {
+                                    game.doc_id = game_doc_id
+                                }
                                 self.game = game
                             }
                         } else {
-                            print("data received is empty")
+                            print("FetchGame data received is empty")
                         }
                     } else {
-                        print("Document id \(game_doc_id) does not exist")
-                    }
-                    if (error != nil) {
-                        print("Error \(String(describing: error))")
+                        print("FetchGame Document id \(game_doc_id) does not exist")
                     }
                     self.loading = false
                 }
@@ -107,6 +110,8 @@ struct Home: View {
                             }
                         }
                     }
+                    
+
                      
                     
                     Section(header: Text("Invitations")) {
