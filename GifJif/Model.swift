@@ -21,6 +21,13 @@ let MAX_TOPIC_LENGTH = 140
 class PlayerOne: ObservableObject {
     @Published var user: User
     @Published var games: [Game]
+    private var listeners: [Listener] = []
+    
+    //Note that doc_id for the user is just "user" bc of sign_in not having access to the doc_id
+    private struct Listener {
+        var doc_id: String
+        var listener: any ListenerRegistration
+    }
     
     //TODO: Remove listeners
     //If you have games, sign out, then sign in, you'll have twice as many listeners!
@@ -33,9 +40,22 @@ class PlayerOne: ObservableObject {
     //Methods that effect both user and game
     //Remove all listeners if any
     func sign_out() {
+        user.save_locally()
+        for i in 0..<listeners.count {
+            listeners[i].listener.remove()
+        }
         //Publishing changes from within view updates is not allowed, this will cause undefined behavior.
-        user = User()
-        games = []
+        //user = User()
+        //games = []
+        self.user.doc_id = ""
+        self.user.username = ""
+        self.user.password = ""
+        self.user.first_name = ""
+        self.user.last_name = ""
+        self.user.email = ""
+        self.user.game_doc_ids.removeAll()
+        self.user.invitations.removeAll()
+        self.games.removeAll()
     }
     
     //Delete any data in the database
@@ -55,9 +75,19 @@ class PlayerOne: ObservableObject {
     }
     
     func remove_player_from_game(doc_id: String, player: Player) {
+        let encoded_player: [String: Any]
+        do {
+            // encode the swift struct instance into a dictionary
+            // using the Firestore encoder
+            encoded_player = try Firestore.Encoder().encode(player)
+        } catch {
+            // encoding error
+            print("remove_player_from_game Error encoding player \(error)")
+            return
+        }
         let ref = db.collection("games").document(doc_id)
         ref.updateData([
-            "players": FieldValue.arrayRemove([player])
+            "players": FieldValue.arrayRemove([encoded_player])
         ]) { err in
             if let err = err {
                 print("Error removing player from game: \(err)")
@@ -66,19 +96,27 @@ class PlayerOne: ObservableObject {
     }
     
     /*
+     Remove nosey listener
      Remove game from games array
-     Remove game from games.json
      Remove game from user.game_doc_ids
      Remove player from game doc in database
      Remove game_doc_id from game_doc_ids in database
+     Save state of user locally
      */
     func leave_game(doc_id: String) {
+        print("Leaving game \(doc_id)")
+        for i in 0..<listeners.count {
+            if (listeners[i].doc_id == doc_id) {
+                listeners[i].listener.remove()
+                listeners.remove(at: i)
+                break
+            }
+        }
         if let index = games.firstIndex(where: {$0.doc_id == doc_id}) {
             games.remove(at: index)
         } else {
             print("Unable to find doc_id in games array")
         }
-        write_games(games: games)
         if let index = user.game_doc_ids.firstIndex(where: {$0 == doc_id}) {
             user.game_doc_ids.remove(at: index)
         } else {
@@ -88,12 +126,13 @@ class PlayerOne: ObservableObject {
         remove_player_from_game(doc_id: doc_id, player: player)
         let ref = db.collection("users").document(user.doc_id)
         ref.updateData([
-            "games": FieldValue.arrayRemove([doc_id])
+            "game_doc_ids": FieldValue.arrayRemove([doc_id])
         ]) {err in
             if let err = err {
                 print("Error removing game_doc_id from game_doc_ids \(err)")
             }
         }
+        user.save_locally()
     }
 }
 
@@ -108,14 +147,13 @@ extension PlayerOne {
             game_listener(game_doc_id: doc_id)
         }
     }
-    
     //Loads game from the database
     //Receives updates to the game from the database
     //Also appends game to games[] array
     func game_listener(game_doc_id doc_id: String) {
         print("Entering add game listener")
         let ref = db.collection("games").document(doc_id)
-        ref.addSnapshotListener { [self] documentSnapshot, error in
+        let document_snapshot = ref.addSnapshotListener { [self] documentSnapshot, error in
             if let error = error {
                 print("Error retriveing the collection \(error)")
                 return
@@ -150,43 +188,51 @@ extension PlayerOne {
                 games.append(game)
             }
         }
+        let listener = Listener(doc_id: doc_id, listener: document_snapshot)
+        listeners.append(listener)
     }
 
 }
 
 //Methods related to User
+//Each update to database should have respective local write
+//TODO: save user state in applicationWillTerminate
+//TODO: Differentiate between local and database saves
 extension PlayerOne {
     //Finds username and password in database, saves user locally
-    //TODO: First read local user.json
+    //TODO: Firestore authentication this seems very hackable
     func sign_in(_ username: String, _ password: String,
                  _ completion: @escaping ((Bool) -> Void)) {
         print("Entering sign_in")
-        db.collection("users").whereField("username", isEqualTo: username)
-            .addSnapshotListener { querySnapshot, error in
-                if let error = error {
-                    print("Error retriveing the collection \(error)")
-                    return
-                }
-                guard let documents = querySnapshot?.documents else {
-                    print("Error fetching documents: \(error!)")
+        db.collection("users").whereField("username", isEqualTo: username).getDocuments() { querySnapshot, error in
+            if let error = error {
+                print("sign_in Error retriveing the collection \(error)")
+                return
+            }
+            guard let documents = querySnapshot?.documents else {
+                print("sign_in Error fetching documents: \(error!)")
+                completion(false)
+                return
+            }
+            if (documents.count <= 0) {
+                print("sign_in No documents found for \(username)")
+                completion(false)
+                return
+            }
+            if var user = User(json: documents[0].data()) {
+                if (user.password != password) {
+                    print("sign_in incorrect password for \(username)")
                     completion(false)
-                    return
-                }
-                if (documents.count <= 0) {
-                    print("No documents found for \(username)")
-                    completion(false)
-                    return
-                }
-                if var user = User(json: documents[0].data()) {
+                } else {
                     if (user.doc_id == "") {
                         user.doc_id = documents[0].documentID
                     }
-                    print("Updating user \(user)")
                     self.user = user
+                    user.save_locally()
                     completion(true)
                 }
             }
-        print("Exiting sign_in")
+        }
     }
     //Creates a listener for User
     //Receives updates to the User from the database
@@ -196,7 +242,7 @@ extension PlayerOne {
         print("Entering user_listener")
         let ref = db.collection("users").document(self.user.doc_id)
         //let ref = db.collection("users").document(self.user.doc_id)
-        ref.addSnapshotListener { [self] documentSnapshot, error in
+        let document_snapshot = ref.addSnapshotListener { [self] documentSnapshot, error in
             guard let doc = documentSnapshot else {
                 print("Error fetching document: \(error!)")
                 return
@@ -215,8 +261,12 @@ extension PlayerOne {
                 }
                 print("Updating user \(user)")
                 self.user = player
+                user.save_locally()
             }
         }
+        //TODO: If addSnapShotListener fails or cause callback this isn't really initialized, it probably shouldn't be appended to array
+        let listener = Listener(doc_id: "user", listener: document_snapshot)
+        listeners.append(listener)
         print("Exiting user_listener")
     }
     //Rejecting an invitation involves removing it from local array and updating database with the state
@@ -229,6 +279,7 @@ extension PlayerOne {
                 break
             }
         }
+        user.save_locally()
         //Remove from database
         let ref = db.collection("users").document(user.doc_id)
         ref.updateData([
@@ -247,6 +298,7 @@ extension PlayerOne {
             } else {
                 print("Username successfully updated")
                 user.username = username
+                user.save_locally()
                 completion(true)
             }
         }
@@ -263,6 +315,7 @@ extension PlayerOne {
             } else {
                 print("Username successfully updated")
                 user.password = password
+                user.save_locally()
                 completion(true)
             }
         }
@@ -279,6 +332,7 @@ extension PlayerOne {
             } else {
                 print("first name successfully updated")
                 user.first_name = first_name
+                user.save_locally()
                 completion(true)
             }
         }
@@ -295,6 +349,7 @@ extension PlayerOne {
             } else {
                 print("last name successfully updated")
                 user.last_name = last_name
+                user.save_locally()
                 completion(true)
             }
         }
@@ -311,6 +366,7 @@ extension PlayerOne {
             } else {
                 print("last name successfully updated")
                 user.email = email
+                user.save_locally()
                 completion(true)
             }
         }
@@ -328,6 +384,7 @@ extension PlayerOne {
             } else {
                 print("Successfully added game_doc_id to user in database")
                 user.game_doc_ids.append(game_doc_id)
+                user.save_locally()
                 completion(true)
             }
         }

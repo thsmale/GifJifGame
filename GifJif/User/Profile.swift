@@ -335,51 +335,22 @@ struct Profile: View {
             }
 
 
-            VStack {
-                Button(action: {
-                    
-                }) {
-                    HStack {
-                        Spacer()
-                        Text("Save")
-                        Spacer()
-                    }
+            Button(action: {
+                //TODO: Password protect this action
+                show_delete_account_confirmation = true
+                if (delete_account_confirmation) {
+                    player_one.delete_account()
                 }
-               .padding(.top, 4)
-                Divider()
-                    .padding(.top, 4)
-                    .padding(.bottom, 4)
-                Button(action: {
-                    
-                }) {
-                    HStack {
-                        Spacer()
-                        Text("Cancel")
-                        Spacer()
-                    }
+            }) {
+                HStack {
+                    Spacer()
+                    Text("Delete Account")
+                        .foregroundColor(.red)
+                        .frame(alignment: .center)
+                    Spacer()
                 }
-                Divider()
-                    .padding(.top, 4)
-                    .padding(.bottom, 4)
-                Button(action: {
-                    //TODO: Password protect this action
-                    show_delete_account_confirmation = true
-                    if (delete_account_confirmation) {
-                        player_one.delete_account()
-                    }
-                }) {
-                    HStack {
-                        Spacer()
-                        Text("Delete Account")
-                            .foregroundColor(.red)
-                            .frame(alignment: .center)
-                        Spacer()
-                    }
-                }
-                .padding(.bottom, 4)
             }
             
-
             
         }
         
@@ -388,7 +359,7 @@ struct Profile: View {
         //Suspend user from checking for an hour
             .sheet(isPresented: $show_password_check, content: {
                 Form {
-                    Text("Prove it's you")
+                    Text("Verify it's \(player_one.user.username)")
                     SecureField("Enter password", text: $password_check)
                         .onSubmit {
                             incorrect_password = false

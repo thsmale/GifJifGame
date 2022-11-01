@@ -23,8 +23,6 @@ struct GiphyUI: UIViewControllerRepresentable {
     
     //Configure a rating
     func makeUIViewController(context: Context) -> GiphyViewController {
-        let api_key = ProcessInfo.processInfo.environment["giphy_api_key"]
-        Giphy.configure(apiKey: api_key ?? "")
         let giphy = GiphyViewController()
         giphy.mediaTypeConfig = [.gifs, .stickers, .text, .emoji]
         giphy.theme = GPHTheme(type: .automatic)
@@ -79,8 +77,9 @@ struct ShowMedia: UIViewRepresentable {
     
     func updateUIView(_ uiView: UIView, context: Context) {
         let media_view = uiView.subviews[0] as! GPHMediaView
-        media_view.media = media!
-        //media_view.widthAnchor.constraint(equalTo: uiView.heightAnchor, multiplier: media!.aspectRatio).isActive = true
+        if let media = media {
+            media_view.media = media
+        }
     }
 }
 

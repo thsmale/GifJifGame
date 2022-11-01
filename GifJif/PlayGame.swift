@@ -36,118 +36,99 @@ struct PlayGame: View {
     
     @Environment(\.presentationMode) var presentationMode
     
+    func foo() {
+        
+    }
+    
     var body: some View {
-            Form {
-                if (game.topic == "") {
-                    //Lobby (where people hang out after submitting, while waiting for others to submit, waiting for host to pick new topic)
-                    //Anybody can change game info
-                    //Only Host has control over game settings like category, topic, and time
-                    EditGame(game: $game, player_one: player_one)
-                } else {
-                    //Game settings is not mutable during game play
-                    Section(header: Text("Game info")) {
-                        Text("Host: \(game.host.username)")
-                        NavigationLink("Players") {
-                            List(game.players) { player in
-                                Text(player.username)
-                            }
+        Form {
+            //game.topic == "" implies no game is currently active
+            if (game.topic == "") {
+                //Lobby (where people hang out after submitting, while waiting for others to submit, waiting for host to pick new topic)
+                //Anybody can change game info
+                //Only Host has control over game settings like category, topic, and time
+                EditGame(game: $game, player_one: player_one)
+            } else {
+                //Game settings is not mutable during game play
+                Section(header: Text("Game info")) {
+                    Text("Host: \(game.host.username)")
+                    NavigationLink("Players") {
+                        List(game.players) { player in
+                            Text(player.username)
                         }
-                        Text("Responses received: \($game.responses.count) / \($game.players.count)")
-                        Button(action: {
-                            player_one.leave_game(doc_id: game.doc_id)
-                            self.presentationMode.wrappedValue.dismiss()
-                        }) {
-                            Text("Leave game")
-                                .foregroundColor(.red)
-                        }
+                    }
+                    Text("Responses received: \($game.responses.count) / \($game.players.count == 1 ? 1 : $game.players.count - 1)")
+                    Button(action: {
+                        player_one.leave_game(doc_id: game.doc_id)
+                        self.presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Text("Leave game")
+                            .foregroundColor(.red)
                     }
                 }
-                
-                if (game.winner.gif_id != "") {
-                    Section(header: Text("Winner")) {
-                        Text("🏆🏆🐔🍽")
-                        Text("\(game.winner.player.username) wins!")
-                        LoadGif(gif_id: game.winner.gif_id)
-                            .aspectRatio(contentMode: .fit)
-                    }
-                }
-
-                if (game.host.doc_id == player_one.user.doc_id) {
-                    //View for the host
-                    //TODO: test that game.responess.count wont exceed number of players
-                    if (game.responses.count == 0) {
-                       Text("No responses yet")
-                    } else if (game.responses.count < game.players.count) {
-                        Section(header: Text("Responses")) {
-                            if (game.responses.count == 0) {
-                                Text("No responses yet")
-                            }
-                            if (game.responses.count == game.players.count) {
-                                Text("All responses received")
-                            }
-                            ForEach(game.responses) { response in
-                                LoadGif(gif_id: response.gif_id)
-                                    .aspectRatio(contentMode: .fit)
-                            }
-                        }
-                    } else {
-                        pick_winner()
-                    }
-                } else {
-                    //View for player
-                    if (user_responded) {
-                        Section(header: Text("Responses")) {
-                            if (game.responses.count == 0) {
-                                Text("No responses yet")
-                            }
-                            if (game.responses.count == game.players.count) {
-                                Text("All responses received")
-                            }
-                            ForEach(game.responses) { response in
-                                LoadGif(gif_id: response.gif_id)
-                                    .aspectRatio(contentMode: .fit)
-                            }
-                        }
-                    } else {
-                        //Let the user pick their response
-                        respond()
-                    }
-                }
-                
             }
             
-            //How the user picks a GIF
-            .sheet(isPresented: $show_giphy, content: {
-                VStack {
-                    Text("Task: \(game.topic)")
-                    Text("Time: \(game.time) seconds")
-                    if (giphy_media != nil) {
-                        ShowMedia(media: $giphy_media)
-                            .frame(width: 90, height: 90, alignment: .center)
-                    }
-                    GiphyUI(url: $giphy, media: $giphy_media, media_view: $mediaView)
+            if (game.winner != nil) {
+                Section(header: Text("Winner")) {
+                    Text("🏆🏆🐔🍽")
+                    Text("\(game.winner!.player.username) wins!")
+                    LoadGif(gif_id: game.winner!.gif_id)
+                        .aspectRatio(contentMode: .fit)
                 }
-            })
-            .alert(Text("Time's up!"), isPresented: $show_alert, actions: {
-                VStack {
-                    //TODO add timer to this when expiring
-                    Text("You didn't pick anything. This snail will be submitted on your behalf")
-                    Image("snail")
-                    Button("Ok") {
-                        show_alert = false
-                    }
-                    Button("Whatever") {
-                        show_alert = false
-                    }
-                }
-            })
-            .alert(Text("Failed to submit winner"), isPresented: $submit_winner_fail) {
-                Button("🤬") {}
-                Button("🙄") {}
-                Button("😭") {}
             }
-            .navigationTitle(game.name)
+            
+            if (game.host.doc_id == player_one.user.doc_id) {
+                //View for the host
+                //TODO: test that game.responess.count wont exceed number of players
+                //TODO: make it more apparent that it's time for the host to pick the winner
+                if (game.responses.count < game.players.count-1 || (game.players.count == 1 && game.responses.count < 1) || game.winner != nil) {
+                    show_responses()
+                } else {
+                    pick_winner()
+                }
+            } else {
+                //View for player to play game
+                if game.responses.firstIndex(where: {$0.player.doc_id == player_one.user.doc_id}) == nil {
+                    respond()
+                } else {
+                    //The user has responded so show them other people's responses
+                    show_responses()
+                }
+            }
         }
+        
+        //How the user picks a GIF
+        .sheet(isPresented: $show_giphy, content: {
+            VStack {
+                Text("Task: \(game.topic)")
+                Text("Time: \(game.time) seconds")
+                if (giphy_media != nil) {
+                    ShowMedia(media: $giphy_media)
+                        .frame(width: 90, height: 90, alignment: .center)
+                }
+                GiphyUI(url: $giphy, media: $giphy_media, media_view: $mediaView)
+            }
+        })
+        .alert(Text("Time's up!"), isPresented: $show_alert, actions: {
+            VStack {
+                //TODO add timer to this when expiring
+                Text("You didn't pick anything. This snail will be submitted on your behalf")
+                Image("snail")
+                Button("Ok") {
+                    show_alert = false
+                }
+                Button("Whatever") {
+                    show_alert = false
+                }
+            }
+        })
+        .alert(Text("Failed to submit winner"), isPresented: $submit_winner_fail) {
+            Button("🤬") {}
+            Button("🙄") {}
+            Button("😭") {}
+        }
+        .navigationTitle(game.name)
+    }
 }
 
 extension PlayGame {
@@ -184,27 +165,33 @@ extension PlayGame {
     func pick_winner() -> some View {
         Section(header: Text("Pick Winner")) {
             Text("All responses received")
-                ForEach(game.responses) { response in
-                    VStack {
-                        if (winner?.player.doc_id == response.player.doc_id) {
-                            Image(systemName: "checkmark.circle.fill")
-                        } else {
-                            Image(systemName: "checkmark.circle")
-                        }
-                        LoadGif(gif_id: response.gif_id)
-                            .aspectRatio(contentMode: .fit)
-                            .onTapGesture {
-                                winner = response
-                            }
+            ForEach(game.responses) { response in
+                VStack {
+                    if (winner?.player.doc_id == response.player.doc_id) {
+                        Image(systemName: "checkmark.circle.fill")
+                    } else {
+                        Image(systemName: "checkmark.circle")
                     }
+                    LoadGif(gif_id: response.gif_id)
+                        .aspectRatio(contentMode: .fit)
                 }
-            Button("Confirm winner") {
+                .onTapGesture {
+                    winner = response
+                }
+            }
+            Button("Submit winner") {
                 submit_winner(doc_id: game.doc_id, winner: winner!) { success in
                     if (success) {
+                        game.winner = Response(gif_id: winner!.gif_id, player: winner!.player)
                         let random_int = Int.random(in: 0..<game.players.count)
                         let new_host = game.players[random_int]
                         end_round(doc_id: game.doc_id, host: new_host) { success in
-                            if (!success) {
+                            if (success) {
+                                game.host = new_host
+                                game.topic = ""
+                                winner = nil
+                                reset_state()
+                            } else {
                                 //TODO: Handle this better
                                 submit_winner_fail = true
                             }
@@ -214,7 +201,7 @@ extension PlayGame {
                     }
                 }
             }.disabled(winner == nil)
-                
+            
         }
     }
     
@@ -228,7 +215,6 @@ extension PlayGame {
             DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
                 self.show_alert = false
             }
-            user_responded = true
             return
         }
         let player = Player(doc_id: player_one.user.doc_id, username: player_one.user.username)
@@ -236,15 +222,32 @@ extension PlayGame {
         submit_response(doc_id: game.doc_id, response: response) { success in
             if (success) {
                 //player_one.games.filter
-                game.responses.append(response)
                 print("Submission successful!!")
+                game.responses.append(response)
+                reset_state()
             }
             else {
                 //TODO: Handle if unable to submit response..
                 print("Failed to submit response 😭")
             }
-            user_responded = true
         }
+    }
+    
+    func show_responses() -> some View {
+        Section(header: Text("Responses")) {
+            Text("Topic: \(game.topic)")
+            Text("Responses received: \($game.responses.count) / \($game.players.count == 1 ? 1 : $game.players.count - 1)")
+            ForEach(game.responses) { response in
+                LoadGif(gif_id: response.gif_id)
+                    .aspectRatio(contentMode: .fit)
+            }
+        }
+    }
+    
+    //Called by pick winner and submit_response
+    func reset_state() {
+        giphy_media = nil
+        show_topic = false
     }
 }
 
@@ -284,8 +287,8 @@ struct LoadGif: View {
                         self?.gif_media = media
                     }
                 }
-                if (error != nil) {
-                    print("Err getting gifByID \(String(describing: error)) for \(gif_id)")
+                if let error = error {
+                    print("Err getting gifByID \(error) for \(gif_id)")
                 }
                 DispatchQueue.main.sync { [weak self] in
                     self?.loading = false

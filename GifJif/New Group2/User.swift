@@ -123,7 +123,10 @@ func get_user(username: String) async -> User? {
             return nil
         }
         let doc = querySnapshot.documents[0]
-        if let user = User(json: doc.data()) {
+        if var user = User(json: doc.data()) {
+            if (user.doc_id == "") {
+                user.doc_id = doc.documentID
+            }
             return user
         }
     } catch {

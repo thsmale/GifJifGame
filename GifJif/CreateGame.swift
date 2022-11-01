@@ -53,7 +53,7 @@ struct CreateGame: View {
                         fetching_user = true
                         Task {
                             if let user = await get_user(username: username) {
-                                players.append(Player(doc_id: user.doc_id, username: username))
+                                players.append(Player(doc_id: user.doc_id, username: user.username))
                                 invalid_username = false
                             } else {
                                 invalid_username = true
@@ -112,20 +112,12 @@ struct CreateGame: View {
                 //Save game to database
                 //Add to model
                 //Add to game_doc_id user in database (to recover game if local data erased)
-                create_game(game: game, player_one_doc_id: player_one.user.doc_id) { doc_id in
+                player_one.create_game(game: game) { doc_id in
                     creating_game = false
                     if (doc_id == nil) {
                         show_create_game_fail = true
                         return
                     }
-                    game.doc_id = doc_id!
-                    player_one.add_game_doc_id(game_doc_id: doc_id!) { success in
-                        if (success) {
-                            player_one.user.save_locally()
-                        }
-                        //TODO: handle error here
-                    }
-                    player_one.game_listener(game_doc_id: doc_id!)
                     self.presentationMode.wrappedValue.dismiss()
                 }
             }) {

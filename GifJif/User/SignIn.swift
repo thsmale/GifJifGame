@@ -27,18 +27,16 @@ struct SignIn: View {
                         return
                     }
                     valid_input = true
-                    Task {
-                        loading = true
-                        player_one.sign_in(username, password) { success in
-                            if (success)  {
-                                print("Successfully signed in \(player_one.user)")
-                                valid_account = true
-                                player_one.user.save_locally()
-                                player_one.load_games()
-                                self.mode.wrappedValue.dismiss()
-                            }
-                            loading = false //TODO: Does it matter that this is here? 
+                    loading = true
+                    player_one.sign_in(username, password) { success in
+                        if (success)  {
+                            print("Successfully signed in \(player_one.user)")
+                            valid_account = true
+                            player_one.user_listener()
+                            player_one.load_games()
+                            self.mode.wrappedValue.dismiss()
                         }
+                        loading = false //TODO: Does it matter that this is here?
                     }
                 })
                 if(loading) {

@@ -17,7 +17,8 @@ struct EditGame: View {
     @State private var time = 60
     @State private var show_alert = false
     @State private var start_game_fail = false
-    //@Environment(\.presentationMode) var presentationMode
+    @State private var round_started = false
+    @State private var show_round_started = false
 
     struct Status {
         var msg: String = ""
@@ -55,11 +56,23 @@ struct EditGame: View {
                 }
                 start_round(doc_id: game.doc_id, topic: topic, time: time) { success in
                     if (success) {
-                        //self.presentationMode.wrappedValue.dismiss()
+                        game.topic = topic
+                        game.time = time
+                        game.responses = []
+                        game.winner = nil
+                        round_started = true
+                        show_round_started = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            self.show_round_started = false
+                        }
                     } else {
                         start_game_fail = true
                     }
                 }
+            }.disabled(round_started)
+            if (show_round_started) {
+                Text("Let the game's begin!")
+                    .foregroundColor(.green)
             }
         }
     }
@@ -115,7 +128,6 @@ struct EditGame: View {
                     Text(player.username)
                 }
             }
-            Text("Responses received: \($game.responses.count) / \($game.players.count)")
             NavigationLink("Stats") {
                 
             }

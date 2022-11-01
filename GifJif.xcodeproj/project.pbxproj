@@ -36,6 +36,7 @@
 		C973AD2C28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
 		C973AD2D28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
 		C973AD2E28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
+		C9CCD4C32910D78D00937400 /* GameStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4C22910D78D00937400 /* GameStats.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		C973AD1C28D59B5D006D7A45 /* GifJifUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifJifUITests.swift; sourceTree = "<group>"; };
 		C973AD1E28D59B5D006D7A45 /* GifJifUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifJifUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C9CCD4C22910D78D00937400 /* GameStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStats.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +175,7 @@
 				C943EF7D28FA603C000D220C /* PlayGame.swift */,
 				C93B66C1290D38E70095B13A /* EditGame.swift */,
 				C943EF6128F6909F000D220C /* GifSearch.swift */,
+				C9CCD4C22910D78D00937400 /* GameStats.swift */,
 				C943EF6728F6909F000D220C /* Giphy.swift */,
 				C943EF83290642DC000D220C /* Invitation.swift */,
 				C943EF6228F6909F000D220C /* Camera.swift */,
@@ -373,6 +376,7 @@
 				C943EF6B28F690A0000D220C /* CreateGame.swift in Sources */,
 				C943EF6A28F6909F000D220C /* ImagePicker.swift in Sources */,
 				C943EF6D28F690A0000D220C /* Safari.swift in Sources */,
+				C9CCD4C32910D78D00937400 /* GameStats.swift in Sources */,
 				C943EF6828F6909F000D220C /* GifSearch.swift in Sources */,
 				C9703D6A28F6728400BC6FDC /* GifJifApp.swift in Sources */,
 				C943EF6C28F690A0000D220C /* Game.swift in Sources */,

@@ -70,7 +70,7 @@ struct Home: View {
         NavigationView {
             VStack {
                 Spacer()
-                Text("GifJif").font(.title)
+                Text("GifJifGame").font(.title)
                 Spacer()
                 
                 Form {
@@ -103,7 +103,7 @@ struct Home: View {
                         if(player_one.games.isEmpty) {
                             Text("You are in no games. Create a game or join a live game!")
                         } else {
-                            List(player_one.games.indices) { index in
+                            ForEach(player_one.games.indices, id: \.self) { index in
                                 NavigationLink(destination: PlayGame(player_one: player_one, game: self.$player_one.games[index])) {
                                     Text(player_one.games[index].name)
                                 }
@@ -114,7 +114,7 @@ struct Home: View {
 
                      
                     
-                    Section(header: Text("Invitations")) {
+                    Section(header: Text("Game invitations")) {
                         if (player_one.user.invitations.isEmpty) {
                             Text("No invitations at the moment")
                         } else {
