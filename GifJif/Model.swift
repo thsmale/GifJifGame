@@ -18,6 +18,7 @@ let MAX_USERNAME_LENGTH = 30
 let MAX_PASSWORD_ATTEMPT = 10
 let MAX_TOPIC_LENGTH = 140
 
+//TODO: Update local first or database first, then update local???
 class PlayerOne: ObservableObject {
     @Published var user: User
     @Published var games: [Game]

@@ -14,8 +14,7 @@ struct PlayGame: View {
     @State private var show_topic = false
     @State private var timer: Timer? = nil
     //Vars related to winner
-    @State private var winner: Response? = nil
-    @State private var show_winner = false //TODO: Show winner if next round hasn't started yet
+    @State private var winner: Winner? = nil
     @State private var submit_winner_fail = false
     
     @State private var response_disabled = false
@@ -71,8 +70,9 @@ struct PlayGame: View {
             if (game.winner != nil) {
                 Section(header: Text("Winner")) {
                     Text("🏆🏆🐔🍽")
-                    Text("\(game.winner!.player.username) wins!")
-                    LoadGif(gif_id: game.winner!.gif_id)
+                    Text("Topic: \(game.winner!.topic)")
+                    Text("\(game.winner!.response.player.username) wins!")
+                    LoadGif.fetch_gif(game: $game)
                         .aspectRatio(contentMode: .fit)
                 }
             }
@@ -87,8 +87,12 @@ struct PlayGame: View {
                     pick_winner()
                 }
             } else {
-                //View for player to play game
-                if game.responses.firstIndex(where: {$0.player.doc_id == player_one.user.doc_id}) == nil {
+                //View for player
+                if (game.winner != nil) {
+                    //In between games
+                    show_responses()
+                } else if game.responses.firstIndex(where: {$0.player.doc_id == player_one.user.doc_id}) == nil {
+                    //The user has yet to respond
                     respond()
                 } else {
                     //The user has responded so show them other people's responses
@@ -100,7 +104,7 @@ struct PlayGame: View {
         //How the user picks a GIF
         .sheet(isPresented: $show_giphy, content: {
             VStack {
-                Text("Task: \(game.topic)")
+                Text("Topic: \(game.topic)")
                 Text("Time: \(game.time) seconds")
                 if (giphy_media != nil) {
                     ShowMedia(media: $giphy_media)
@@ -167,22 +171,27 @@ extension PlayGame {
             Text("All responses received")
             ForEach(game.responses) { response in
                 VStack {
-                    if (winner?.player.doc_id == response.player.doc_id) {
+                    if (winner?.response.player.doc_id == response.player.doc_id) {
                         Image(systemName: "checkmark.circle.fill")
                     } else {
                         Image(systemName: "checkmark.circle")
                     }
-                    LoadGif(gif_id: response.gif_id)
+                    LoadGif(game: $game)
                         .aspectRatio(contentMode: .fit)
                 }
                 .onTapGesture {
-                    winner = response
+                    if var winner = winner {
+                        winner.response = response
+                    } else {
+                        winner = Winner(topic: game.topic, response: response)
+                    }
                 }
             }
             Button("Submit winner") {
                 submit_winner(doc_id: game.doc_id, winner: winner!) { success in
                     if (success) {
-                        game.winner = Response(gif_id: winner!.gif_id, player: winner!.player)
+                        //Since you will reset winner to nil in a hot sec, need to copy value of winner
+                        game.winner = Winner(topic: game.topic, response: winner!.response)
                         let random_int = Int.random(in: 0..<game.players.count)
                         let new_host = game.players[random_int]
                         end_round(doc_id: game.doc_id, host: new_host) { success in
@@ -241,6 +250,9 @@ extension PlayGame {
                 LoadGif(gif_id: response.gif_id)
                     .aspectRatio(contentMode: .fit)
             }
+            .task {
+                
+            }
         }
     }
     
@@ -251,49 +263,3 @@ extension PlayGame {
     }
 }
 
-struct LoadGif: View {
-    @StateObject private var gif: IDtoGif
-    
-    init (gif_id: String) {
-        _gif = StateObject(wrappedValue: IDtoGif(gif_id: gif_id))
-    }
-    
-    var body: some View {
-        if (gif.loading) {
-            ProgressView()
-                .aspectRatio(contentMode: .fit)
-        } else {
-            if (gif.gif_media != nil) {
-                ShowStaticMedia(media: gif.gif_media!)
-            } else {
-                Image("froggy_fail")
-            }
-        }
-    }
-    
-    private class IDtoGif: ObservableObject {
-        @Published var gif_media: GPHMedia? = nil
-        @Published var loading = true
-        
-        init (gif_id: String) {
-            print("Getting gifByID \(gif_id)")
-            GiphyCore.shared.gifByID(gif_id, completionHandler: { (response, error) in
-                //print("RES: \(String(describing: response))")
-                //print("Data: \(String(describing: response?.data))")
-                if let media = response?.data {
-                    //print("BF Dispatch Queue")
-                    DispatchQueue.main.sync { [weak self] in
-                        print("Media (dispatch queue): \(String(describing: media))")
-                        self?.gif_media = media
-                    }
-                }
-                if let error = error {
-                    print("Err getting gifByID \(error) for \(gif_id)")
-                }
-                DispatchQueue.main.sync { [weak self] in
-                    self?.loading = false
-                }
-            })
-        }
-    }
-}

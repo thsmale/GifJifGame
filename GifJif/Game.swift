@@ -66,7 +66,7 @@ struct Game: Codable, Identifiable {
     var topic: String
     var time: Int
     var responses: [Response] = []
-    var winner: Response? = nil
+    var winner: Winner? = nil
     
     //for CreateGame
     init(name: String, players: [Player], host: Player, topic: String, time: Int) {
@@ -99,9 +99,11 @@ struct Game: Codable, Identifiable {
                 self.players.append(athlete)
             }
         }
-        self.host = Player()
         if let host = Player(player: host) {
             self.host = host
+        } else {
+            print("Failed to decode host")
+            return nil
         }
         self.topic = topic
         self.time = time
@@ -111,7 +113,7 @@ struct Game: Codable, Identifiable {
             }
         }
         if let winner = game["winner"] as? [String: Any] {
-            if let winner = Response(response: winner) {
+            if let winner = Winner(winner: winner) {
                 self.winner = winner
             }
         }
@@ -150,12 +152,6 @@ struct Player: Codable, Identifiable {
         self.doc_id = doc_id
         self.username = username
     }
-    
-    //Used as placeholder for winner
-    init() {
-        self.doc_id = ""
-        self.username = ""
-    }
 }
 
 //This is the content of when the user responds to the prompt
@@ -187,10 +183,32 @@ struct Response: Codable, Identifiable {
     
 }
 
+//TODO: Implement some kind of decoder
 struct Winner: Codable, Identifiable {
     var id = UUID()
     var topic: String
     var response: Response
+    
+    init?(winner: [String: Any]) {
+        guard let topic = winner["topic"] as? String,
+              let response = winner["response"] as? [String: Any] else {
+            print("Unable to decode winner \(winner)")
+            return nil
+        }
+        
+        self.topic = topic
+        if let response = Response(response: response) {
+            self.response = response
+        } else {
+            return nil
+        }
+    }
+    
+    //Used for making a copy of the @state variable winner used by host to pick the winner
+    init(topic: String, response: Response) {
+        self.topic = topic
+        self.response = response
+    }
 }
 
 extension PlayerOne {
@@ -282,28 +300,28 @@ func submit_response(doc_id: String, response: Response, completion: @escaping (
     }
 }
 
-func submit_winner(doc_id: String, winner: Response, completion: @escaping ((Bool) -> Void)) {
+func submit_winner(doc_id: String, winner: Winner, completion: @escaping ((Bool) -> Void)) {
     print("Submitting winner...")
-    let encoded_response: [String: Any]
+    let encoded_winner: [String: Any]
     do {
         // encode the swift struct instance into a dictionary
         // using the Firestore encoder
-        encoded_response = try Firestore.Encoder().encode(winner)
+        encoded_winner = try Firestore.Encoder().encode(winner)
     } catch {
         // encoding error
-        print("Error encoding response \(error)")
+        print("submit_winner Error encoding response \(error)")
         completion(false)
         return
     }
     let ref = db.collection("games").document(doc_id)
     ref.updateData([
-        "winner": encoded_response
+        "winner": encoded_winner
     ]) { err in
         if let err = err {
-            print("Error updating document: \(err)")
+            print("submit_winner Error updating document: \(err)")
             completion(false)
         } else {
-            print("Document successfully updated")
+            print("submit_winner Document successfully updated")
             completion(true)
         }
     }
