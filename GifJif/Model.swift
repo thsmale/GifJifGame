@@ -483,3 +483,19 @@ func remove_document(collection: String, doc_id: String) {
         }
     }
 }
+
+//Used in views that perform some async task
+//Updating is convienent to display ProgressView
+//msg is successfull to communicate result from async task to user
+//Success used to display text in green if successful, red if unsuccessfull
+struct Status {
+    var msg: String = ""
+    var updating: Bool = false
+    var success: Bool = false
+    
+    mutating func set(msg: String, updating: Bool, success: Bool) {
+        self.msg = msg
+        self.updating = updating
+        self.success = success
+    }
+}
