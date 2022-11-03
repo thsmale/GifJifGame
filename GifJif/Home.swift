@@ -9,7 +9,6 @@ import SwiftUI
 import FirebaseFirestore
 
 struct Home: View {
-    //@ObservedObject var player_one: PlayerOne
     @EnvironmentObject private var player_one: PlayerOne
 
     var body: some View {
@@ -28,10 +27,10 @@ struct Home: View {
                             Text("Profile")
                         }
                         if(player_one.user.username.isEmpty) {
-                            NavigationLink(destination: CreateAccount(player_one: player_one)) {
+                            NavigationLink(destination: CreateAccount()) {
                                 Text("Create account")
                             }
-                            NavigationLink(destination: SignIn(player_one: player_one)) {
+                            NavigationLink(destination: SignIn()) {
                                 Text("Sign in")
                             }
                         } else {
@@ -43,14 +42,14 @@ struct Home: View {
                     
                     
                     Section(header: Text("My games")) {
-                        NavigationLink(destination: CreateGame(player_one: player_one)) {
+                        NavigationLink(destination: CreateGame()) {
                             Text("Create Game")
                         }
                         if(player_one.games.isEmpty) {
                             Text("You are in no games. Create a game or join a live game!")
                         } else {
                             ForEach(player_one.games.indices, id: \.self) { index in
-                                NavigationLink(destination: PlayGame(player_one: player_one, game: self.$player_one.games[index])) {
+                                NavigationLink(destination: PlayGame(game: self.$player_one.games[index])) {
                                     Text(player_one.games[index].name)
                                 }
                             }

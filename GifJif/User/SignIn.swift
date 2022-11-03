@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SignIn: View {
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var valid_input: Bool = false

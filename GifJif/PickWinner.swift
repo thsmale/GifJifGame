@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PickWinner: View {
     @Binding var game: Game
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @State private var winner: Winner? = nil
     @State private var submit_winner_fail = false
     

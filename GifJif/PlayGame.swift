@@ -9,7 +9,7 @@ import SwiftUI
 import GiphyUISDK
 
 struct PlayGame: View {
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @Binding var game: Game
     //Vars related to winner
     @State private var winner: Winner? = nil
@@ -26,10 +26,6 @@ struct PlayGame: View {
     
     @Environment(\.presentationMode) var presentationMode
     
-    func foo() {
-        
-    }
-    
     var body: some View {
         Form {
             //game.topic == "" implies no game is currently active
@@ -37,9 +33,9 @@ struct PlayGame: View {
                 //Lobby (where people hang out after submitting, while waiting for others to submit, waiting for host to pick new topic)
                 //Anybody can change game info
                 //Only Host has control over game settings like category, topic, and time
-                EditGame(game: $game, player_one: player_one)
+                EditGame(game: $game)
             } else {
-                GameInfo(game: $game, player_one: player_one)
+                GameInfo(game: $game)
             }
             
             ShowWinner(winner: game.winner)
@@ -53,7 +49,7 @@ struct PlayGame: View {
                     game.winner != nil) {
                     ShowResponses(game: game)
                 } else {
-                    PickWinner(game: $game, player_one: player_one)
+                    PickWinner(game: $game)
                 }
             } else {
                 //View for player
@@ -62,7 +58,7 @@ struct PlayGame: View {
                     ShowResponses(game: game)
                 } else if game.responses.firstIndex(where: {$0.player.doc_id == player_one.user.doc_id}) == nil {
                     //The user has yet to respond
-                    Respond(game: $game, player_one: player_one)
+                    Respond(game: $game)
                 } else {
                     //The user has responded so show them other people's responses
                     ShowResponses(game: game)

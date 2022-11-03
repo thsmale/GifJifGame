@@ -178,7 +178,7 @@ struct LoadGif: View {
                 }
                 if let media = response?.data {
                     DispatchQueue.main.sync { [weak self] in
-                        self?.gif_media = media
+                        self?.gif_media = media 
                     }
                 }
                 DispatchQueue.main.sync { [weak self] in

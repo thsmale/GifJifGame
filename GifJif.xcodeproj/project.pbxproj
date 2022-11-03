@@ -43,10 +43,10 @@
 		C9CCD4CB29136B1000937400 /* PickWinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4CA29136B1000937400 /* PickWinner.swift */; };
 		C9CCD4CD29136E2600937400 /* ShowWinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4CC29136E2600937400 /* ShowWinner.swift */; };
 		C9CCD4CF2913794F00937400 /* LoadInvitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4CE2913794F00937400 /* LoadInvitation.swift */; };
-		C9CCD4D32913A51D00937400 /* ChangeUsername.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4D22913A51D00937400 /* ChangeUsername.swift */; };
 		C9CCD4D52913A61F00937400 /* ChangePassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4D42913A61F00937400 /* ChangePassword.swift */; };
 		C9CCD4D72913A6F900937400 /* ChangeName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4D62913A6F900937400 /* ChangeName.swift */; };
 		C9CCD4D92913A76500937400 /* ChangeEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4D82913A76500937400 /* ChangeEmail.swift */; };
+		C9CCD4DB2913ADF100937400 /* ChangeUsername.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4DA2913ADF100937400 /* ChangeUsername.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,10 +100,10 @@
 		C9CCD4CA29136B1000937400 /* PickWinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickWinner.swift; sourceTree = "<group>"; };
 		C9CCD4CC29136E2600937400 /* ShowWinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowWinner.swift; sourceTree = "<group>"; };
 		C9CCD4CE2913794F00937400 /* LoadInvitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadInvitation.swift; sourceTree = "<group>"; };
-		C9CCD4D22913A51D00937400 /* ChangeUsername.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeUsername.swift; sourceTree = "<group>"; };
 		C9CCD4D42913A61F00937400 /* ChangePassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePassword.swift; sourceTree = "<group>"; };
 		C9CCD4D62913A6F900937400 /* ChangeName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeName.swift; sourceTree = "<group>"; };
 		C9CCD4D82913A76500937400 /* ChangeEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeEmail.swift; sourceTree = "<group>"; };
+		C9CCD4DA2913ADF100937400 /* ChangeUsername.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeUsername.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,7 +168,6 @@
 		C973ACF528D59B5A006D7A45 = {
 			isa = PBXGroup;
 			children = (
-				C9CCD4D22913A51D00937400 /* ChangeUsername.swift */,
 				C973AD0028D59B5A006D7A45 /* GifJif */,
 				C973AD1128D59B5D006D7A45 /* GifJifTests */,
 				C973AD1B28D59B5D006D7A45 /* GifJifUITests */,
@@ -211,6 +210,7 @@
 				C943EF7F29025AC2000D220C /* User.swift */,
 				C943EF7228F690DA000D220C /* CreateAccount.swift */,
 				C943EF7128F690DA000D220C /* Profile.swift */,
+				C9CCD4DA2913ADF100937400 /* ChangeUsername.swift */,
 				C9CCD4D42913A61F00937400 /* ChangePassword.swift */,
 				C9CCD4D62913A6F900937400 /* ChangeName.swift */,
 				C9CCD4D82913A76500937400 /* ChangeEmail.swift */,
@@ -407,6 +407,7 @@
 				C943EF8029025AC2000D220C /* User.swift in Sources */,
 				C943EF7628F690DB000D220C /* CreateAccount.swift in Sources */,
 				C943EF7428F690DB000D220C /* SignIn.swift in Sources */,
+				C9CCD4DB2913ADF100937400 /* ChangeUsername.swift in Sources */,
 				C9CCD4D72913A6F900937400 /* ChangeName.swift in Sources */,
 				C9CCD4C52913615300937400 /* GameInfo.swift in Sources */,
 				C943EF6B28F690A0000D220C /* CreateGame.swift in Sources */,
@@ -421,7 +422,6 @@
 				C9CCD4CF2913794F00937400 /* LoadInvitation.swift in Sources */,
 				C943EF7E28FA603D000D220C /* PlayGame.swift in Sources */,
 				C943EF6E28F690A0000D220C /* Giphy.swift in Sources */,
-				C9CCD4D32913A51D00937400 /* ChangeUsername.swift in Sources */,
 				C9CCD4CB29136B1000937400 /* PickWinner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

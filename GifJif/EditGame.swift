@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditGame: View {
     @Binding var game: Game
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @State private var topic: String = ""
     @State private var topic_status = Status()
     @State private var username: String = ""

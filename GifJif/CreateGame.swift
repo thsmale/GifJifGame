@@ -10,11 +10,11 @@ import SwiftUI
 //For now force to read device_owner but in the future do not allow user to open this view if they do not have an account
 //Or allow user to create game w/out account but change structure to handle that
 struct CreateGame: View {
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @State private var group_name: String = ""
     @State private var username: String = ""
-    @State private var players: [Player]
-    @State private var host_id: UUID
+    @State private var players: [Player] = []
+    @State private var host_id: UUID = UUID()
     @State private var topic: String = ""
     @State private var mode: String = ""
     @State private var time: Int = 60
@@ -27,15 +27,6 @@ struct CreateGame: View {
     
     @Environment(\.presentationMode) var presentationMode
     
-    init(player_one: PlayerOne) {
-        self.player_one = player_one
-        _host_id = State(initialValue: player_one.user.id)
-        _players = State(initialValue: [(
-            Player(id: player_one.user.id,
-                   doc_id: player_one.user.doc_id,
-                   username: player_one.user.username)
-        )])
-    }
     
     var body: some View {
         Form {
@@ -135,6 +126,13 @@ struct CreateGame: View {
             Button("😭") {show_create_game_fail = false}
         }
         .navigationTitle("Create Game")
+        .onAppear {
+            host_id = player_one.user.id
+            players.append(Player(id: player_one.user.id,
+                       doc_id: player_one.user.doc_id,
+                       username: player_one.user.username))
+        
+        }
     }
     
     

@@ -12,7 +12,7 @@ import GiphyUISDK
 //Allows the user to respond to the topic
 struct Respond: View {
     @Binding var game: Game
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @State private var giphy_media: GPHMedia? = nil
     @State private var show_topic = false
     @State private var show_giphy_picker = false

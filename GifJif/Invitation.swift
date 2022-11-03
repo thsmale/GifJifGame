@@ -11,7 +11,7 @@ import SwiftUI
 
 struct Invitation: View {
     @State var game: Game
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @State private var err = false
     

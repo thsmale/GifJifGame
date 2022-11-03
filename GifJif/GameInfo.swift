@@ -10,7 +10,7 @@ import SwiftUI
 //Displays basic information available to the user during game play
 struct GameInfo: View {
     @Binding var game: Game
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
