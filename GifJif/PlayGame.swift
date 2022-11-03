@@ -72,7 +72,7 @@ struct PlayGame: View {
                     Text("🏆🏆🐔🍽")
                     Text("Topic: \(game.winner!.topic)")
                     Text("\(game.winner!.response.player.username) wins!")
-                    LoadGif.fetch_gif(game: $game)
+                    LoadGif(gif_id: game.winner!.response.gif_id)
                         .aspectRatio(contentMode: .fit)
                 }
             }
@@ -176,7 +176,7 @@ extension PlayGame {
                     } else {
                         Image(systemName: "checkmark.circle")
                     }
-                    LoadGif(game: $game)
+                    LoadGif(gif_id: response.gif_id)
                         .aspectRatio(contentMode: .fit)
                 }
                 .onTapGesture {

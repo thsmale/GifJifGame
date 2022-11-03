@@ -61,6 +61,30 @@ struct GiphyUI: UIViewControllerRepresentable {
 //A view to display the gif
 struct ShowMedia: UIViewRepresentable {
     @Binding var media: GPHMedia?
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        let media_view = GPHMediaView()
+        view.addSubview(media_view)
+        media_view.translatesAutoresizingMaskIntoConstraints = false
+        media_view.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        media_view.widthAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        media_view.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        media_view.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        media_view.contentMode = .scaleAspectFit
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {
+        let media_view = uiView.subviews[0] as! GPHMediaView
+        if let media = media {
+            print("Updating media \(media.id)")
+            media_view.media = media
+        }
+    }
+}
+
+struct ShowWinner: UIViewRepresentable {
     @Binding var game: Game
     
     func makeUIView(context: Context) -> UIView {
@@ -83,16 +107,22 @@ struct ShowMedia: UIViewRepresentable {
             media_view.media = media
         }
          */
+
+        /*
         if let winner = game.winner {
             GiphyCore.shared.gifByID(winner.response.gif_id) { (response, error) in
                 if let error = error {
                     print("Err getting gifByID \(error) for \(winner.response.gif_id)")
                 }
                 if let media = response?.data {
-                    media_view.media = media
+                    DispatchQueue.main.sync { [weak self] in
+                        let media_view = uiView.subviews[0] as! GPHMediaView
+                        media_view.media = media
+                    }
                 }
             }
         }
+         */
     }
 }
 
@@ -121,6 +151,73 @@ struct ShowStaticMedia: UIViewRepresentable {
 
 //For loading static responses that do not change
 struct LoadGif: View {
+    @StateObject private var gif: IDtoGif
+    
+    init (gif_id: String) {
+        _gif = StateObject(wrappedValue: IDtoGif(gif_id: gif_id))
+    }
+    
+    var body: some View {
+        if (gif.loading) {
+            ProgressView()
+                .aspectRatio(contentMode: .fit)
+        } else {
+            if (gif.gif_media != nil) {
+                ShowMedia(media: $gif.gif_media)
+            } else {
+                Image("froggy_fail")
+            }
+        }
+    }
+    
+    private class IDtoGif: ObservableObject {
+        @Published var gif_media: GPHMedia? = nil
+        @Published var loading = true
+        
+        init (gif_id: String) {
+            print("Getting gifByID \(gif_id)")
+            GiphyCore.shared.gifByID(gif_id, completionHandler: { [self] (response, error) in
+                //print("RES: \(String(describing: response))")
+                //print("Data: \(String(describing: response?.data))")
+                if let error = error {
+                    print("Err getting gifByID \(error) for \(gif_id)")
+                }
+                if let media = response?.data {
+                    DispatchQueue.main.sync { [weak self] in
+                        self?.gif_media = media
+                    }
+                }
+                DispatchQueue.main.sync { [weak self] in
+                    self?.loading = false
+                }
+            })
+        }
+    }
+}
+
+//For loading static responses that do not change
+struct LoadWinner: View {
+    @Binding var game: Game
+    @State var media: GPHMedia? = nil
+    @State private var gif_id = ""
+    
+    var body: some View {
+        /*
+        if (gif.loading) {
+            ProgressView()
+                .aspectRatio(contentMode: .fit)
+        } else {
+            if (gif.gif_media != nil) {
+                ShowWinner(game: $game)
+            } else {
+                Image("froggy_fail")
+            }
+        }
+         */
+        Text("WTF")
+    }
+    
+    /*
     //@StateObject private var gif: IDtoGif = IDtoGif()
     @Binding var game: Game
     @Binding private var media: GPHMedia?
@@ -149,6 +246,7 @@ struct LoadGif: View {
             }
         }
     }
+    */
     
     /*
     var update: Binding<String> {
@@ -167,6 +265,7 @@ struct LoadGif: View {
     }
      */
     
+    /*
     func fetch_gif(gif_id: String, completion: @escaping ((GPHMedia?) -> Void)) {
         print("Getting gifByID \(gif_id)")
         GiphyCore.shared.gifByID(gif_id) { (response, error) in
@@ -181,6 +280,7 @@ struct LoadGif: View {
             }
         }
     }
+     */
     /*
 
     @State var gif_media: GPHMedia? = nil
@@ -266,7 +366,7 @@ struct LoadGif: View {
      */
 
 
-    
+    /*
     var body: some View {
         if (loading) {
             ProgressView()
@@ -279,6 +379,7 @@ struct LoadGif: View {
             }
         }
     }
+     */
     
     /*
     func fetch_gif() {
@@ -312,6 +413,7 @@ struct LoadGif: View {
        }
      */
     
+    /*
     private class IDtoGif: ObservableObject {
         @Published var gif_media: GPHMedia? = nil
         @Published var loading = true
@@ -337,4 +439,5 @@ struct LoadGif: View {
             })
         }
     }
+     */
 }
