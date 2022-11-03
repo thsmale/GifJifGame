@@ -13,7 +13,9 @@ import os
 
 //The picker for selecting a gif
 struct GiphyUI: UIViewControllerRepresentable {
+    @Binding var url: URL?
     @Binding var media: GPHMedia?
+    @Binding var media_view: GPHMediaView
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -40,7 +42,11 @@ struct GiphyUI: UIViewControllerRepresentable {
         }
         
         func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
+            if let gifURL = media.url(rendition: .original, fileType: .gif) {
+                parent.url = URL(string: gifURL)
+            }
             parent.media = media
+            parent.media_view.media = media
             giphyViewController.dismiss(animated: true)
         }
         
@@ -78,7 +84,7 @@ struct ShowMedia: UIViewRepresentable {
     }
 }
 
-struct TryToShowWinner: UIViewRepresentable {
+struct ShowWinner: UIViewRepresentable {
     @Binding var game: Game
     
     func makeUIView(context: Context) -> UIView {
