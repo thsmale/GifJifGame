@@ -22,6 +22,9 @@ struct GameInfo: View {
                     Text(player.username)
                 }
             }
+            NavigationLink("Stats") {
+                Stats(game: game)
+            }
             Text("Responses received: \($game.responses.count) / \($game.players.count == 1 ? 1 : $game.players.count - 1)")
             Button(action: {
                 player_one.leave_game(doc_id: game.doc_id)

@@ -67,6 +67,7 @@ struct Game: Codable, Identifiable {
     var time: Int
     var responses: [Response] = []
     var winner: Winner? = nil
+    var winners: [Winner] = []
     
     //for CreateGame
     init(name: String, players: [Player], host: Player, topic: String, time: Int) {
@@ -85,8 +86,9 @@ struct Game: Codable, Identifiable {
               let host = game["host"] as? [String: Any],
               let topic = game["topic"] as? String,
               let time = game["time"] as? Int,
-              let responses = game["responses"] as? [[String: Any]]
-        else{
+              let responses = game["responses"] as? [[String: Any]],
+              let winners = game["winners"] as? [[String: Any]]
+        else {
             print("Game unable to decode data \(game)")
             return nil
         }
@@ -115,6 +117,11 @@ struct Game: Codable, Identifiable {
         if let winner = game["winner"] as? [String: Any] {
             if let winner = Winner(winner: winner) {
                 self.winner = winner
+            }
+        }
+        for winner in winners {
+            if let winner = Winner(winner: winner) {
+                self.winners.append(winner)
             }
         }
     }
@@ -315,7 +322,8 @@ func submit_winner(doc_id: String, winner: Winner, completion: @escaping ((Bool)
     }
     let ref = db.collection("games").document(doc_id)
     ref.updateData([
-        "winner": encoded_winner
+        "winner": encoded_winner,
+        "winners": FieldValue.arrayUnion([encoded_winner])
     ]) { err in
         if let err = err {
             print("submit_winner Error updating document: \(err)")

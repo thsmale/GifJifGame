@@ -72,8 +72,8 @@ struct CreateGame: View {
                     }
                 }
                 
-                TextField("Topic", text: $topic)
-                TextField("Mode", text: $mode).disabled(true)
+                SetTopic(topic: $topic)
+                //Public or pivate
                 Picker("Time", selection: $time) {
                     ForEach(0 ..< 61) {
                         Text("\($0)")

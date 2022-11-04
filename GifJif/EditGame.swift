@@ -10,63 +10,14 @@ import SwiftUI
 struct EditGame: View {
     @Binding var game: Game
     @EnvironmentObject private var player_one: PlayerOne
-    @State private var topic: String = ""
-    @State private var topic_status = Status()
     @State private var username: String = ""
     @State private var add_user_status = Status()
-    @State private var time = 60
     @State private var show_alert = false
-    @State private var start_game_fail = false
-    @State private var round_started = false
-    @State private var show_round_started = false
     
-    func host_view() -> some View {
-        Section(header: Text("Host settings")) {
-            TextField("Choose topic", text: $topic, onEditingChanged: { _ in topic_status.reset() })
-            if (topic_status.msg != "") {
-                Text(topic_status.msg)
-                    .foregroundColor(.red)
-            }
-            Picker("Time", selection: $time) {
-                ForEach(0 ..< 61) {
-                    Text("\($0)")
-                }
-            }
-            Button("Start round") {
-                if (topic == "") {
-                    topic_status.msg = "Topic cannot be empty"
-                    return
-                }
-                
-                if (topic.count >= MAX_TOPIC_LENGTH) {
-                    topic_status.msg = "Topic exceeds max character length of \(MAX_TOPIC_LENGTH)"
-                    return
-                }
-                start_round(doc_id: game.doc_id, topic: topic, time: time) { success in
-                    if (success) {
-                        game.topic = topic
-                        game.time = time
-                        game.responses = []
-                        game.winner = nil
-                        round_started = true
-                        show_round_started = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            self.show_round_started = false
-                        }
-                    } else {
-                        start_game_fail = true
-                    }
-                }
-            }.disabled(round_started)
-                .onAppear {
-                    topic = game.topic
-                }
-        }
-    }
-    
+
     var body: some View {
         if (game.host.username == player_one.user.username) {
-            host_view()
+            HostView(game: $game)
         } else {
             Text("Waiting for \(game.host.username) to start next round")
         }
@@ -116,16 +67,9 @@ struct EditGame: View {
                 }
             }
             NavigationLink("Stats") {
-                
+                Stats(game: game)
             }
         }
-        /*
-        .alert("Server failed to create group", isPresented: $start_game_fail) {
-            Button("🤬") {$start_game_fail = false}
-            Button("🙄") {$start_game_fail = false}
-            Button("😭") {$start_game_fail = false}
-        }
-         */
     }
 
 }

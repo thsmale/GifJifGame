@@ -15,6 +15,7 @@ struct PickWinner: View {
     
     var body: some View {
         Section(header: Text("Pick Winner")) {
+            Text("Topic: \(game.topic)")
             Text("All responses received")
             ForEach(game.responses) { response in
                 VStack {
@@ -39,7 +40,9 @@ struct PickWinner: View {
                 submit_winner(doc_id: game.doc_id, winner: winner!) { success in
                     if (success) {
                         //Since you will reset winner to nil in a hot sec, need to copy value of winner
-                        game.winner = Winner(topic: game.topic, response: winner!.response)
+                        let dub = Winner(topic: game.topic, response: winner!.response)
+                        game.winner = dub
+                        game.winners.append(dub)
                         let random_int = Int.random(in: 0..<game.players.count)
                         let new_host = game.players[random_int]
                         end_round(doc_id: game.doc_id, host: new_host) { success in

@@ -53,7 +53,7 @@ struct Respond: View {
     //TODO: Allow user to pick multiple gifs, then select one for submission
     var body: some View {
         Section(header: Text("Play")) {
-            Text("Topic: \(show_topic ? game.topic : "Click respond to reveal")")
+            Text("Topic: \(show_topic ? game.topic : "Tap show topic to reveal")")
                 .foregroundColor(show_topic ? .black : .gray)
             Text("Time: \(game.time)")
             Button(show_topic ? "Pick gif" : "Show topic", action: {

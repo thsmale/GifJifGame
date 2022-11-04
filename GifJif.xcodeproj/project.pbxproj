@@ -36,7 +36,6 @@
 		C973AD2C28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
 		C973AD2D28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
 		C973AD2E28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
-		C9CCD4C32910D78D00937400 /* GameStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4C22910D78D00937400 /* GameStats.swift */; };
 		C9CCD4C52913615300937400 /* GameInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4C42913615200937400 /* GameInfo.swift */; };
 		C9CCD4C7291363B700937400 /* ShowResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4C6291363B700937400 /* ShowResponses.swift */; };
 		C9CCD4C9291364D000937400 /* Respond.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4C8291364D000937400 /* Respond.swift */; };
@@ -47,7 +46,11 @@
 		C9CCD4D72913A6F900937400 /* ChangeName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4D62913A6F900937400 /* ChangeName.swift */; };
 		C9CCD4D92913A76500937400 /* ChangeEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4D82913A76500937400 /* ChangeEmail.swift */; };
 		C9CCD4DB2913ADF100937400 /* ChangeUsername.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4DA2913ADF100937400 /* ChangeUsername.swift */; };
-		C9CCD4DD2914C58C00937400 /* PickTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4DC2914C58C00937400 /* PickTopic.swift */; };
+		C9CCD4DF2914C9EC00937400 /* red_cards.txt in Resources */ = {isa = PBXBuildFile; fileRef = C9CCD4DE2914C9EC00937400 /* red_cards.txt */; };
+		C9CCD4E72914D26A00937400 /* HostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4E62914D26A00937400 /* HostView.swift */; };
+		C9CCD4E92914DBE800937400 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C9CCD4E82914DBE800937400 /* LaunchScreen.storyboard */; };
+		C9CCD4EC291504DB00937400 /* Stats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4EB291504DB00937400 /* Stats.swift */; };
+		C9CCD4F029150EFB00937400 /* SetTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4EF29150EFB00937400 /* SetTopic.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,7 +97,6 @@
 		C973AD1C28D59B5D006D7A45 /* GifJifUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifJifUITests.swift; sourceTree = "<group>"; };
 		C973AD1E28D59B5D006D7A45 /* GifJifUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifJifUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		C9CCD4C22910D78D00937400 /* GameStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameStats.swift; sourceTree = "<group>"; };
 		C9CCD4C42913615200937400 /* GameInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameInfo.swift; sourceTree = "<group>"; };
 		C9CCD4C6291363B700937400 /* ShowResponses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowResponses.swift; sourceTree = "<group>"; };
 		C9CCD4C8291364D000937400 /* Respond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Respond.swift; sourceTree = "<group>"; };
@@ -105,7 +107,12 @@
 		C9CCD4D62913A6F900937400 /* ChangeName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeName.swift; sourceTree = "<group>"; };
 		C9CCD4D82913A76500937400 /* ChangeEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeEmail.swift; sourceTree = "<group>"; };
 		C9CCD4DA2913ADF100937400 /* ChangeUsername.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeUsername.swift; sourceTree = "<group>"; };
-		C9CCD4DC2914C58C00937400 /* PickTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickTopic.swift; sourceTree = "<group>"; };
+		C9CCD4DE2914C9EC00937400 /* red_cards.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = red_cards.txt; sourceTree = "<group>"; };
+		C9CCD4E62914D26A00937400 /* HostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HostView.swift; sourceTree = "<group>"; };
+		C9CCD4E82914DBE800937400 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		C9CCD4EA2914DF4700937400 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C9CCD4EB291504DB00937400 /* Stats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stats.swift; sourceTree = "<group>"; };
+		C9CCD4EF29150EFB00937400 /* SetTopic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetTopic.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,7 +177,6 @@
 		C973ACF528D59B5A006D7A45 = {
 			isa = PBXGroup;
 			children = (
-				C9CCD4DC2914C58C00937400 /* PickTopic.swift */,
 				C973AD0028D59B5A006D7A45 /* GifJif */,
 				C973AD1128D59B5D006D7A45 /* GifJifTests */,
 				C973AD1B28D59B5D006D7A45 /* GifJifUITests */,
@@ -192,18 +198,21 @@
 		C973AD0028D59B5A006D7A45 /* GifJif */ = {
 			isa = PBXGroup;
 			children = (
+				C9CCD4EA2914DF4700937400 /* Info.plist */,
 				C943EF6F28F690BB000D220C /* Gamez */,
 				C943EF6528F6909F000D220C /* Game.swift */,
 				C943EF6428F6909F000D220C /* CreateGame.swift */,
 				C943EF7D28FA603C000D220C /* PlayGame.swift */,
+				C9CCD4E62914D26A00937400 /* HostView.swift */,
 				C9CCD4CA29136B1000937400 /* PickWinner.swift */,
 				C9CCD4C6291363B700937400 /* ShowResponses.swift */,
 				C9CCD4C8291364D000937400 /* Respond.swift */,
 				C9CCD4CC29136E2600937400 /* ShowWinner.swift */,
 				C9CCD4C42913615200937400 /* GameInfo.swift */,
+				C9CCD4EF29150EFB00937400 /* SetTopic.swift */,
+				C9CCD4EB291504DB00937400 /* Stats.swift */,
 				C93B66C1290D38E70095B13A /* EditGame.swift */,
 				C943EF6128F6909F000D220C /* GifSearch.swift */,
-				C9CCD4C22910D78D00937400 /* GameStats.swift */,
 				C943EF6728F6909F000D220C /* Giphy.swift */,
 				C943EF83290642DC000D220C /* Invitation.swift */,
 				C943EF6228F6909F000D220C /* Camera.swift */,
@@ -221,8 +230,10 @@
 				C943EF7A28F69118000D220C /* Other */,
 				C9703D6728F6728400BC6FDC /* Model.swift */,
 				C9381A7B28F3CA1E00058060 /* Home.swift */,
+				C9CCD4E82914DBE800937400 /* LaunchScreen.storyboard */,
 				C9CCD4CE2913794F00937400 /* LoadInvitation.swift */,
 				C9703D6828F6728400BC6FDC /* GifJifApp.swift */,
+				C9CCD4DE2914C9EC00937400 /* red_cards.txt */,
 				C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */,
 				C973AD0528D59B5D006D7A45 /* Assets.xcassets */,
 				C973AD0728D59B5D006D7A45 /* Preview Content */,
@@ -369,8 +380,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9CCD4DF2914C9EC00937400 /* red_cards.txt in Resources */,
 				C973AD0928D59B5D006D7A45 /* Preview Assets.xcassets in Resources */,
 				C973AD0628D59B5D006D7A45 /* Assets.xcassets in Resources */,
+				C9CCD4E92914DBE800937400 /* LaunchScreen.storyboard in Resources */,
 				C973AD2C28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -399,26 +412,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				C943EF84290642DC000D220C /* Invitation.swift in Sources */,
+				C9CCD4EC291504DB00937400 /* Stats.swift in Sources */,
 				C9CCD4C7291363B700937400 /* ShowResponses.swift in Sources */,
 				C9CCD4D52913A61F00937400 /* ChangePassword.swift in Sources */,
 				C9381A7C28F3CA1E00058060 /* Home.swift in Sources */,
 				C9CCD4C9291364D000937400 /* Respond.swift in Sources */,
 				C943EF7528F690DB000D220C /* Profile.swift in Sources */,
-				C9CCD4DD2914C58C00937400 /* PickTopic.swift in Sources */,
 				C9CCD4D92913A76500937400 /* ChangeEmail.swift in Sources */,
 				C943EF6928F6909F000D220C /* Camera.swift in Sources */,
 				C9703D6928F6728400BC6FDC /* Model.swift in Sources */,
 				C943EF8029025AC2000D220C /* User.swift in Sources */,
 				C943EF7628F690DB000D220C /* CreateAccount.swift in Sources */,
 				C943EF7428F690DB000D220C /* SignIn.swift in Sources */,
+				C9CCD4F029150EFB00937400 /* SetTopic.swift in Sources */,
 				C9CCD4DB2913ADF100937400 /* ChangeUsername.swift in Sources */,
 				C9CCD4D72913A6F900937400 /* ChangeName.swift in Sources */,
 				C9CCD4C52913615300937400 /* GameInfo.swift in Sources */,
+				C9CCD4E72914D26A00937400 /* HostView.swift in Sources */,
 				C943EF6B28F690A0000D220C /* CreateGame.swift in Sources */,
 				C943EF6A28F6909F000D220C /* ImagePicker.swift in Sources */,
 				C943EF6D28F690A0000D220C /* Safari.swift in Sources */,
 				C9CCD4CD29136E2600937400 /* ShowWinner.swift in Sources */,
-				C9CCD4C32910D78D00937400 /* GameStats.swift in Sources */,
 				C943EF6828F6909F000D220C /* GifSearch.swift in Sources */,
 				C9703D6A28F6728400BC6FDC /* GifJifApp.swift in Sources */,
 				C943EF6C28F690A0000D220C /* Game.swift in Sources */,
@@ -589,10 +603,12 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GifJif/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GifJif/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "To reply with an image you have taken";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -618,10 +634,12 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GifJif/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GifJif/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "To reply with an image you have taken";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

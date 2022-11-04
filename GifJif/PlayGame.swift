@@ -11,20 +11,7 @@ import GiphyUISDK
 struct PlayGame: View {
     @EnvironmentObject private var player_one: PlayerOne
     @Binding var game: Game
-    //Vars related to winner
     @State private var winner: Winner? = nil
-    @State private var submit_winner_fail = false
-    
-    @State private var response_disabled = false
-    @State private var submit_disabled = true
-    @State private var user_responded = false
-    @State private var show_alert = false
-    
-    @State private var valid_input: Bool = false
-    @State private var preview: UIImage?
-    @State private var show_preview: Bool = false
-    
-    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         Form {
