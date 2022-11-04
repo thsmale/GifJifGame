@@ -47,6 +47,7 @@
 		C9CCD4D72913A6F900937400 /* ChangeName.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4D62913A6F900937400 /* ChangeName.swift */; };
 		C9CCD4D92913A76500937400 /* ChangeEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4D82913A76500937400 /* ChangeEmail.swift */; };
 		C9CCD4DB2913ADF100937400 /* ChangeUsername.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4DA2913ADF100937400 /* ChangeUsername.swift */; };
+		C9CCD4DD2914C58C00937400 /* PickTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4DC2914C58C00937400 /* PickTopic.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +105,7 @@
 		C9CCD4D62913A6F900937400 /* ChangeName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeName.swift; sourceTree = "<group>"; };
 		C9CCD4D82913A76500937400 /* ChangeEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeEmail.swift; sourceTree = "<group>"; };
 		C9CCD4DA2913ADF100937400 /* ChangeUsername.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeUsername.swift; sourceTree = "<group>"; };
+		C9CCD4DC2914C58C00937400 /* PickTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickTopic.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +170,7 @@
 		C973ACF528D59B5A006D7A45 = {
 			isa = PBXGroup;
 			children = (
+				C9CCD4DC2914C58C00937400 /* PickTopic.swift */,
 				C973AD0028D59B5A006D7A45 /* GifJif */,
 				C973AD1128D59B5D006D7A45 /* GifJifTests */,
 				C973AD1B28D59B5D006D7A45 /* GifJifUITests */,
@@ -401,6 +404,7 @@
 				C9381A7C28F3CA1E00058060 /* Home.swift in Sources */,
 				C9CCD4C9291364D000937400 /* Respond.swift in Sources */,
 				C943EF7528F690DB000D220C /* Profile.swift in Sources */,
+				C9CCD4DD2914C58C00937400 /* PickTopic.swift in Sources */,
 				C9CCD4D92913A76500937400 /* ChangeEmail.swift in Sources */,
 				C943EF6928F6909F000D220C /* Camera.swift in Sources */,
 				C9703D6928F6728400BC6FDC /* Model.swift in Sources */,

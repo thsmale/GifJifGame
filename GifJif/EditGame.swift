@@ -13,24 +13,12 @@ struct EditGame: View {
     @State private var topic: String = ""
     @State private var topic_status = Status()
     @State private var username: String = ""
-    @State private var add_user_status: Status = Status()
+    @State private var add_user_status = Status()
     @State private var time = 60
     @State private var show_alert = false
     @State private var start_game_fail = false
     @State private var round_started = false
     @State private var show_round_started = false
-
-    struct Status {
-        var msg: String = ""
-        var updating = false
-        var successs = false
-        
-        mutating func reset() {
-            self.msg = ""
-            self.updating = false
-            self.successs = false
-        }
-    }
     
     func host_view() -> some View {
         Section(header: Text("Host settings")) {
@@ -70,10 +58,9 @@ struct EditGame: View {
                     }
                 }
             }.disabled(round_started)
-            if (show_round_started) {
-                Text("Let the game's begin!")
-                    .foregroundColor(.green)
-            }
+                .onAppear {
+                    topic = game.topic
+                }
         }
     }
     
@@ -103,7 +90,7 @@ struct EditGame: View {
                                 if (success) {
                                     //players.append(Player(doc_id: user.doc_id, player: user))
                                     add_user_status.msg = "Successfully added user"
-                                    add_user_status.successs = true
+                                    add_user_status.success = true
                                 } else {
                                     add_user_status.msg = "Failed to add user \(username)"
                                 }
@@ -121,7 +108,7 @@ struct EditGame: View {
             }
             if (add_user_status.msg != "") {
                 Text(add_user_status.msg)
-                    .foregroundColor(add_user_status.successs ? .green : .red)
+                    .foregroundColor(add_user_status.success ? .green : .red)
             }
             NavigationLink("Players") {
                 List(game.players) { player in

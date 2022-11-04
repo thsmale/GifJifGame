@@ -498,4 +498,10 @@ struct Status {
         self.updating = updating
         self.success = success
     }
+    
+    mutating func reset() {
+        self.msg = ""
+        self.updating = false
+        self.success = false
+    }
 }

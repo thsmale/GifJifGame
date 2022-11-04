@@ -78,49 +78,8 @@ struct ShowMedia: UIViewRepresentable {
     }
 }
 
-struct TryToShowWinner: UIViewRepresentable {
-    @Binding var game: Game
-    
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        let media_view = GPHMediaView()
-        view.addSubview(media_view)
-        media_view.translatesAutoresizingMaskIntoConstraints = false
-        media_view.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-        media_view.widthAnchor.constraint(equalTo: view.heightAnchor).isActive = true
-        media_view.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        media_view.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        media_view.contentMode = .scaleAspectFit
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) {
-        let media_view = uiView.subviews[0] as! GPHMediaView
-        /*
-        if let media = media {
-            media_view.media = media
-        }
-         */
-
-        /*
-        if let winner = game.winner {
-            GiphyCore.shared.gifByID(winner.response.gif_id) { (response, error) in
-                if let error = error {
-                    print("Err getting gifByID \(error) for \(winner.response.gif_id)")
-                }
-                if let media = response?.data {
-                    DispatchQueue.main.sync { [weak self] in
-                        let media_view = uiView.subviews[0] as! GPHMediaView
-                        media_view.media = media
-                    }
-                }
-            }
-        }
-         */
-    }
-}
-
 //A view to display the gif
+//TODO: Binding vs ShowStaticMedia
 struct ShowStaticMedia: UIViewRepresentable {
     let media: GPHMedia
     
@@ -178,7 +137,7 @@ struct LoadGif: View {
                 }
                 if let media = response?.data {
                     DispatchQueue.main.sync { [weak self] in
-                        self?.gif_media = media 
+                        self?.gif_media = media
                     }
                 }
                 DispatchQueue.main.sync { [weak self] in
