@@ -24,6 +24,7 @@ struct Invitation: View {
                         Text($0.username)
                     }
                 }
+                Text("\(game.public_game ? "Public Game" : "Private Game")")
                 Button("Accept") {
                     print("Player accepted invitation")
                     player_one.add_game_doc_id(game_doc_id: game.doc_id) { success in

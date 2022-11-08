@@ -73,9 +73,8 @@ struct Home: View {
                         }
                     }
                     
-                    Section(header: Text("Public games")) {
-                        Text("Comming soon!")
-                    }
+                    PublicGame()
+
                 }
             }
             .navigationTitle("Home")

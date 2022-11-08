@@ -10,6 +10,7 @@ import GiphyUISDK
 
 //Features a button for the user to open the topic
 //Allows the user to respond to the topic
+//TODO: What to do when GIFY isn't responding and time is ticking
 struct Respond: View {
     @Binding var game: Game
     @EnvironmentObject private var player_one: PlayerOne

@@ -21,7 +21,7 @@
  * Live mode and async mode
  * Birthday may be required to activate dirty mode
  * Add accolades like quickest responses
- * Add bots to play against
+ * Add bots to play against, would work well for one player
  * Add some incentive to the game. Prize money for winning the round
  * Make official rules like any other game does, let users read them, also tells them how to play
  */
@@ -68,14 +68,16 @@ struct Game: Codable, Identifiable {
     var responses: [Response] = []
     var winner: Winner? = nil
     var winners: [Winner] = []
+    var public_game: Bool = false
     
     //for CreateGame
-    init(name: String, players: [Player], host: Player, topic: String, time: Int) {
+    init(name: String, players: [Player], host: Player, topic: String, time: Int, public_game: Bool) {
         self.name = name
         self.players = players
         self.host = host
         self.topic = topic
         self.time = time
+        self.public_game = public_game
     }
     
     //For dealing with json data
@@ -87,7 +89,8 @@ struct Game: Codable, Identifiable {
               let topic = game["topic"] as? String,
               let time = game["time"] as? Int,
               let responses = game["responses"] as? [[String: Any]],
-              let winners = game["winners"] as? [[String: Any]]
+              let winners = game["winners"] as? [[String: Any]],
+              let public_game = game["public_game"] as? Bool
         else {
             print("Game unable to decode data \(game)")
             return nil
@@ -124,6 +127,7 @@ struct Game: Codable, Identifiable {
                 self.winners.append(winner)
             }
         }
+        self.public_game = public_game
     }
     
     mutating func set_doc_id(doc_id: String) {
@@ -216,6 +220,13 @@ struct Winner: Codable, Identifiable {
         self.topic = topic
         self.response = response
     }
+}
+
+//Bots are good for solo play, or eventually adding them to a game
+//Utilize 'artificial intelligence' to make them playable
+struct Bot: Identifiable {
+    let id = UUID()
+    var name: String
 }
 
 extension PlayerOne {
@@ -429,3 +440,22 @@ func get_game(game_doc_id: String, completion: @escaping ((Game?) -> Void)) {
     }
 }
 
+func get_public_games(completion: @escaping(([Game]) -> Void)) {
+    db.collection("games").whereField("public_game", isEqualTo: true).limit(to: 5)
+        .getDocuments() { (querySnapshot, err) in
+            if let err = err {
+                print("get_public_games Error getting documents: \(err)")
+                completion([])
+            } else {
+                var games: [Game] = []
+                for document in querySnapshot!.documents {
+                    if let game = Game(game: document.data()) {
+                        games.append(game)
+                    } else {
+                        print("public_games failed to decode \(document.data())")
+                    }
+                }
+                completion(games)
+            }
+        }
+}

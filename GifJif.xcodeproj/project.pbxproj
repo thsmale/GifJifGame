@@ -26,6 +26,8 @@
 		C943EF7E28FA603D000D220C /* PlayGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7D28FA603C000D220C /* PlayGame.swift */; };
 		C943EF8029025AC2000D220C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF7F29025AC2000D220C /* User.swift */; };
 		C943EF84290642DC000D220C /* Invitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943EF83290642DC000D220C /* Invitation.swift */; };
+		C96BB0722919098B00C82BC3 /* AddPlayers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96BB0712919098B00C82BC3 /* AddPlayers.swift */; };
+		C96BB07429190DA400C82BC3 /* SoloGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96BB07329190DA400C82BC3 /* SoloGame.swift */; };
 		C9703D6928F6728400BC6FDC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9703D6728F6728400BC6FDC /* Model.swift */; };
 		C9703D6A28F6728400BC6FDC /* GifJifApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9703D6828F6728400BC6FDC /* GifJifApp.swift */; };
 		C973AD0628D59B5D006D7A45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C973AD0528D59B5D006D7A45 /* Assets.xcassets */; };
@@ -36,6 +38,7 @@
 		C973AD2C28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
 		C973AD2D28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
 		C973AD2E28D59C4B006D7A45 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */; };
+		C9B4E4E529161DDB00B1D02A /* PublicGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9B4E4E429161DDB00B1D02A /* PublicGame.swift */; };
 		C9CCD4C52913615300937400 /* GameInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4C42913615200937400 /* GameInfo.swift */; };
 		C9CCD4C7291363B700937400 /* ShowResponses.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4C6291363B700937400 /* ShowResponses.swift */; };
 		C9CCD4C9291364D000937400 /* Respond.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CCD4C8291364D000937400 /* Respond.swift */; };
@@ -86,6 +89,8 @@
 		C943EF7D28FA603C000D220C /* PlayGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayGame.swift; sourceTree = "<group>"; };
 		C943EF7F29025AC2000D220C /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = "New Group2/User.swift"; sourceTree = "<group>"; };
 		C943EF83290642DC000D220C /* Invitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invitation.swift; sourceTree = "<group>"; };
+		C96BB0712919098B00C82BC3 /* AddPlayers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlayers.swift; sourceTree = "<group>"; };
+		C96BB07329190DA400C82BC3 /* SoloGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoloGame.swift; sourceTree = "<group>"; };
 		C9703D6728F6728400BC6FDC /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Model.swift; path = GifJif/Model.swift; sourceTree = SOURCE_ROOT; };
 		C9703D6828F6728400BC6FDC /* GifJifApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GifJifApp.swift; sourceTree = "<group>"; };
 		C973ACFE28D59B5A006D7A45 /* GifJif.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GifJif.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +102,7 @@
 		C973AD1C28D59B5D006D7A45 /* GifJifUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifJifUITests.swift; sourceTree = "<group>"; };
 		C973AD1E28D59B5D006D7A45 /* GifJifUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifJifUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C9B4E4E429161DDB00B1D02A /* PublicGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicGame.swift; sourceTree = "<group>"; };
 		C9CCD4C42913615200937400 /* GameInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameInfo.swift; sourceTree = "<group>"; };
 		C9CCD4C6291363B700937400 /* ShowResponses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowResponses.swift; sourceTree = "<group>"; };
 		C9CCD4C8291364D000937400 /* Respond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Respond.swift; sourceTree = "<group>"; };
@@ -174,6 +180,41 @@
 			path = "New Group2";
 			sourceTree = "<group>";
 		};
+		C96BB078291A448600C82BC3 /* Modes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Modes;
+			sourceTree = "<group>";
+		};
+		C96BB07A291A44DD00C82BC3 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
+		C96BB07B291A450400C82BC3 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Media;
+			sourceTree = "<group>";
+		};
+		C96BB07C291A455A00C82BC3 /* Winner */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Winner;
+			sourceTree = "<group>";
+		};
+		C96BB07E291A457800C82BC3 /* Response */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Response;
+			sourceTree = "<group>";
+		};
 		C973ACF528D59B5A006D7A45 = {
 			isa = PBXGroup;
 			children = (
@@ -202,19 +243,26 @@
 				C943EF6F28F690BB000D220C /* Gamez */,
 				C943EF6528F6909F000D220C /* Game.swift */,
 				C943EF6428F6909F000D220C /* CreateGame.swift */,
+				C96BB078291A448600C82BC3 /* Modes */,
+				C96BB07329190DA400C82BC3 /* SoloGame.swift */,
+				C9B4E4E429161DDB00B1D02A /* PublicGame.swift */,
 				C943EF7D28FA603C000D220C /* PlayGame.swift */,
-				C9CCD4E62914D26A00937400 /* HostView.swift */,
-				C9CCD4CA29136B1000937400 /* PickWinner.swift */,
-				C9CCD4C6291363B700937400 /* ShowResponses.swift */,
-				C9CCD4C8291364D000937400 /* Respond.swift */,
-				C9CCD4CC29136E2600937400 /* ShowWinner.swift */,
+				C96BB07A291A44DD00C82BC3 /* Components */,
 				C9CCD4C42913615200937400 /* GameInfo.swift */,
-				C9CCD4EF29150EFB00937400 /* SetTopic.swift */,
+				C96BB0712919098B00C82BC3 /* AddPlayers.swift */,
+				C9CCD4E62914D26A00937400 /* HostView.swift */,
 				C9CCD4EB291504DB00937400 /* Stats.swift */,
 				C93B66C1290D38E70095B13A /* EditGame.swift */,
-				C943EF6128F6909F000D220C /* GifSearch.swift */,
+				C96BB07C291A455A00C82BC3 /* Winner */,
+				C9CCD4CA29136B1000937400 /* PickWinner.swift */,
+				C9CCD4CC29136E2600937400 /* ShowWinner.swift */,
+				C96BB07E291A457800C82BC3 /* Response */,
+				C9CCD4C6291363B700937400 /* ShowResponses.swift */,
+				C9CCD4C8291364D000937400 /* Respond.swift */,
+				C9CCD4EF29150EFB00937400 /* SetTopic.swift */,
+				C96BB07B291A450400C82BC3 /* Media */,
 				C943EF6728F6909F000D220C /* Giphy.swift */,
-				C943EF83290642DC000D220C /* Invitation.swift */,
+				C943EF6128F6909F000D220C /* GifSearch.swift */,
 				C943EF6228F6909F000D220C /* Camera.swift */,
 				C943EF6328F6909F000D220C /* ImagePicker.swift */,
 				C943EF6628F6909F000D220C /* Safari.swift */,
@@ -230,8 +278,9 @@
 				C943EF7A28F69118000D220C /* Other */,
 				C9703D6728F6728400BC6FDC /* Model.swift */,
 				C9381A7B28F3CA1E00058060 /* Home.swift */,
-				C9CCD4E82914DBE800937400 /* LaunchScreen.storyboard */,
+				C943EF83290642DC000D220C /* Invitation.swift */,
 				C9CCD4CE2913794F00937400 /* LoadInvitation.swift */,
+				C9CCD4E82914DBE800937400 /* LaunchScreen.storyboard */,
 				C9703D6828F6728400BC6FDC /* GifJifApp.swift */,
 				C9CCD4DE2914C9EC00937400 /* red_cards.txt */,
 				C973AD2B28D59C4B006D7A45 /* GoogleService-Info.plist */,
@@ -411,8 +460,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9B4E4E529161DDB00B1D02A /* PublicGame.swift in Sources */,
 				C943EF84290642DC000D220C /* Invitation.swift in Sources */,
 				C9CCD4EC291504DB00937400 /* Stats.swift in Sources */,
+				C96BB07429190DA400C82BC3 /* SoloGame.swift in Sources */,
 				C9CCD4C7291363B700937400 /* ShowResponses.swift in Sources */,
 				C9CCD4D52913A61F00937400 /* ChangePassword.swift in Sources */,
 				C9381A7C28F3CA1E00058060 /* Home.swift in Sources */,
@@ -430,6 +481,7 @@
 				C9CCD4C52913615300937400 /* GameInfo.swift in Sources */,
 				C9CCD4E72914D26A00937400 /* HostView.swift in Sources */,
 				C943EF6B28F690A0000D220C /* CreateGame.swift in Sources */,
+				C96BB0722919098B00C82BC3 /* AddPlayers.swift in Sources */,
 				C943EF6A28F6909F000D220C /* ImagePicker.swift in Sources */,
 				C943EF6D28F690A0000D220C /* Safari.swift in Sources */,
 				C9CCD4CD29136E2600937400 /* ShowWinner.swift in Sources */,

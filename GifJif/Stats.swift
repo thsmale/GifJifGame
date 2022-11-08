@@ -26,6 +26,8 @@ struct Stats: View {
         Form {
             Section(header: Text("Stats")) {
                 Text("Total games played: \(game.winners.count)")
+            }
+            Section(header: Text("Leaderboard")) {
                 ForEach(game.players) {
                     Text("\($0.username) wins: \(wins[$0.username] ?? 0)")
                 }
