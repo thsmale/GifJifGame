@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SignIn: View {
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var valid_input: Bool = false
@@ -27,21 +27,16 @@ struct SignIn: View {
                         return
                     }
                     valid_input = true
-                    Task {
-                        loading = true
-                        player_one.sign_in(username, password) { success in
-                            if (success)  {
-                                valid_account = true
-                                if (player_one.user.save_locally()) {
-                                    print("Successfully saved user \(username) locally")
-                                } else {
-                                    print("Failed to save user \(username) locally")
-                                }
-                                player_one.load_games()
-                                self.mode.wrappedValue.dismiss()
-                            }
-                            loading = false //TODO: Does it matter that this is here? 
+                    loading = true
+                    player_one.sign_in(username, password) { success in
+                        if (success)  {
+                            print("Successfully signed in \(player_one.user)")
+                            valid_account = true
+                            player_one.user_listener()
+                            player_one.load_games()
+                            self.mode.wrappedValue.dismiss()
                         }
+                        loading = false //TODO: Does it matter that this is here?
                     }
                 })
                 if(loading) {

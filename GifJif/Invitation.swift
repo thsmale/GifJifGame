@@ -6,36 +6,35 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseFirestoreSwift
 
 //Maybe an invitation should include who sent it
 
 struct Invitation: View {
     @State var game: Game
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @State private var err = false
     
     var body: some View {
         Form {
             Section(header: Text("Game info")) {
-                Text("Game name: \(game.name)")
-                NavigationLink("Players") {
-                    List(game.players) {
-                        Text($0.username)
-                    }
-                }
+                GameInfo(game: $game)
                 Button("Accept") {
                     print("Player accepted invitation")
-                    player_one.add_listener(game_doc_id: game.doc_id, completion: { success in
+                    player_one.add_game_doc_id(game_doc_id: game.doc_id) { success in
                         if (success) {
-                            print("Successfully accepted invitation \(game)")
                             player_one.delete_invitation(game_doc_id: game.doc_id)
-                            self.mode.wrappedValue.dismiss()
+                            player_one.user.save_locally()
                         } else {
                             print("Failed to accept invitation \(game)")
                             err = true
+                            return
                         }
-                    })
+                    }
+                    player_one.game_listener(game_doc_id: game.doc_id)
+                    self.mode.wrappedValue.dismiss()
                 }
                 Button("Reject") {
                     print("Player rejected invitation")

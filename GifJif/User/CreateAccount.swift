@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct CreateAccount: View {
-    @ObservedObject var player_one: PlayerOne
+    @EnvironmentObject private var player_one: PlayerOne
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var password_confirmation: String = ""
@@ -23,7 +23,7 @@ struct CreateAccount: View {
     @State private var username_submitted: Bool = false
     @State private var password_submitted: Bool = false
     //If fails to add to database show error to user
-    @State private var show_error: Bool = false
+    @State private var show_create_account_fail = false
     
     //Function to make sure add_user button is disabled when supposed to
     func valid_form_input() -> Bool {
@@ -52,8 +52,8 @@ struct CreateAccount: View {
                                 valid_username = false
                                 return
                             }
-                            Task {
-                                if (await get_user(username: username)) == nil {
+                            get_user(username: username) { user in
+                                if (user == nil) {
                                     valid_username = true
                                 } else {
                                     valid_username = false
@@ -91,30 +91,33 @@ struct CreateAccount: View {
                 
                 Button(action: {
                     var user = User(
-                        id: UUID(),
-                        doc_id: "",
                         username: username,
                         password: password,
                         first_name: first_name,
                         last_name: last_name,
-                        email: email,
-                        game_doc_ids: [],
-                        invitations: []
+                        email: email
                     )
-                    if(player_one.create_account(user: &user)) {
-                        player_one.user_listener()
-                    }else {
-                        show_error = true
+                    //create_account saves user in database
+                    //then save user locally
+                    create_account(user: user) { doc_id in
+                        if (doc_id == nil) {
+                            show_create_account_fail = true
+                            return
+                        } else {
+                            user.doc_id = doc_id!
+                            player_one.user = user
+                            player_one.user.save_locally()
+                        }
                     }
                 }) {
                     Text("Add Account")
                         .padding()
                 }
                 .disabled(!valid_form_input())
-                .alert("Server failed to create account", isPresented: $show_error) {
-                    Button("🤬") {}
-                    Button("🙄") {}
-                    Button("😭") {}
+                .alert("Server failed to create account", isPresented: $show_create_account_fail) {
+                    Button("🤬") {show_create_account_fail = false}
+                    Button("🙄") {show_create_account_fail = false}
+                    Button("😭") {show_create_account_fail = false}
                 }
                 
                 

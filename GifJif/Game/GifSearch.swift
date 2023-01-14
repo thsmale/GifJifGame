@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GifSearch: View {
     @State private var search: String = ""
-    let image = Image("froggy")
+    let image = Image("froggy_fail")
     
     var body: some View {
         VStack {
