@@ -1,3 +1,5 @@
 # GifJif
 
-[More info](https://tomportfolio.netlify.app/posts/2023-01-14-gifjifgame/)
+Gif or Jif? 
+
+## :link [Documentation](https://tomportfolio.netlify.app/posts/2023-01-14-gifjifgame/)
